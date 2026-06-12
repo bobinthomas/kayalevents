@@ -1,0 +1,132 @@
+@import "tailwindcss";
+
+:root {
+  --ink: #0a0a0b;
+  --ink-raised: #131315;
+  --ink-border: #26262a;
+  --ivory: #f5f1e8;
+  --ivory-muted: #b3ada1;
+  --gold: #d4af6a;
+  --gold-bright: #e8c97e;
+  --gold-deep: #9a7b3f;
+}
+
+@theme inline {
+  --color-ink: var(--ink);
+  --color-ink-raised: var(--ink-raised);
+  --color-ink-border: var(--ink-border);
+  --color-ivory: var(--ivory);
+  --color-ivory-muted: var(--ivory-muted);
+  --color-gold: var(--gold);
+  --color-gold-bright: var(--gold-bright);
+  --color-gold-deep: var(--gold-deep);
+  --font-sans: var(--font-body);
+  --font-display: var(--font-display);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--ink);
+  color: var(--ivory);
+  font-family: var(--font-body), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--gold);
+  color: var(--ink);
+}
+
+.font-display {
+  font-family: var(--font-display), Georgia, serif;
+}
+
+/* Editorial display headline treatment */
+.headline {
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.05;
+  text-wrap: balance;
+}
+
+.eyebrow {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+/* Gold hairline divider */
+.hairline {
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    color-mix(in srgb, var(--gold) 45%, transparent),
+    transparent
+  );
+}
+
+/* Scroll-reveal: elements fade/rise in when .is-revealed is added */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Cinematic poster placeholder used until rights-cleared photography arrives */
+.poster-placeholder {
+  background:
+    radial-gradient(
+      ellipse 120% 90% at 50% -10%,
+      color-mix(in srgb, var(--gold-deep) 50%, transparent),
+      transparent 65%
+    ),
+    radial-gradient(
+      ellipse 90% 70% at 85% 110%,
+      color-mix(in srgb, var(--gold) 22%, transparent),
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse 60% 50% at 10% 80%,
+      color-mix(in srgb, #6b2d12 35%, transparent),
+      transparent 60%
+    ),
+    linear-gradient(160deg, #232325 0%, #101012 55%, #060607 100%);
+}
+
+/* Focus visibility on dark theme */
+:focus-visible {
+  outline: 2px solid var(--gold-bright);
+  outline-offset: 2px;
+}
