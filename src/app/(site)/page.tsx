@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { EventCard } from "@/components/event-card";
+import { HeroHeadline } from "@/components/hero-headline";
 import { HeroMedia } from "@/components/hero-media";
+import { Marquee } from "@/components/marquee";
 import { Reveal } from "@/components/reveal";
-import { StatusBadge } from "@/components/status-badge";
+import { StatCounter } from "@/components/stat-counter";
 import {
   getCaseStudies,
   getFeaturedEvent,
@@ -33,69 +35,121 @@ export default async function HomePage() {
 
   const otherUpcoming = upcoming.filter((e) => e.slug !== featured?.slug);
 
+  // Derive marquee items from content — no hardcoded strings
+  const marqueeItems = Array.from(
+    new Set([
+      ...upcoming.flatMap((e) => e.artists),
+      ...upcoming.flatMap((e) => e.shows.map((s) => s.city)),
+      ...studies.map((s) => s.title),
+    ])
+  );
+
+  // Stats derived from content
+  const uniqueCities = new Set(
+    upcoming.flatMap((e) => e.shows.map((s) => s.city))
+  ).size;
+
   return (
     <div>
-      {/* Full-bleed cinematic hero (R4) */}
-      <section className="relative -mt-16 md:-mt-20">
+      {/* ── HERO ────────────────────────────────────────────── */}
+      <section className="relative -mt-16 md:-mt-20" aria-label="Hero">
         <HeroMedia
           videoSrc={settings.heroVideo}
-          imageSrc={featured?.heroImage ?? featured?.posterImage ?? settings.heroImage}
+          imageSrc={
+            featured?.heroImage ?? featured?.posterImage ?? settings.heroImage
+          }
           alt={featured ? `${featured.title} — hero` : "Kayal Events live show"}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/40 to-transparent" />
+        {/* Gradient scrim */}
+        <div className="absolute inset-0 bg-gradient-to-t from-marine-black via-marine-black/45 to-transparent" />
+        {/* Lagoon ambient ripple */}
+        <div className="hero-ripple pointer-events-none absolute inset-0" aria-hidden="true" />
+
         <div className="relative mx-auto flex min-h-dvh max-w-6xl flex-col justify-end px-5 pb-20 pt-36 md:px-8 md:pb-28">
           {featured ? (
-            <>
-              <div>
-                <StatusBadge status={featured.status} />
-              </div>
-              <h1 className="headline mt-5 max-w-4xl text-5xl md:text-8xl">
-                {featured.title}
-              </h1>
-              <p className="mt-5 text-sm uppercase tracking-[0.22em] text-gold">
-                {eventDateRange(featured)} · {eventCities(featured)}
-              </p>
-              {featured.tagline && (
-                <p className="mt-3 max-w-xl text-lg text-ivory-muted">
-                  {featured.tagline}
-                </p>
-              )}
-              <div className="mt-8 flex flex-wrap gap-4">
-                <Link
-                  href={`/events/${featured.slug}`}
-                  className="rounded-full bg-gold px-8 py-3.5 text-sm font-semibold text-ink transition hover:bg-gold-bright"
-                >
-                  {featured.status === "sold-out" ? "Join Waitlist" : "Buy Tickets"}
-                </Link>
-                <Link
-                  href="/events"
-                  className="rounded-full border border-ivory/30 px-8 py-3.5 text-sm font-semibold text-ivory transition hover:border-gold hover:text-gold"
-                >
-                  All Events
-                </Link>
-              </div>
-            </>
+            <HeroHeadline
+              title={featured.title}
+              tagline={featured.tagline}
+              meta={`${eventDateRange(featured)} · ${eventCities(featured)}`}
+              status={featured.status}
+              primaryHref={`/events/${featured.slug}`}
+              primaryLabel={
+                featured.status === "sold-out" ? "Join Waitlist" : "Buy Tickets"
+              }
+              secondaryHref="/events"
+              secondaryLabel="All Events"
+            />
           ) : (
-            <>
-              <p className="eyebrow">Kayal Events</p>
-              <h1 className="headline mt-5 max-w-4xl text-5xl md:text-8xl">
-                {settings.tagline}
-              </h1>
-              <div className="mt-8">
-                <Link
-                  href="/events"
-                  className="rounded-full bg-gold px-8 py-3.5 text-sm font-semibold text-ink transition hover:bg-gold-bright"
-                >
-                  Upcoming Events
-                </Link>
-              </div>
-            </>
+            <HeroHeadline
+              eyebrow="Kayal Events"
+              title={settings.tagline}
+              primaryHref="/events"
+              primaryLabel="Upcoming Events"
+            />
           )}
         </div>
       </section>
 
+      {/* ── MARQUEE STRIP ────────────────────────────────────── */}
+      {marqueeItems.length > 0 && (
+        <div className="border-y border-border/40 bg-surface/60 py-5">
+          <Marquee items={marqueeItems} />
+        </div>
+      )}
+
+      {/* ── STATS BAR ────────────────────────────────────────── */}
+      {(upcoming.length > 0 || studies.length > 0) && (
+        <section
+          className="relative overflow-hidden border-b border-border/40 bg-surface py-10"
+          aria-label="At a glance"
+        >
+          <div className="lagoon-wash pointer-events-none absolute inset-0" aria-hidden="true" />
+          <div className="relative mx-auto max-w-6xl px-5 md:px-8">
+            <dl className="grid grid-cols-2 gap-6 md:grid-cols-4">
+              {[
+                {
+                  value: upcoming.length,
+                  suffix: "+",
+                  label: "Upcoming shows",
+                },
+                {
+                  value: Math.max(uniqueCities, upcoming.length > 0 ? 1 : 0),
+                  suffix: "",
+                  label: "Cities on tour",
+                },
+                {
+                  value: studies.length,
+                  suffix: "+",
+                  label: "Productions delivered",
+                },
+                {
+                  value:
+                    upcoming.flatMap((e) => e.artists).length +
+                    studies.length * 2,
+                  suffix: "+",
+                  label: "Artists brought to AU",
+                },
+              ].map((stat) => (
+                <div key={stat.label} className="text-center">
+                  <dt className="sr-only">{stat.label}</dt>
+                  <dd
+                    className="headline text-4xl text-gradient md:text-5xl"
+                    aria-label={`${stat.value}${stat.suffix} ${stat.label}`}
+                  >
+                    <StatCounter value={stat.value} suffix={stat.suffix} />
+                  </dd>
+                  <p className="mt-2 text-xs uppercase tracking-widest text-sand-muted">
+                    {stat.label}
+                  </p>
+                </div>
+              ))}
+            </dl>
+          </div>
+        </section>
+      )}
+
       <div className="mx-auto max-w-6xl px-5 md:px-8">
-        {/* Positioning statement */}
+        {/* ── POSITIONING STATEMENT ────────────────────────────── */}
         <section className="py-20 md:py-28">
           <Reveal>
             <p className="eyebrow">Who we are</p>
@@ -103,7 +157,7 @@ export default async function HomePage() {
               We bring South India&apos;s biggest stages to Australia — and
               produce every night like a film premiere.
             </h2>
-            <p className="mt-6 max-w-xl text-ivory-muted">
+            <p className="mt-6 max-w-xl text-sand-muted">
               Concerts and national tours. Corporate galas and community
               festivals. From artist negotiation in Kochi to the final lighting
               cue in Melbourne, Kayal Events delivers end to end.
@@ -111,17 +165,19 @@ export default async function HomePage() {
           </Reveal>
         </section>
 
-        {/* Upcoming events */}
+        {/* ── UPCOMING EVENTS ──────────────────────────────────── */}
         {otherUpcoming.length > 0 && (
           <section className="pb-20 md:pb-28">
             <Reveal className="flex items-end justify-between gap-6">
               <div>
                 <p className="eyebrow">What&apos;s on</p>
-                <h2 className="headline mt-3 text-3xl md:text-4xl">More events</h2>
+                <h2 className="headline mt-3 text-3xl md:text-4xl">
+                  More events
+                </h2>
               </div>
               <Link
                 href="/events"
-                className="shrink-0 text-sm font-semibold text-gold transition hover:text-gold-bright"
+                className="shrink-0 text-sm font-semibold text-lagoon transition hover:text-lagoon-bright"
               >
                 View all →
               </Link>
@@ -138,7 +194,7 @@ export default async function HomePage() {
 
         <div className="hairline" />
 
-        {/* Portfolio teaser */}
+        {/* ── PORTFOLIO TEASER ──────────────────────────────────── */}
         <section className="py-20 md:py-28">
           <Reveal className="flex items-end justify-between gap-6">
             <div>
@@ -149,7 +205,7 @@ export default async function HomePage() {
             </div>
             <Link
               href="/portfolio"
-              className="shrink-0 text-sm font-semibold text-gold transition hover:text-gold-bright"
+              className="shrink-0 text-sm font-semibold text-lagoon transition hover:text-lagoon-bright"
             >
               All case studies →
             </Link>
@@ -159,15 +215,18 @@ export default async function HomePage() {
               <Reveal key={study.slug} delay={i * 80}>
                 <Link
                   href={`/portfolio/${study.slug}`}
-                  className="group block overflow-hidden rounded-2xl border border-ink-border bg-ink-raised transition hover:border-gold/40"
+                  className="group block overflow-hidden rounded-2xl border border-border bg-surface transition-all duration-300 hover:border-lagoon/40"
                 >
-                  <div className="poster-placeholder aspect-[4/3]" aria-hidden="true" />
+                  <div
+                    className="poster-placeholder aspect-[4/3] transition-transform duration-700 group-hover:scale-[1.02]"
+                    aria-hidden="true"
+                  />
                   <div className="p-6">
                     <p className="eyebrow">{study.year}</p>
-                    <h3 className="headline mt-2 text-2xl text-ivory group-hover:text-gold-bright">
+                    <h3 className="headline mt-2 text-2xl text-sand transition-colors duration-200 group-hover:text-lagoon-bright">
                       {study.title}
                     </h3>
-                    <p className="mt-2 line-clamp-2 text-sm text-ivory-muted">
+                    <p className="mt-2 line-clamp-2 text-sm text-sand-muted">
                       {study.summary}
                     </p>
                   </div>
@@ -179,45 +238,54 @@ export default async function HomePage() {
 
         <div className="hairline" />
 
-        {/* Testimonials (prestige layer) */}
-        <section className="py-20 md:py-28">
-          <Reveal>
-            <p className="eyebrow text-center">What they say</p>
-          </Reveal>
-          <div className="mt-10 grid gap-6 md:grid-cols-3">
-            {testimonials.slice(0, 3).map((t, i) => (
-              <Reveal key={t.author} delay={i * 80}>
-                <figure className="flex h-full flex-col justify-between rounded-2xl border border-ink-border bg-ink-raised p-7">
-                  <blockquote className="font-display text-lg leading-snug text-ivory">
-                    “{t.quote}”
-                  </blockquote>
-                  <figcaption className="mt-5 text-sm text-ivory-muted">
-                    <span className="font-semibold text-gold">{t.author}</span>
-                    {t.role && <> — {t.role}</>}
-                  </figcaption>
-                </figure>
-              </Reveal>
-            ))}
-          </div>
-        </section>
+        {/* ── TESTIMONIALS ──────────────────────────────────────── */}
+        {testimonials.length > 0 && (
+          <section className="py-20 md:py-28">
+            <Reveal>
+              <p className="eyebrow text-center">What they say</p>
+            </Reveal>
+            <div className="mt-10 grid gap-6 md:grid-cols-3">
+              {testimonials.slice(0, 3).map((t, i) => (
+                <Reveal key={t.author} delay={i * 80}>
+                  <figure className="flex h-full flex-col justify-between rounded-2xl border border-border bg-surface p-7 transition-colors hover:border-lagoon/30">
+                    <blockquote className="font-display text-lg leading-snug text-sand">
+                      &ldquo;{t.quote}&rdquo;
+                    </blockquote>
+                    <figcaption className="mt-5 text-sm text-sand-muted">
+                      <span className="font-semibold text-lagoon">{t.author}</span>
+                      {t.role && <> — {t.role}</>}
+                    </figcaption>
+                  </figure>
+                </Reveal>
+              ))}
+            </div>
+          </section>
+        )}
 
-        {/* B2B CTA */}
+        {/* ── B2B CTA ───────────────────────────────────────────── */}
         <section className="pb-24 md:pb-32">
           <Reveal>
-            <div className="rounded-3xl border border-gold/20 bg-gradient-to-br from-ink-raised to-ink p-10 text-center md:p-16">
-              <p className="eyebrow">Corporate · Community · Private</p>
-              <h2 className="headline mx-auto mt-4 max-w-2xl text-3xl md:text-5xl">
-                Planning an event worth remembering?
-              </h2>
-              <p className="mx-auto mt-4 max-w-md text-ivory-muted">
-                Tell us the occasion — we&apos;ll bring the production.
-              </p>
-              <Link
-                href="/contact"
-                className="mt-8 inline-flex items-center justify-center rounded-full bg-gold px-8 py-3.5 text-sm font-semibold text-ink transition hover:bg-gold-bright"
-              >
-                Start an Inquiry
-              </Link>
+            <div className="relative overflow-hidden rounded-3xl border border-lagoon/20 bg-surface p-10 text-center md:p-16">
+              {/* Lagoon glow accent */}
+              <div
+                className="pointer-events-none absolute inset-0 lagoon-wash"
+                aria-hidden="true"
+              />
+              <div className="relative">
+                <p className="eyebrow">Corporate · Community · Private</p>
+                <h2 className="headline mx-auto mt-4 max-w-2xl text-3xl md:text-5xl">
+                  Planning an event worth remembering?
+                </h2>
+                <p className="mx-auto mt-4 max-w-md text-sand-muted">
+                  Tell us the occasion — we&apos;ll bring the production.
+                </p>
+                <Link
+                  href="/contact"
+                  className="coral-glow mt-8 inline-flex items-center justify-center rounded-full bg-coral px-8 py-3.5 text-sm font-semibold tracking-wide text-sand transition-all duration-200 hover:scale-[1.03] hover:bg-coral-bright"
+                >
+                  Start an Inquiry
+                </Link>
+              </div>
             </div>
           </Reveal>
         </section>

@@ -6,7 +6,7 @@ import { track } from "@/lib/analytics";
 type Status = "idle" | "loading" | "success" | "error";
 
 const inputClass =
-  "w-full rounded-xl border border-ink-border bg-ink px-4 py-3 text-sm text-ivory placeholder:text-ivory-muted/60 focus:border-gold";
+  "w-full rounded-xl border border-border bg-marine-black px-4 py-3 text-sm text-sand placeholder:text-sand-muted/50 transition-colors focus:border-lagoon focus:outline-none";
 
 export function InquiryForm() {
   const [status, setStatus] = useState<Status>("idle");
@@ -33,9 +33,9 @@ export function InquiryForm() {
 
   if (status === "success") {
     return (
-      <div className="rounded-2xl border border-gold/30 bg-gold/5 p-8 text-center">
-        <p className="font-display text-2xl text-gold">Inquiry received.</p>
-        <p className="mt-2 text-ivory-muted">
+      <div className="rounded-2xl border border-lagoon/30 bg-lagoon/8 p-8 text-center">
+        <p className="font-display text-2xl text-lagoon">Inquiry received.</p>
+        <p className="mt-2 text-sand-muted">
           We&apos;ll come back to you within one business day — usually sooner.
         </p>
       </div>
@@ -56,19 +56,19 @@ export function InquiryForm() {
 
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="block">
-          <span className="mb-1.5 block text-sm text-ivory-muted">Name *</span>
+          <span className="mb-1.5 block text-sm text-sand-muted">Name *</span>
           <input type="text" name="name" required className={inputClass} />
         </label>
         <label className="block">
-          <span className="mb-1.5 block text-sm text-ivory-muted">Email *</span>
+          <span className="mb-1.5 block text-sm text-sand-muted">Email *</span>
           <input type="email" name="email" required className={inputClass} />
         </label>
         <label className="block">
-          <span className="mb-1.5 block text-sm text-ivory-muted">Phone</span>
+          <span className="mb-1.5 block text-sm text-sand-muted">Phone</span>
           <input type="tel" name="phone" className={inputClass} />
         </label>
         <label className="block">
-          <span className="mb-1.5 block text-sm text-ivory-muted">Event type *</span>
+          <span className="mb-1.5 block text-sm text-sand-muted">Event type *</span>
           <select name="eventType" required defaultValue="" className={inputClass}>
             <option value="" disabled>
               Select…
@@ -81,11 +81,11 @@ export function InquiryForm() {
           </select>
         </label>
         <label className="block">
-          <span className="mb-1.5 block text-sm text-ivory-muted">Preferred date</span>
+          <span className="mb-1.5 block text-sm text-sand-muted">Preferred date</span>
           <input type="date" name="preferredDate" className={inputClass} />
         </label>
         <label className="block">
-          <span className="mb-1.5 block text-sm text-ivory-muted">City</span>
+          <span className="mb-1.5 block text-sm text-sand-muted">City</span>
           <select name="city" defaultValue="" className={inputClass}>
             <option value="">Select…</option>
             {["Melbourne", "Sydney", "Brisbane", "Perth", "Adelaide", "Other"].map(
@@ -100,7 +100,7 @@ export function InquiryForm() {
       </div>
 
       <label className="block">
-        <span className="mb-1.5 block text-sm text-ivory-muted">
+        <span className="mb-1.5 block text-sm text-sand-muted">
           Budget range (optional)
         </span>
         <select name="budget" defaultValue="" className={inputClass}>
@@ -114,7 +114,7 @@ export function InquiryForm() {
       </label>
 
       <label className="block">
-        <span className="mb-1.5 block text-sm text-ivory-muted">
+        <span className="mb-1.5 block text-sm text-sand-muted">
           Tell us about your event *
         </span>
         <textarea name="message" required rows={5} className={inputClass} />
@@ -123,7 +123,7 @@ export function InquiryForm() {
       <button
         type="submit"
         disabled={status === "loading"}
-        className="w-full rounded-full bg-gold px-8 py-3.5 text-sm font-semibold text-ink transition hover:bg-gold-bright disabled:opacity-60 sm:w-auto"
+        className="coral-glow w-full rounded-full bg-coral px-8 py-3.5 text-sm font-semibold tracking-wide text-sand transition-all hover:scale-[1.02] hover:bg-coral-bright disabled:opacity-60 sm:w-auto"
       >
         {status === "loading" ? "Sending…" : "Send Inquiry"}
       </button>

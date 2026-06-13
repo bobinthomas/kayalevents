@@ -6,7 +6,7 @@ import { priceRange } from "@/lib/format";
 import type { KayalEvent } from "@/lib/types";
 
 /**
- * Persistent Buy Tickets bar on event pages (R2). Appears after the user
+ * Persistent Buy Tickets bar on event pages. Appears after the user
  * scrolls past the hero so it never covers the primary CTA at load.
  */
 export function StickyBuyBar({ event }: { event: KayalEvent }) {
@@ -34,7 +34,6 @@ export function StickyBuyBar({ event }: { event: KayalEvent }) {
     href = "/portfolio";
     isExternal = false;
   } else if (event.shows.length > 1) {
-    // Multi-city: send to the per-city ticket section rather than one link
     href = "#tickets";
     isExternal = false;
   }
@@ -42,15 +41,17 @@ export function StickyBuyBar({ event }: { event: KayalEvent }) {
   return (
     <div
       aria-hidden={!visible}
-      className={`fixed inset-x-0 bottom-0 z-30 border-t border-ink-border bg-ink/95 backdrop-blur transition-transform duration-300 ${
+      className={`fixed inset-x-0 bottom-0 z-30 border-t border-border/60 bg-marine-black/92 backdrop-blur-xl transition-transform duration-300 ${
         visible ? "translate-y-0" : "translate-y-full"
       }`}
     >
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-3 pr-20 md:px-8">
         <div className="min-w-0">
-          <p className="truncate text-sm font-semibold text-ivory">{event.title}</p>
+          <p className="truncate text-sm font-semibold text-sand">
+            {event.title}
+          </p>
           {prices && event.status !== "past" && (
-            <p className="text-xs text-ivory-muted">Tickets {prices}</p>
+            <p className="text-xs text-sand-muted">Tickets {prices}</p>
           )}
         </div>
         <a
@@ -60,9 +61,12 @@ export function StickyBuyBar({ event }: { event: KayalEvent }) {
           tabIndex={visible ? 0 : -1}
           onClick={() =>
             isExternal &&
-            track("buy_ticket_click", { event_name: event.title, placement: "sticky" })
+            track("buy_ticket_click", {
+              event_name: event.title,
+              placement: "sticky",
+            })
           }
-          className="shrink-0 rounded-full bg-gold px-6 py-2.5 text-sm font-semibold text-ink transition hover:bg-gold-bright"
+          className="coral-glow shrink-0 rounded-full bg-coral px-6 py-2.5 text-sm font-semibold tracking-wide text-sand transition-all hover:bg-coral-bright"
         >
           {label}
         </a>

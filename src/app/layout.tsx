@@ -1,16 +1,20 @@
 import type { Metadata } from "next";
-import { Fraunces, Inter } from "next/font/google";
+import { DM_Sans, Fraunces } from "next/font/google";
 import "./globals.css";
 import { getSiteSettings } from "@/lib/content";
 
 const display = Fraunces({
   variable: "--font-display",
   subsets: ["latin"],
+  axes: ["opsz"],
+  display: "swap",
 });
 
-const body = Inter({
+const body = DM_Sans({
   variable: "--font-body",
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600"],
+  display: "swap",
 });
 
 export async function generateMetadata(): Promise<Metadata> {

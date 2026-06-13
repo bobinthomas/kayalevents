@@ -1,55 +1,112 @@
 @import "tailwindcss";
 
+/* ─────────────────────────────────────────────────────────────
+   KAYAL EVENTS — "Lagoon, after dark"
+   Marine-black canvas · lagoon-green/ocean-blue gradient washes
+   Coral reserved exclusively for primary CTAs
+   ───────────────────────────────────────────────────────────── */
+
 :root {
-  --ink: #0a0a0b;
-  --ink-raised: #131315;
-  --ink-border: #26262a;
-  --ivory: #f5f1e8;
-  --ivory-muted: #b3ada1;
+  /* Page surfaces */
+  --marine-black: #07151A;
+  --surface: #0E2329;
+  --surface-raised: #122d3a;
+  --border: #1c3d4f;
+  --border-soft: #163040;
+
+  /* Text */
+  --sand: #FBF7EF;
+  --sand-muted: #6b9ab0;
+
+  /* Lagoon accent palette */
+  --lagoon-green: #23A455;
+  --lagoon-bright: #2dba62;
+  --ocean-blue: #1AA3DC;
+  --deep-marine: #0B6FB0;
+  --coral: #E8443B;
+  --coral-bright: #ef5a52;
+
+  /* Warm legacy accents — kept for hairlines and select uses */
   --gold: #d4af6a;
   --gold-bright: #e8c97e;
   --gold-deep: #9a7b3f;
+
+  /* Backward-compat aliases: old class names still resolve correctly */
+  --ink: var(--marine-black);
+  --ink-raised: var(--surface);
+  --ink-border: var(--border);
+  --ivory: var(--sand);
+  --ivory-muted: var(--sand-muted);
 }
 
 @theme inline {
+  /* Lagoon palette */
+  --color-marine-black: var(--marine-black);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-border: var(--border);
+  --color-border-soft: var(--border-soft);
+  --color-sand: var(--sand);
+  --color-sand-muted: var(--sand-muted);
+  --color-lagoon: var(--lagoon-green);
+  --color-lagoon-bright: var(--lagoon-bright);
+  --color-ocean: var(--ocean-blue);
+  --color-deep-marine: var(--deep-marine);
+  --color-coral: var(--coral);
+  --color-coral-bright: var(--coral-bright);
+
+  /* Legacy warm */
+  --color-gold: var(--gold);
+  --color-gold-bright: var(--gold-bright);
+  --color-gold-deep: var(--gold-deep);
+
+  /* Backward-compat */
   --color-ink: var(--ink);
   --color-ink-raised: var(--ink-raised);
   --color-ink-border: var(--ink-border);
   --color-ivory: var(--ivory);
   --color-ivory-muted: var(--ivory-muted);
-  --color-gold: var(--gold);
-  --color-gold-bright: var(--gold-bright);
-  --color-gold-deep: var(--gold-deep);
+
   --font-sans: var(--font-body);
   --font-display: var(--font-display);
 }
+
+/* ─────────────────────────────────────────────────────────────
+   BASE
+   ───────────────────────────────────────────────────────────── */
 
 html {
   scroll-behavior: smooth;
 }
 
 body {
-  background: var(--ink);
-  color: var(--ivory);
+  background: var(--marine-black);
+  color: var(--sand);
   font-family: var(--font-body), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 ::selection {
-  background: var(--gold);
-  color: var(--ink);
+  background: var(--lagoon-green);
+  color: var(--marine-black);
 }
+
+/* ─────────────────────────────────────────────────────────────
+   TYPOGRAPHY UTILITIES
+   ───────────────────────────────────────────────────────────── */
 
 .font-display {
   font-family: var(--font-display), Georgia, serif;
+  font-optical-sizing: auto;
 }
 
-/* Editorial display headline treatment */
 .headline {
   font-family: var(--font-display), Georgia, serif;
+  font-optical-sizing: auto;
   font-weight: 500;
-  letter-spacing: -0.01em;
-  line-height: 1.05;
+  letter-spacing: -0.02em;
+  line-height: 1.04;
   text-wrap: balance;
 }
 
@@ -58,27 +115,102 @@ body {
   font-weight: 600;
   letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: var(--gold);
+  color: var(--lagoon-green);
 }
 
-/* Gold hairline divider */
+/* Gradient text for hero key words */
+.text-gradient {
+  background: linear-gradient(135deg, var(--lagoon-green) 0%, var(--ocean-blue) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   DIVIDERS & SURFACES
+   ───────────────────────────────────────────────────────────── */
+
+/* Gold hairline divider — still used in a few editorial spots */
 .hairline {
   height: 1px;
   background: linear-gradient(
     to right,
     transparent,
-    color-mix(in srgb, var(--gold) 45%, transparent),
+    color-mix(in srgb, var(--lagoon-green) 35%, transparent),
+    color-mix(in srgb, var(--ocean-blue) 25%, transparent),
     transparent
   );
 }
 
-/* Scroll-reveal: elements fade/rise in when .is-revealed is added */
+/* Lagoon ambient gradient wash — applied as a layer inside sections */
+.lagoon-wash {
+  background:
+    radial-gradient(
+      ellipse 80% 60% at -5% 50%,
+      color-mix(in srgb, var(--lagoon-green) 12%, transparent),
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse 70% 60% at 105% 50%,
+      color-mix(in srgb, var(--ocean-blue) 10%, transparent),
+      transparent 55%
+    );
+}
+
+/* ─────────────────────────────────────────────────────────────
+   POSTER PLACEHOLDER (cinematic gradient — no stock imagery)
+   ───────────────────────────────────────────────────────────── */
+
+.poster-placeholder {
+  background:
+    radial-gradient(
+      ellipse 110% 80% at 50% -15%,
+      color-mix(in srgb, var(--ocean-blue) 45%, transparent),
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse 90% 70% at 90% 110%,
+      color-mix(in srgb, var(--lagoon-green) 30%, transparent),
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse 60% 50% at 10% 85%,
+      color-mix(in srgb, var(--deep-marine) 40%, transparent),
+      transparent 60%
+    ),
+    linear-gradient(160deg, var(--surface-raised) 0%, var(--surface) 55%, var(--marine-black) 100%);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   GLOW EFFECTS
+   ───────────────────────────────────────────────────────────── */
+
+.coral-glow {
+  box-shadow:
+    0 4px 24px color-mix(in srgb, var(--coral) 40%, transparent),
+    0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.coral-glow:hover {
+  box-shadow:
+    0 6px 32px color-mix(in srgb, var(--coral) 55%, transparent),
+    0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.lagoon-glow {
+  box-shadow: 0 0 40px color-mix(in srgb, var(--lagoon-green) 30%, transparent);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   SCROLL REVEAL (CSS — SSR-safe, Framer Motion enhances on top)
+   ───────────────────────────────────────────────────────────── */
+
 .reveal {
   opacity: 0;
   transform: translateY(24px);
   transition:
-    opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .reveal.is-revealed {
@@ -86,15 +218,152 @@ body {
   transform: translateY(0);
 }
 
+/* Wave clip-path reveal variant */
+.reveal-wave {
+  clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
+  transition: clip-path 1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal-wave.is-revealed {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   KEYFRAMES
+   ───────────────────────────────────────────────────────────── */
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+@keyframes selling-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.45; }
+}
+
+@keyframes ken-burns {
+  0%   { transform: scale(1) translate(0, 0); }
+  100% { transform: scale(1.09) translate(-1.5%, -0.8%); }
+}
+
+@keyframes light-ripple {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 0.18;
+  }
+  50% {
+    transform: scale(1.2) rotate(180deg);
+    opacity: 0.08;
+  }
+}
+
+@keyframes float-up {
+  0%   { transform: translateY(0) scale(1); opacity: 0.5; }
+  100% { transform: translateY(-60px) scale(1.8); opacity: 0; }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+@keyframes dot-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%       { transform: scale(1.4); opacity: 0.6; }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   ANIMATION UTILITY CLASSES
+   ───────────────────────────────────────────────────────────── */
+
+/* Marquee strip track */
+.marquee-track {
+  animation: marquee 50s linear infinite;
+  will-change: transform;
+}
+
+/* Ken Burns on poster images (applied via className on <img>) */
+.ken-burns {
+  animation: ken-burns 28s ease-in-out infinite alternate;
+  transform-origin: center center;
+}
+
+/* Selling-fast badge pulse */
+.status-pulse {
+  animation: selling-pulse 1.6s ease-in-out infinite;
+}
+
+/* Live dot pulse */
+.dot-pulse {
+  animation: dot-pulse 1.4s ease-in-out infinite;
+}
+
+/* Shimmer on loading states */
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--surface) 0%,
+    var(--surface-raised) 50%,
+    var(--surface) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.8s linear infinite;
+}
+
+/* Hero ambient light ripple */
+.hero-ripple {
+  background:
+    radial-gradient(
+      ellipse 50% 40% at 25% 30%,
+      color-mix(in srgb, var(--lagoon-green) 18%, transparent),
+      transparent 65%
+    ),
+    radial-gradient(
+      ellipse 40% 35% at 75% 25%,
+      color-mix(in srgb, var(--ocean-blue) 14%, transparent),
+      transparent 65%
+    );
+  animation: light-ripple 14s ease-in-out infinite;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   FOCUS VISIBILITY (dark theme — accessible)
+   ───────────────────────────────────────────────────────────── */
+
+:focus-visible {
+  outline: 2px solid var(--lagoon-green);
+  outline-offset: 3px;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   PREFERS-REDUCED-MOTION
+   All JS animations (Framer Motion, GSAP) check this via their
+   own APIs. CSS fallback below for remaining transitions.
+   ───────────────────────────────────────────────────────────── */
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
-  .reveal {
+
+  .reveal,
+  .reveal-wave {
     opacity: 1;
     transform: none;
+    clip-path: none;
     transition: none;
   }
+
+  .marquee-track,
+  .ken-burns,
+  .status-pulse,
+  .dot-pulse,
+  .hero-ripple,
+  .shimmer {
+    animation: none !important;
+  }
+
   *,
   *::before,
   *::after {
@@ -102,31 +371,4 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-}
-
-/* Cinematic poster placeholder used until rights-cleared photography arrives */
-.poster-placeholder {
-  background:
-    radial-gradient(
-      ellipse 120% 90% at 50% -10%,
-      color-mix(in srgb, var(--gold-deep) 50%, transparent),
-      transparent 65%
-    ),
-    radial-gradient(
-      ellipse 90% 70% at 85% 110%,
-      color-mix(in srgb, var(--gold) 22%, transparent),
-      transparent 60%
-    ),
-    radial-gradient(
-      ellipse 60% 50% at 10% 80%,
-      color-mix(in srgb, #6b2d12 35%, transparent),
-      transparent 60%
-    ),
-    linear-gradient(160deg, #232325 0%, #101012 55%, #060607 100%);
-}
-
-/* Focus visibility on dark theme */
-:focus-visible {
-  outline: 2px solid var(--gold-bright);
-  outline-offset: 2px;
 }

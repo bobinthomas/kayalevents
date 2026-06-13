@@ -2,15 +2,22 @@
 
 import { useEffect, useRef, type ReactNode } from "react";
 
-/** Scroll-reveal wrapper. CSS handles prefers-reduced-motion (no animation). */
+/**
+ * Scroll-reveal wrapper (CSS-based for SSR safety).
+ * IntersectionObserver adds `.is-revealed` when the element enters the viewport.
+ * CSS in globals.css handles the transition — prefers-reduced-motion disables it.
+ * Pass variant="wave" for a clip-path wipe-up reveal instead of fade-rise.
+ */
 export function Reveal({
   children,
   className = "",
   delay = 0,
+  variant = "fade",
 }: {
   children: ReactNode;
   className?: string;
   delay?: number;
+  variant?: "fade" | "wave";
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -19,24 +26,24 @@ export function Reveal({
     if (!el) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
-        // Also reveal elements already above the viewport (anchor jumps)
         if (entry.isIntersecting || entry.boundingClientRect.top < 0) {
           el.classList.add("is-revealed");
           observer.disconnect();
         }
       },
-      // Top margin extends far above the viewport so content jumped past
-      // (anchor links, fast scrolls) still counts as intersecting.
+      // Large top margin ensures content jumped past by anchor links still reveals.
       { threshold: 0.05, rootMargin: "10000px 0px -40px 0px" }
     );
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
 
+  const baseClass = variant === "wave" ? "reveal-wave" : "reveal";
+
   return (
     <div
       ref={ref}
-      className={`reveal ${className}`}
+      className={`${baseClass} ${className}`}
       style={delay ? { transitionDelay: `${delay}ms` } : undefined}
     >
       {children}

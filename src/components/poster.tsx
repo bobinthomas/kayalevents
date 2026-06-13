@@ -2,7 +2,10 @@ import Image from "next/image";
 
 /**
  * Renders the event/case-study image when available, otherwise a cinematic
- * gradient placeholder (no stock imagery — per design direction R4).
+ * lagoon gradient placeholder (no stock imagery — per design direction R4).
+ *
+ * Pass `kenBurns` to apply a slow panning animation on the image,
+ * ideal for event card thumbnails and hero backgrounds.
  */
 export function Poster({
   src,
@@ -11,6 +14,7 @@ export function Poster({
   className = "",
   sizes,
   priority = false,
+  kenBurns = false,
 }: {
   src?: string;
   alt: string;
@@ -18,9 +22,10 @@ export function Poster({
   className?: string;
   sizes?: string;
   priority?: boolean;
+  kenBurns?: boolean;
 }) {
-  // Callers position the poster themselves for hero overlays (absolute inset-0);
-  // default to relative so next/image fill works in cards.
+  // Callers that overlay the poster (heroes) pass `absolute inset-0`;
+  // default to `relative` so next/image fill works in cards.
   const position = className.includes("absolute") ? "" : "relative";
 
   if (src) {
@@ -32,11 +37,12 @@ export function Poster({
           fill
           sizes={sizes ?? "100vw"}
           priority={priority}
-          className="object-cover"
+          className={`object-cover ${kenBurns ? "ken-burns" : ""}`}
         />
       </div>
     );
   }
+
   return (
     <div
       role="img"
@@ -46,7 +52,7 @@ export function Poster({
       {title && (
         <span
           aria-hidden="true"
-          className="headline pointer-events-none select-none p-6 text-4xl text-ivory/10 md:text-6xl"
+          className="headline pointer-events-none select-none p-6 text-4xl text-sand/8 md:text-6xl"
         >
           {title}
         </span>

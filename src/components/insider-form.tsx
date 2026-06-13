@@ -45,9 +45,11 @@ export function InsiderForm({
 
   if (status === "success") {
     return (
-      <div className="rounded-xl border border-gold/30 bg-gold/5 p-6 text-center">
-        <p className="font-display text-xl text-gold">You&apos;re on the list.</p>
-        <p className="mt-2 text-sm text-ivory-muted">
+      <div className="rounded-xl border border-lagoon/30 bg-lagoon/8 p-6 text-center">
+        <p className="font-display text-xl text-lagoon">
+          You&apos;re on the list.
+        </p>
+        <p className="mt-2 text-sm text-sand-muted">
           Check your inbox to confirm your subscription — presale access follows.
         </p>
       </div>
@@ -56,9 +58,9 @@ export function InsiderForm({
 
   return (
     <form onSubmit={onSubmit} className="space-y-3">
-      <p className="font-display text-2xl text-ivory">{heading}</p>
-      <p className="text-sm text-ivory-muted">{subheading}</p>
-      {/* Honeypot — hidden from real users */}
+      <p className="font-display text-2xl text-sand">{heading}</p>
+      <p className="text-sm text-sand-muted">{subheading}</p>
+      {/* Honeypot — hidden from real users, catches bots */}
       <input
         type="text"
         name="website"
@@ -75,7 +77,7 @@ export function InsiderForm({
             name="email"
             required
             placeholder="Email address"
-            className="w-full rounded-full border border-ink-border bg-ink px-5 py-3 text-sm text-ivory placeholder:text-ivory-muted/60 focus:border-gold"
+            className="w-full rounded-full border border-border bg-marine-black px-5 py-3 text-sm text-sand placeholder:text-sand-muted/50 transition-colors focus:border-lagoon focus:outline-none"
           />
         </label>
         <label className="flex-1">
@@ -84,23 +86,23 @@ export function InsiderForm({
             type="tel"
             name="phone"
             placeholder="Mobile (optional)"
-            className="w-full rounded-full border border-ink-border bg-ink px-5 py-3 text-sm text-ivory placeholder:text-ivory-muted/60 focus:border-gold"
+            className="w-full rounded-full border border-border bg-marine-black px-5 py-3 text-sm text-sand placeholder:text-sand-muted/50 transition-colors focus:border-lagoon focus:outline-none"
           />
         </label>
       </div>
       <button
         type="submit"
         disabled={status === "loading"}
-        className="w-full rounded-full bg-gold px-6 py-3 text-sm font-semibold text-ink transition hover:bg-gold-bright disabled:opacity-60 sm:w-auto"
+        className="w-full rounded-full border border-lagoon/40 bg-lagoon/12 px-6 py-3 text-sm font-semibold text-lagoon transition-all hover:bg-lagoon/20 disabled:opacity-60 sm:w-auto"
       >
         {status === "loading" ? "Joining…" : buttonLabel}
       </button>
       {status === "error" && (
-        <p role="alert" className="text-sm text-red-400">
+        <p role="alert" className="text-sm text-coral">
           Something went wrong — please try again.
         </p>
       )}
-      <p className="text-xs text-ivory-muted/70">
+      <p className="text-xs text-sand-muted/60">
         By joining you consent to receive event updates from Kayal Events.
         Unsubscribe anytime. See our privacy policy.
       </p>

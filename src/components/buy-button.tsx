@@ -2,6 +2,10 @@
 
 import { track } from "@/lib/analytics";
 
+/**
+ * Primary ticket CTA — coral with glow, opens in new tab.
+ * Fires the buy_ticket_click analytics event on every click.
+ */
 export function BuyButton({
   href,
   eventName,
@@ -21,7 +25,7 @@ export function BuyButton({
       target="_blank"
       rel="noopener noreferrer"
       onClick={() => track("buy_ticket_click", { event_name: eventName, city })}
-      className={`inline-flex items-center justify-center rounded-full bg-gold px-7 py-3.5 text-sm font-semibold tracking-wide text-ink transition hover:bg-gold-bright ${className}`}
+      className={`coral-glow inline-flex items-center justify-center rounded-full bg-coral px-7 py-3.5 text-sm font-semibold tracking-wide text-sand transition-all duration-200 hover:scale-[1.03] hover:bg-coral-bright ${className}`}
     >
       {label}
     </a>
