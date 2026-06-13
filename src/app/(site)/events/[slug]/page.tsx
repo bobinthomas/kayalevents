@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { BuyButton } from "@/components/buy-button";
+import { Countdown } from "@/components/countdown";
 import { InsiderForm } from "@/components/insider-form";
 import { Poster } from "@/components/poster";
 import { Reveal } from "@/components/reveal";
@@ -154,6 +155,17 @@ export default async function EventPage({
           <p className="mt-5 text-sm uppercase tracking-[0.2em] text-lagoon">
             {eventDateRange(event)} · {eventCities(event)}
           </p>
+          {!isPast && (
+            <Countdown
+              target={
+                [...event.shows].sort((a, b) =>
+                  a.start.localeCompare(b.start)
+                )[0]?.start ?? ""
+              }
+              size="lg"
+              className="mt-5"
+            />
+          )}
           {prices && !isPast && (
             <p className="mt-2 text-sm text-sand-muted">Tickets {prices}</p>
           )}

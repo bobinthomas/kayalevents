@@ -98,9 +98,43 @@ export const eventType = defineType({
     }),
     defineField({
       name: "featured",
-      title: "Feature on home hero",
+      title: "Feature in hero carousel",
+      description: "Featured events appear before non-featured ones; use heroOrder to set their sequence",
       type: "boolean",
       initialValue: false,
+    }),
+    // Hero carousel fields — each event supplies its own slide content
+    defineField({
+      name: "heroOrder",
+      title: "Hero order",
+      description: "Lower numbers appear earlier in the carousel (among featured events)",
+      type: "number",
+      initialValue: 99,
+    }),
+    defineField({
+      name: "heroHeadline",
+      title: "Hero headline",
+      description: "Override the event title in the carousel slide (leave blank to use the title)",
+      type: "string",
+    }),
+    defineField({
+      name: "heroSubcopy",
+      title: "Hero subcopy",
+      description: "Override the tagline in the carousel slide (leave blank to use the tagline)",
+      type: "text",
+      rows: 2,
+    }),
+    defineField({
+      name: "heroCtaLabel",
+      title: "Hero CTA label",
+      description: "Button text in the carousel slide (defaults to 'Buy Tickets' or 'Join Waitlist')",
+      type: "string",
+    }),
+    defineField({
+      name: "heroCtaUrl",
+      title: "Hero CTA URL",
+      description: "Button URL in the carousel slide (defaults to the first show's ticket link)",
+      type: "string",
     }),
   ],
   preview: {

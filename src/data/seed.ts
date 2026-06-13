@@ -22,6 +22,10 @@ export const siteSettings: SiteSettings = {
   whatsapp: "61450250111",
   instagram: "https://www.instagram.com/kayalevents",
   baseUrl: "https://kayalevents.com.au",
+  fallbackHeroHeadline: "Australia's home of South Indian live entertainment",
+  fallbackHeroSubcopy: "Concerts, national tours, corporate galas and festivals — produced end to end.",
+  fallbackHeroCtaLabel: "Explore Events",
+  fallbackHeroCtaUrl: "/events",
 };
 
 export const events: KayalEvent[] = [
@@ -77,6 +81,11 @@ export const events: KayalEvent[] = [
       },
     ],
     featured: true,
+    heroHeadline: "Mohanlal Live in Australia",
+    heroSubcopy: "The Complete Actor. One unforgettable night.",
+    heroCtaLabel: "Buy Tickets",
+    heroCtaUrl: "https://www.trybooking.com/",
+    heroOrder: 1,
   },
   {
     slug: "onam-vibes-2026",
@@ -116,6 +125,11 @@ export const events: KayalEvent[] = [
           "Yes — Onam Vibes is an all-ages community celebration with activities for kids before the main show.",
       },
     ],
+    heroHeadline: "Onam Vibes 2026",
+    heroSubcopy: "ft. Siddharth Menon & Zeba Tommy — a festival night of music",
+    heroCtaLabel: "Buy Tickets",
+    heroCtaUrl: "https://www.trybooking.com/",
+    heroOrder: 2,
   },
 ];
 
