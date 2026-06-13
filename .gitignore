@@ -44,3 +44,6 @@ cloudflare-env.d.ts
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# event photography — large files, served locally or via Sanity/R2 in production
+/public/images/
