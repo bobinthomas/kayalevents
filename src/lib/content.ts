@@ -40,6 +40,11 @@ function mapEvent(doc: any): KayalEvent {
     entryConditions: doc.entryConditions ?? [],
     faqs: doc.faqs ?? [],
     featured: doc.featured ?? false,
+    heroHeadline: doc.heroHeadline ?? undefined,
+    heroSubcopy: doc.heroSubcopy ?? undefined,
+    heroCtaLabel: doc.heroCtaLabel ?? undefined,
+    heroCtaUrl: doc.heroCtaUrl ?? undefined,
+    heroOrder: doc.heroOrder ?? undefined,
   };
 }
 

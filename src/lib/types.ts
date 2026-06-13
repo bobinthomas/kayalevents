@@ -35,6 +35,30 @@ export interface KayalEvent {
   entryConditions?: string[];
   faqs: FaqItem[];
   featured?: boolean;
+  // Hero carousel — CMS-editable per event
+  heroHeadline?: string;
+  heroSubcopy?: string;
+  heroCtaLabel?: string;
+  heroCtaUrl?: string;
+  heroOrder?: number;
+}
+
+/** View model for a single hero carousel slide — derived from KayalEvent or SiteSettings fallback */
+export interface HeroSlide {
+  id: string;
+  heroHeadline: string;
+  heroSubcopy?: string;
+  heroCtaLabel: string;
+  heroCtaUrl: string;
+  heroImage?: string;
+  heroVideo?: string;
+  status?: EventStatus;
+  /** Present when the slide is backed by an event; used for "Event details →" secondary link */
+  eventSlug?: string;
+  /** True when heroCtaUrl points to an external ticket platform — fires buy_ticket_click */
+  isTicketUrl: boolean;
+  /** ISO 8601 datetime for the countdown; earliest upcoming show */
+  countdownTarget?: string;
 }
 
 export interface CaseStudyStat {
@@ -78,7 +102,12 @@ export interface SiteSettings {
   instagram: string;
   facebook?: string;
   baseUrl: string;
-  /** Optional muted hero video loop for the home page (R4) */
+  /** Optional muted hero video loop (fallback when no active events) */
   heroVideo?: string;
   heroImage?: string;
+  // Fallback hero slide — shown when there are zero active (non-past) events
+  fallbackHeroHeadline?: string;
+  fallbackHeroSubcopy?: string;
+  fallbackHeroCtaLabel?: string;
+  fallbackHeroCtaUrl?: string;
 }

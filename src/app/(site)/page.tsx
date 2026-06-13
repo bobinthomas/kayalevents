@@ -1,19 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { EventCard } from "@/components/event-card";
-import { HeroHeadline } from "@/components/hero-headline";
-import { HeroMedia } from "@/components/hero-media";
-import { Marquee } from "@/components/marquee";
+import { HeroCarousel } from "@/components/hero-carousel";
 import { Reveal } from "@/components/reveal";
 import { StatCounter } from "@/components/stat-counter";
 import {
   getCaseStudies,
-  getFeaturedEvent,
   getSiteSettings,
   getTestimonials,
   getUpcomingEvents,
 } from "@/lib/content";
-import { eventCities, eventDateRange } from "@/lib/format";
+import type { HeroSlide, KayalEvent, SiteSettings } from "@/lib/types";
 
 export const revalidate = 60;
 
@@ -23,26 +20,78 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
+/** Derive hero slides from active (non-past) events + site settings fallback */
+function buildHeroSlides(
+  activeEvents: KayalEvent[],
+  settings: SiteSettings
+): HeroSlide[] {
+  if (activeEvents.length === 0) {
+    return [
+      {
+        id: "fallback",
+        heroHeadline:
+          settings.fallbackHeroHeadline ?? settings.tagline,
+        heroSubcopy: settings.fallbackHeroSubcopy,
+        heroCtaLabel: settings.fallbackHeroCtaLabel ?? "Explore Events",
+        heroCtaUrl: settings.fallbackHeroCtaUrl ?? "/events",
+        heroImage: settings.heroImage,
+        heroVideo: settings.heroVideo,
+        isTicketUrl: false,
+      },
+    ];
+  }
+
+  // Featured events (sorted by heroOrder) first, then rest sorted by earliest show date
+  const featured = [...activeEvents]
+    .filter((e) => e.featured)
+    .sort((a, b) => (a.heroOrder ?? 99) - (b.heroOrder ?? 99));
+  const rest = [...activeEvents]
+    .filter((e) => !e.featured)
+    .sort((a, b) =>
+      (a.shows[0]?.start ?? "").localeCompare(b.shows[0]?.start ?? "")
+    );
+  const ordered = featured.length > 0 ? [...featured, ...rest] : rest;
+
+  return ordered.map((e): HeroSlide => {
+    const firstTicketShow = e.shows.find((s) => s.ticketUrl);
+    const defaultCtaUrl =
+      e.status === "sold-out"
+        ? `/events/${e.slug}#waitlist`
+        : firstTicketShow?.ticketUrl ?? `/events/${e.slug}#tickets`;
+    const resolvedCtaUrl = e.heroCtaUrl ?? defaultCtaUrl;
+    const isTicketUrl = e.heroCtaUrl
+      ? e.heroCtaUrl.startsWith("http")
+      : Boolean(firstTicketShow?.ticketUrl);
+    const earliestShow = [...e.shows].sort((a, b) =>
+      a.start.localeCompare(b.start)
+    )[0];
+
+    return {
+      id: e.slug,
+      heroHeadline: e.heroHeadline ?? e.title,
+      heroSubcopy: e.heroSubcopy ?? e.tagline,
+      heroCtaLabel:
+        e.heroCtaLabel ??
+        (e.status === "sold-out" ? "Join Waitlist" : "Buy Tickets"),
+      heroCtaUrl: resolvedCtaUrl,
+      heroImage: e.heroImage ?? e.posterImage,
+      status: e.status,
+      eventSlug: e.slug,
+      isTicketUrl,
+      countdownTarget: earliestShow?.start,
+    };
+  });
+}
+
 export default async function HomePage() {
-  const [featured, upcoming, studies, testimonials, settings] =
-    await Promise.all([
-      getFeaturedEvent(),
-      getUpcomingEvents(),
-      getCaseStudies(),
-      getTestimonials(),
-      getSiteSettings(),
-    ]);
+  const [upcoming, studies, testimonials, settings] = await Promise.all([
+    getUpcomingEvents(),
+    getCaseStudies(),
+    getTestimonials(),
+    getSiteSettings(),
+  ]);
 
-  const otherUpcoming = upcoming.filter((e) => e.slug !== featured?.slug);
-
-  // Derive marquee items from content — no hardcoded strings
-  const marqueeItems = Array.from(
-    new Set([
-      ...upcoming.flatMap((e) => e.artists),
-      ...upcoming.flatMap((e) => e.shows.map((s) => s.city)),
-      ...studies.map((s) => s.title),
-    ])
-  );
+  const heroSlides = buildHeroSlides(upcoming, settings);
 
   // Stats derived from content
   const uniqueCities = new Set(
@@ -51,51 +100,8 @@ export default async function HomePage() {
 
   return (
     <div>
-      {/* ── HERO ────────────────────────────────────────────── */}
-      <section className="relative -mt-16 md:-mt-20" aria-label="Hero">
-        <HeroMedia
-          videoSrc={settings.heroVideo}
-          imageSrc={
-            featured?.heroImage ?? featured?.posterImage ?? settings.heroImage
-          }
-          alt={featured ? `${featured.title} — hero` : "Kayal Events live show"}
-        />
-        {/* Gradient scrim */}
-        <div className="absolute inset-0 bg-gradient-to-t from-marine-black via-marine-black/45 to-transparent" />
-        {/* Lagoon ambient ripple */}
-        <div className="hero-ripple pointer-events-none absolute inset-0" aria-hidden="true" />
-
-        <div className="relative mx-auto flex min-h-dvh max-w-6xl flex-col justify-end px-5 pb-20 pt-36 md:px-8 md:pb-28">
-          {featured ? (
-            <HeroHeadline
-              title={featured.title}
-              tagline={featured.tagline}
-              meta={`${eventDateRange(featured)} · ${eventCities(featured)}`}
-              status={featured.status}
-              primaryHref={`/events/${featured.slug}`}
-              primaryLabel={
-                featured.status === "sold-out" ? "Join Waitlist" : "Buy Tickets"
-              }
-              secondaryHref="/events"
-              secondaryLabel="All Events"
-            />
-          ) : (
-            <HeroHeadline
-              eyebrow="Kayal Events"
-              title={settings.tagline}
-              primaryHref="/events"
-              primaryLabel="Upcoming Events"
-            />
-          )}
-        </div>
-      </section>
-
-      {/* ── MARQUEE STRIP ────────────────────────────────────── */}
-      {marqueeItems.length > 0 && (
-        <div className="border-y border-border/40 bg-surface/60 py-5">
-          <Marquee items={marqueeItems} />
-        </div>
-      )}
+      {/* ── HERO CAROUSEL ──────────────────────────────────────── */}
+      <HeroCarousel slides={heroSlides} />
 
       {/* ── STATS BAR ────────────────────────────────────────── */}
       {(upcoming.length > 0 || studies.length > 0) && (
@@ -166,13 +172,13 @@ export default async function HomePage() {
         </section>
 
         {/* ── UPCOMING EVENTS ──────────────────────────────────── */}
-        {otherUpcoming.length > 0 && (
+        {upcoming.length > 0 && (
           <section className="pb-20 md:pb-28">
             <Reveal className="flex items-end justify-between gap-6">
               <div>
                 <p className="eyebrow">What&apos;s on</p>
                 <h2 className="headline mt-3 text-3xl md:text-4xl">
-                  More events
+                  Upcoming events
                 </h2>
               </div>
               <Link
@@ -183,7 +189,7 @@ export default async function HomePage() {
               </Link>
             </Reveal>
             <div className="mt-10 grid gap-8 md:grid-cols-2">
-              {otherUpcoming.slice(0, 2).map((event, i) => (
+              {upcoming.slice(0, 2).map((event, i) => (
                 <Reveal key={event.slug} delay={i * 80}>
                   <EventCard event={event} />
                 </Reveal>

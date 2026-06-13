@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
+import { Countdown } from "@/components/countdown";
 import { Poster } from "@/components/poster";
 import { StatusBadge } from "@/components/status-badge";
 import { eventCities, eventDateRange, priceRange } from "@/lib/format";
@@ -55,6 +56,17 @@ export function EventCard({ event }: { event: KayalEvent }) {
             {" · "}
             {eventCities(event)}
           </p>
+          {event.status !== "past" && (
+            <Countdown
+              target={
+                [...event.shows].sort((a, b) =>
+                  a.start.localeCompare(b.start)
+                )[0]?.start ?? ""
+              }
+              size="sm"
+              className="mt-1"
+            />
+          )}
           {prices && event.status !== "past" && (
             <p className="text-sm text-sand-muted">Tickets {prices}</p>
           )}
