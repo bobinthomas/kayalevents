@@ -1,0 +1,22 @@
+# Cloudflare Workers secrets — mirror of .env.example for wrangler dev / deploy
+# Copy to .dev.vars and fill in real values (never commit .dev.vars)
+
+# --- Sanity CMS ---
+NEXT_PUBLIC_SANITY_PROJECT_ID=
+NEXT_PUBLIC_SANITY_DATASET=production
+
+# Webhook secret for on-demand revalidation (POST /api/revalidate?secret=...)
+REVALIDATE_SECRET=
+
+# --- Analytics ---
+NEXT_PUBLIC_GA_MEASUREMENT_ID=
+NEXT_PUBLIC_META_PIXEL_ID=
+
+# --- Kayal Insider email capture — Brevo ---
+BREVO_API_KEY=
+BREVO_LIST_ID=
+
+# --- Inquiry email delivery — Resend ---
+RESEND_API_KEY=
+INQUIRY_EMAIL=kayaleventsofficial@gmail.com
+INQUIRY_FROM=Kayal Events <inquiries@kayalevents.com.au>
