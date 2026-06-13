@@ -45,5 +45,6 @@ cloudflare-env.d.ts
 *.tsbuildinfo
 next-env.d.ts
 
-# event photography — large files, served locally or via Sanity/R2 in production
-/public/images/
+# Raw/uncompressed photography originals (keep outside the repo).
+# Compressed web images in public/images/ ARE committed (27 MB total, fine for git).
+# Run `npm run images:compress` after adding new raw photos.
