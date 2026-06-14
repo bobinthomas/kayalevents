@@ -1,19 +1,13 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import {
-  animate,
-  motion,
-  useInView,
-  useMotionValue,
-  useReducedMotion,
-  useTransform,
-} from "framer-motion";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 
-/**
- * Animated number counter. Counts from 0 to `value` when scrolled into view.
- * Respects prefers-reduced-motion — shows final value immediately when set.
- */
+function subscribeMotion(cb: () => void) {
+  const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+  mq.addEventListener("change", cb);
+  return () => mq.removeEventListener("change", cb);
+}
+
 export function StatCounter({
   value,
   suffix = "",
@@ -24,26 +18,44 @@ export function StatCounter({
   prefix?: string;
 }) {
   const ref = useRef<HTMLSpanElement>(null);
-  const shouldReduce = useReducedMotion();
-  const inView = useInView(ref, { once: true, margin: "0px 0px -60px 0px" });
+  const [inView, setInView] = useState(false);
+  const [display, setDisplay] = useState(0);
 
-  const motionValue = useMotionValue(shouldReduce ? value : 0);
-  const rounded = useTransform(motionValue, (v) => Math.round(v).toLocaleString());
+  const shouldReduce = useSyncExternalStore(
+    subscribeMotion,
+    () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+    () => true,
+  );
 
   useEffect(() => {
-    if (!inView || shouldReduce) return;
-    const controls = animate(motionValue, value, {
-      duration: 2.2,
-      ease: [0.22, 1, 0.36, 1],
-    });
-    return () => controls.stop();
-  }, [inView, value, shouldReduce, motionValue]);
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setInView(true); obs.disconnect(); } },
+      { rootMargin: "0px 0px -60px 0px" },
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!inView || shouldReduce) { setDisplay(value); return; }
+    const duration = 2200;
+    const start = performance.now();
+    let raf: number;
+    const tick = (now: number) => {
+      const t = Math.min((now - start) / duration, 1);
+      const ease = 1 - Math.pow(1 - t, 3);
+      setDisplay(Math.round(ease * value));
+      if (t < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [inView, value, shouldReduce]);
 
   return (
     <span ref={ref} className="tabular-nums">
-      {prefix}
-      <motion.span>{rounded}</motion.span>
-      {suffix}
+      {prefix}{display.toLocaleString()}{suffix}
     </span>
   );
 }

@@ -1,37 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import { motion, useReducedMotion } from "framer-motion";
+import { useSyncExternalStore } from "react";
 import { StatusBadge } from "@/components/status-badge";
 import type { EventStatus } from "@/lib/types";
 
-const WORD_VARIANTS = {
-  hidden: { opacity: 0, y: 36 },
-  visible: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: {
-      delay: 0.3 + i * 0.08,
-      duration: 0.9,
-      ease: [0.22, 1, 0.36, 1] as number[],
-    },
-  }),
-};
+function subscribeMotion(cb: () => void) {
+  const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+  mq.addEventListener("change", cb);
+  return () => mq.removeEventListener("change", cb);
+}
 
-const FADE_UP = (delay: number) => ({
-  hidden: { opacity: 0, y: 12 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { delay, duration: 0.7, ease: [0.22, 1, 0.36, 1] as number[] },
-  },
-});
+function fadeUp(delay: number): React.CSSProperties {
+  return { animation: `kayal-fade-in 0.7s cubic-bezier(0.22,1,0.36,1) ${delay}s both` };
+}
 
-/**
- * Client-only animated hero headline.
- * Words stagger up; supporting text fades in after.
- * Falls back to instant-visible when prefers-reduced-motion is set.
- */
 export function HeroHeadline({
   eyebrow,
   title,
@@ -53,82 +36,61 @@ export function HeroHeadline({
   secondaryHref?: string;
   secondaryLabel?: string;
 }) {
-  const shouldReduce = useReducedMotion();
-  const words = title.split(" ");
+  const shouldReduce = useSyncExternalStore(
+    subscribeMotion,
+    () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+    () => true,
+  );
 
-  const instant = shouldReduce === true;
+  const words = title.split(" ");
+  const a = shouldReduce ? undefined : fadeUp;
 
   return (
     <div>
-      {/* Status badge or eyebrow label */}
       {status ? (
-        <motion.div
-          variants={instant ? {} : FADE_UP(0.1)}
-          initial={instant ? false : "hidden"}
-          animate="visible"
-        >
+        <div className="kayal-anim" style={a ? a(0.1) : undefined}>
           <StatusBadge status={status} />
-        </motion.div>
+        </div>
       ) : eyebrow ? (
-        <motion.p
-          className="eyebrow"
-          variants={instant ? {} : FADE_UP(0.1)}
-          initial={instant ? false : "hidden"}
-          animate="visible"
-        >
+        <p className="eyebrow kayal-anim" style={a ? a(0.1) : undefined}>
           {eyebrow}
-        </motion.p>
+        </p>
       ) : null}
 
-      {/* Staggered headline words */}
       <h1 className="headline mt-5 max-w-4xl text-5xl md:text-8xl">
         {words.map((word, i) => (
-          <motion.span
+          <span
             key={i}
-            className={`mr-[0.22em] inline-block ${
-              i === 0 ? "text-gradient" : "text-sand"
-            }`}
-            custom={i}
-            variants={instant ? {} : WORD_VARIANTS}
-            initial={instant ? false : "hidden"}
-            animate="visible"
+            className={`mr-[0.22em] inline-block kayal-anim${i === 0 ? " text-gradient" : " text-sand"}`}
+            style={
+              shouldReduce
+                ? undefined
+                : {
+                    animation: `kayal-fade-up 0.9s cubic-bezier(0.22,1,0.36,1) ${0.3 + i * 0.08}s both`,
+                  }
+            }
           >
             {word}
-          </motion.span>
+          </span>
         ))}
       </h1>
 
-      {/* Meta (date · cities) */}
       {meta && (
-        <motion.p
-          className="mt-5 text-sm uppercase tracking-[0.22em] text-lagoon"
-          variants={instant ? {} : FADE_UP(0.85)}
-          initial={instant ? false : "hidden"}
-          animate="visible"
+        <p
+          className="mt-5 text-sm uppercase tracking-[0.22em] text-lagoon kayal-anim"
+          style={a ? a(0.85) : undefined}
         >
           {meta}
-        </motion.p>
+        </p>
       )}
 
-      {/* Tagline */}
       {tagline && (
-        <motion.p
-          className="mt-3 max-w-xl text-lg text-sand-muted"
-          variants={instant ? {} : FADE_UP(0.95)}
-          initial={instant ? false : "hidden"}
-          animate="visible"
-        >
+        <p className="mt-3 max-w-xl text-lg text-sand-muted kayal-anim" style={a ? a(0.95) : undefined}>
           {tagline}
-        </motion.p>
+        </p>
       )}
 
-      {/* CTAs */}
-      <motion.div
-        className="mt-8 flex flex-wrap gap-4"
-        variants={instant ? {} : FADE_UP(1.05)}
-        initial={instant ? false : "hidden"}
-        animate="visible"
-      >
+      <div className="mt-8 flex flex-wrap gap-4 kayal-anim" style={a ? a(1.05) : undefined}>
         <Link
           href={primaryHref}
           className="coral-glow inline-flex items-center justify-center rounded-full bg-coral px-8 py-3.5 text-sm font-semibold tracking-wide text-sand transition-all duration-200 hover:scale-[1.03] hover:bg-coral-bright"
@@ -143,7 +105,7 @@ export function HeroHeadline({
             {secondaryLabel}
           </Link>
         )}
-      </motion.div>
+      </div>
     </div>
   );
 }

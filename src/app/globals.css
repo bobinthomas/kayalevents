@@ -273,6 +273,20 @@ body {
   50%       { transform: scale(1.4); opacity: 0.6; }
 }
 
+@keyframes kayal-fade-up {
+  from { opacity: 0; transform: translateY(36px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes kayal-fade-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kayal-anim { animation: none !important; opacity: 1 !important; transform: none !important; }
+}
+
 /* ─────────────────────────────────────────────────────────────
    ANIMATION UTILITY CLASSES
    ───────────────────────────────────────────────────────────── */
