@@ -10,7 +10,8 @@
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
-    "images:compress": "node scripts/compress-images.mjs"
+    "images:compress": "node scripts/compress-images.mjs",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@keystatic/core": "^0.5.50",
@@ -30,6 +31,7 @@
     "esbuild": "^0.27.0",
     "eslint": "^9",
     "eslint-config-next": "16.2.9",
+    "patch-package": "^8.0.1",
     "tailwindcss": "^4",
     "typescript": "^5",
     "wrangler": "^4.100.0"

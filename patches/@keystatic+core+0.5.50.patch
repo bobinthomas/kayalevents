@@ -1,0 +1,115 @@
+diff --git a/node_modules/@keystatic/core/dist/keystatic-core-api-generic.js b/node_modules/@keystatic/core/dist/keystatic-core-api-generic.js
+index aabdb1a..144ab1e 100644
+--- a/node_modules/@keystatic/core/dist/keystatic-core-api-generic.js
++++ b/node_modules/@keystatic/core/dist/keystatic-core-api-generic.js
+@@ -1,4 +1,4 @@
+-import * as cookie from 'cookie';
++﻿import * as cookie from 'cookie';
+ import * as s from 'superstruct';
+ import { c as base64UrlEncode, a as base64UrlDecode, d as bytesToHex } from './base64-3538d789.js';
+ 
+@@ -186,9 +186,9 @@ function makeGenericAPIRouteHandler(_config, options) {
+ }
+ const tokenDataResultType = s.type({
+   access_token: s.string(),
+-  expires_in: s.number(),
+-  refresh_token: s.string(),
+-  refresh_token_expires_in: s.number(),
++  expires_in: s.optional(s.number()),
++  refresh_token: s.optional(s.string()),
++  refresh_token_expires_in: s.optional(s.number()),
+   scope: s.string(),
+   token_type: s.literal('bearer')
+ });
+diff --git a/node_modules/@keystatic/core/dist/keystatic-core-api-generic.node.js b/node_modules/@keystatic/core/dist/keystatic-core-api-generic.node.js
+index b4c82e2..e1608b2 100644
+--- a/node_modules/@keystatic/core/dist/keystatic-core-api-generic.node.js
++++ b/node_modules/@keystatic/core/dist/keystatic-core-api-generic.node.js
+@@ -1,4 +1,4 @@
+-import * as cookie from 'cookie';
++﻿import * as cookie from 'cookie';
+ import * as s from 'superstruct';
+ import path from 'node:path';
+ import fs from 'node:fs/promises';
+@@ -389,9 +389,9 @@ function makeGenericAPIRouteHandler(_config, options) {
+ }
+ const tokenDataResultType = s.type({
+   access_token: s.string(),
+-  expires_in: s.number(),
+-  refresh_token: s.string(),
+-  refresh_token_expires_in: s.number(),
++  expires_in: s.optional(s.number()),
++  refresh_token: s.optional(s.string()),
++  refresh_token_expires_in: s.optional(s.number()),
+   scope: s.string(),
+   token_type: s.literal('bearer')
+ });
+diff --git a/node_modules/@keystatic/core/dist/keystatic-core-api-generic.node.react-server.js b/node_modules/@keystatic/core/dist/keystatic-core-api-generic.node.react-server.js
+index fb21fd0..793570e 100644
+--- a/node_modules/@keystatic/core/dist/keystatic-core-api-generic.node.react-server.js
++++ b/node_modules/@keystatic/core/dist/keystatic-core-api-generic.node.react-server.js
+@@ -1,4 +1,4 @@
+-import * as cookie from 'cookie';
++﻿import * as cookie from 'cookie';
+ import * as s from 'superstruct';
+ import path from 'node:path';
+ import fs from 'node:fs/promises';
+@@ -389,9 +389,9 @@ function makeGenericAPIRouteHandler(_config, options) {
+ }
+ const tokenDataResultType = s.type({
+   access_token: s.string(),
+-  expires_in: s.number(),
+-  refresh_token: s.string(),
+-  refresh_token_expires_in: s.number(),
++  expires_in: s.optional(s.number()),
++  refresh_token: s.optional(s.string()),
++  refresh_token_expires_in: s.optional(s.number()),
+   scope: s.string(),
+   token_type: s.literal('bearer')
+ });
+diff --git a/node_modules/@keystatic/core/dist/keystatic-core-api-generic.react-server.js b/node_modules/@keystatic/core/dist/keystatic-core-api-generic.react-server.js
+index 2246207..541e6a5 100644
+--- a/node_modules/@keystatic/core/dist/keystatic-core-api-generic.react-server.js
++++ b/node_modules/@keystatic/core/dist/keystatic-core-api-generic.react-server.js
+@@ -1,4 +1,4 @@
+-import * as cookie from 'cookie';
++﻿import * as cookie from 'cookie';
+ import * as s from 'superstruct';
+ 
+ function bytesToHex(bytes) {
+@@ -205,9 +205,9 @@ function makeGenericAPIRouteHandler(_config, options) {
+ }
+ const tokenDataResultType = s.type({
+   access_token: s.string(),
+-  expires_in: s.number(),
+-  refresh_token: s.string(),
+-  refresh_token_expires_in: s.number(),
++  expires_in: s.optional(s.number()),
++  refresh_token: s.optional(s.string()),
++  refresh_token_expires_in: s.optional(s.number()),
+   scope: s.string(),
+   token_type: s.literal('bearer')
+ });
+diff --git a/node_modules/@keystatic/core/dist/keystatic-core-api-generic.worker.js b/node_modules/@keystatic/core/dist/keystatic-core-api-generic.worker.js
+index 2246207..541e6a5 100644
+--- a/node_modules/@keystatic/core/dist/keystatic-core-api-generic.worker.js
++++ b/node_modules/@keystatic/core/dist/keystatic-core-api-generic.worker.js
+@@ -1,4 +1,4 @@
+-import * as cookie from 'cookie';
++﻿import * as cookie from 'cookie';
+ import * as s from 'superstruct';
+ 
+ function bytesToHex(bytes) {
+@@ -205,9 +205,9 @@ function makeGenericAPIRouteHandler(_config, options) {
+ }
+ const tokenDataResultType = s.type({
+   access_token: s.string(),
+-  expires_in: s.number(),
+-  refresh_token: s.string(),
+-  refresh_token_expires_in: s.number(),
++  expires_in: s.optional(s.number()),
++  refresh_token: s.optional(s.string()),
++  refresh_token_expires_in: s.optional(s.number()),
+   scope: s.string(),
+   token_type: s.literal('bearer')
+ });
