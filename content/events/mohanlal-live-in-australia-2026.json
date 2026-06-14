@@ -1,13 +1,14 @@
 {
+  "slug": "mohanlal-live-in-australia-2026",
   "title": "Mohanlal Live in Australia",
   "artists": [
     "Mohanlal"
   ],
   "tagline": "The Complete Actor. One unforgettable night.",
-  "description": "For the first time on Australian soil, the legend of Malayalam cinema takes the stage. An evening of cinema, conversation and celebration with Padma Bhushan Mohanlal — a once-in-a-generation event for the South Indian community in Australia. Produced end-to-end by Kayal Events with full concert-grade staging, sound and lighting.",
+  "description": "For the first time on Australian soil, the legend of Malayalam cinema takes the stage. An evening of cinema, conversation and celebration with Padma Bhushan Mohanlal - a once-in-a-generation event for the South Indian community in Australia. Produced end-to-end by Kayal Events with full concert-grade staging, sound and lighting.",
   "status": "on-sale",
-  "heroImage": "/images/mohanlal-live-in-australia-2026/heroImage.jpg",
-  "posterImage": "/images/mohanlal-live-in-australia-2026/posterImage.jpg",
+  "heroImage": "/images/048A0938.jpg",
+  "posterImage": "/images/048A1047.jpg",
   "shows": [
     {
       "city": "Melbourne",
@@ -18,17 +19,29 @@
     },
     {
       "city": "Sydney",
-      "venue": "Sydney Olympic Park — Quaycentre",
+      "venue": "Sydney Olympic Park - Quaycentre",
       "start": "2026-09-13T19:00:00+10:00",
       "ticketUrl": "https://www.trybooking.com/",
       "soldOut": false
     }
   ],
   "ticketTiers": [
-    { "name": "Platinum", "price": "$249" },
-    { "name": "Gold", "price": "$149" },
-    { "name": "Silver", "price": "$99" },
-    { "name": "General Admission", "price": "$69" }
+    {
+      "name": "Platinum",
+      "price": "$249"
+    },
+    {
+      "name": "Gold",
+      "price": "$149"
+    },
+    {
+      "name": "Silver",
+      "price": "$99"
+    },
+    {
+      "name": "General Admission",
+      "price": "$69"
+    }
   ],
   "ageRestriction": "All ages. Under 15s must be accompanied by an adult.",
   "entryConditions": [

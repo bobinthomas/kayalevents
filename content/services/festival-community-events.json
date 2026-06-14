@@ -1,11 +1,12 @@
 {
+  "slug": "festival-community-events",
   "title": "Festival & Community Events",
   "order": 4,
-  "description": "Onam, Vishu, Diwali and community celebrations at scale — family-friendly programming, food and stall coordination, crowd management, and production that honours the tradition.",
+  "description": "Onam, Vishu, Diwali and community celebrations at scale - family-friendly programming, food and stall coordination, crowd management, and production that honours the tradition.",
   "highlights": [
     "Festival programming and artist booking",
     "Food, stalls and vendor coordination",
     "Crowd management and compliance",
-    "Family and kids' activity zones"
+    "Family and kids activity zones"
   ]
 }

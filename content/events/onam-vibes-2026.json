@@ -1,14 +1,15 @@
 {
+  "slug": "onam-vibes-2026",
   "title": "Onam Vibes",
   "artists": [
     "Siddharth Menon",
     "Zeba Tommy"
   ],
-  "tagline": "ft. Siddharth Menon & Zeba Tommy — a festival night of music",
-  "description": "Kerala's harvest festival meets a full live band. Siddharth Menon and Zeba Tommy headline a night of Malayalam favourites, folk fusion and festival energy — sadhya flavours, pookalam colours, and a dance floor that doesn't stop. Kayal Events' signature Onam celebration returns, bigger than ever.",
+  "tagline": "ft. Siddharth Menon & Zeba Tommy - a festival night of music",
+  "description": "Kerala harvest festival meets a full live band. Siddharth Menon and Zeba Tommy headline a night of Malayalam favourites, folk fusion and festival energy - sadhya flavours, pookalam colours, and a dance floor that does not stop. Kayal Events signature Onam celebration returns, bigger than ever.",
   "status": "selling-fast",
-  "heroImage": "/images/onam-vibes-2026/heroImage.jpg",
-  "posterImage": "/images/onam-vibes-2026/posterImage.jpg",
+  "heroImage": "/images/048A0451.jpg",
+  "posterImage": "/images/048A0695.jpg",
   "shows": [
     {
       "city": "Melbourne",
@@ -32,7 +33,7 @@
       "price": "$59"
     }
   ],
-  "ageRestriction": "All ages welcome — a family festival night.",
+  "ageRestriction": "All ages welcome - a family festival night.",
   "entryConditions": [
     "Doors open at 5:30pm. Sadhya service for VIP ticket holders from 6:00pm.",
     "Traditional dress encouraged."
@@ -44,12 +45,12 @@
     },
     {
       "question": "Is the event family-friendly?",
-      "answer": "Yes — Onam Vibes is an all-ages community celebration with activities for kids before the main show."
+      "answer": "Yes - Onam Vibes is an all-ages community celebration with activities for kids before the main show."
     }
   ],
   "featured": false,
   "heroHeadline": "Onam Vibes 2026",
-  "heroSubcopy": "ft. Siddharth Menon & Zeba Tommy — a festival night of music",
+  "heroSubcopy": "ft. Siddharth Menon & Zeba Tommy - a festival night of music",
   "heroCtaLabel": "Buy Tickets",
   "heroCtaUrl": "https://www.trybooking.com/",
   "heroOrder": 2
