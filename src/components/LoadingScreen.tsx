@@ -3,6 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 
+// Resets on every hard page load; prevents re-play on SPA navigation only
+let introPlayed = false;
+
 /**
  * Kayal Events — intro / loading screen.
  * Plays once per browser session: big division words cycle, the logo self-draws,
@@ -32,13 +35,16 @@ const CSS = `
 .kayal-intro .ki-center{display:flex;align-items:center;justify-content:center;width:min(74%,700px);will-change:transform;}
 .kayal-intro .ki-logo{width:100%;filter:drop-shadow(0 16px 46px rgba(0,0,0,.5));}
 .kayal-intro .ki-logo svg{width:100%;height:auto;display:block;overflow:visible;}
-.kayal-intro .ki-words{position:absolute;left:0;right:0;top:50%;margin-top:58px;display:flex;flex-wrap:wrap;
+.kayal-intro .ki-words{position:absolute;left:0;right:0;top:50%;margin-top:100px;display:flex;flex-wrap:wrap;
   justify-content:center;align-items:center;gap:12px 30px;padding:0 28px;pointer-events:none;}
 .kayal-intro .ki-words .ki-word{display:inline-flex;gap:.14em;color:#E6DABA;
   font:300 clamp(11px,1.45vw,15px)/1.05 'Montserrat',-apple-system,"Helvetica Neue",Helvetica,Arial,sans-serif;
   text-transform:uppercase;white-space:nowrap;}
 .kayal-intro .ki-words .ki-cmask{display:inline-block;overflow:hidden;}
 .kayal-intro .ki-words .ki-char{display:inline-block;will-change:transform;}
+.kayal-intro .ki-bigwords{visibility:hidden;}
+.kayal-intro .ki-center{visibility:hidden;}
+.kayal-intro .ki-words{visibility:hidden;}
 `;
 
 export default function LoadingScreen({ oncePerSession = true }: { oncePerSession?: boolean }) {
@@ -46,8 +52,8 @@ export default function LoadingScreen({ oncePerSession = true }: { oncePerSessio
   const rootRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    // Skip if already shown this session
-    if (oncePerSession && typeof window !== "undefined" && sessionStorage.getItem("kayalIntroSeen")) {
+    // Skip if already played during this page session (module-level flag resets on hard reload)
+    if (oncePerSession && introPlayed) {
       setHidden(true);
       return;
     }
@@ -56,7 +62,7 @@ export default function LoadingScreen({ oncePerSession = true }: { oncePerSessio
 
     document.body.style.overflow = "hidden";
     const finish = () => {
-      try { sessionStorage.setItem("kayalIntroSeen", "1"); } catch {}
+      introPlayed = true;
       document.body.style.overflow = "";
       setHidden(true);
     };
@@ -123,6 +129,15 @@ export default function LoadingScreen({ oncePerSession = true }: { oncePerSessio
       gsap.set(center, { y: 0, scale: 1, transformOrigin: "50% 50%" });
       bigWords.forEach((chs) => gsap.set(chs, { yPercent: 120 }));
       gsap.set(smallChars, { yPercent: 120 });
+
+      // All content is now primed invisible by GSAP — safe to unhide the containers.
+      // The dark background was already visible; nothing will flash.
+      const bwEl = root.querySelector(".ki-bigwords") as HTMLElement | null;
+      const cnEl = root.querySelector(".ki-center") as HTMLElement | null;
+      const kwEl = root.querySelector(".ki-words") as HTMLElement | null;
+      if (bwEl) bwEl.style.visibility = "visible";
+      if (cnEl) cnEl.style.visibility = "visible";
+      if (kwEl) kwEl.style.visibility = "visible";
 
       if (reduce) {
         items.forEach((o) => gsap.set(o.p, { fillOpacity: 1, strokeOpacity: 0, strokeDashoffset: 0 }));
