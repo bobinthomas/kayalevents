@@ -9,7 +9,15 @@ import type {
 } from '@/lib/types'
 import keystaticConfig from '../../keystatic.config'
 
-const reader = createReader(process.cwd(), keystaticConfig)
+// createReader uses fs at runtime — guard for environments without a filesystem
+// (e.g. Cloudflare Workers). All content functions fall back to seed data on error.
+/* eslint-disable @typescript-eslint/no-explicit-any */
+let reader: any = null
+try {
+  reader = createReader(process.cwd(), keystaticConfig)
+} catch {
+  // fs not available; seed fallback applies in every content function below
+}
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -65,11 +73,11 @@ function mapCaseStudy(slug: string, c: any): CaseStudy {
 
 export async function getEvents(): Promise<KayalEvent[]> {
   try {
-    const entries = await reader.collections.events.all()
-    if (entries.length > 0) {
+    const entries = await reader?.collections.events.all()
+    if (entries?.length) {
       return entries
-        .map(({ slug, entry }) => mapEvent(slug, entry))
-        .sort((a, b) => {
+        .map(({ slug, entry }: any) => mapEvent(slug, entry))
+        .sort((a: any, b: any) => {
           const aStart = a.shows[0]?.start ?? ''
           const bStart = b.shows[0]?.start ?? ''
           return aStart.localeCompare(bStart)
@@ -91,7 +99,7 @@ export async function getPastEvents(): Promise<KayalEvent[]> {
 
 export async function getEvent(slug: string): Promise<KayalEvent | null> {
   try {
-    const entry = await reader.collections.events.read(slug)
+    const entry = await reader?.collections.events.read(slug)
     if (entry) return mapEvent(slug, entry)
   } catch (err) {
     console.error('[content] getEvent failed:', err)
@@ -106,11 +114,11 @@ export async function getFeaturedEvent(): Promise<KayalEvent | null> {
 
 export async function getCaseStudies(): Promise<CaseStudy[]> {
   try {
-    const entries = await reader.collections.caseStudies.all()
-    if (entries.length > 0) {
+    const entries = await reader?.collections.caseStudies.all()
+    if (entries?.length) {
       return entries
-        .map(({ slug, entry }) => mapCaseStudy(slug, entry))
-        .sort((a, b) => b.year.localeCompare(a.year))
+        .map(({ slug, entry }: any) => mapCaseStudy(slug, entry))
+        .sort((a: any, b: any) => b.year.localeCompare(a.year))
     }
   } catch (err) {
     console.error('[content] getCaseStudies failed:', err)
@@ -120,7 +128,7 @@ export async function getCaseStudies(): Promise<CaseStudy[]> {
 
 export async function getCaseStudy(slug: string): Promise<CaseStudy | null> {
   try {
-    const entry = await reader.collections.caseStudies.read(slug)
+    const entry = await reader?.collections.caseStudies.read(slug)
     if (entry) return mapCaseStudy(slug, entry)
   } catch (err) {
     console.error('[content] getCaseStudy failed:', err)
@@ -130,18 +138,18 @@ export async function getCaseStudy(slug: string): Promise<CaseStudy | null> {
 
 export async function getServices(): Promise<Service[]> {
   try {
-    const entries = await reader.collections.services.all()
-    if (entries.length > 0) {
+    const entries = await reader?.collections.services.all()
+    if (entries?.length) {
       return entries
-        .map(({ slug, entry }) => ({
+        .map(({ slug, entry }: any) => ({
           slug,
           title: entry.title,
           description: entry.description ?? '',
           highlights: entry.highlights ?? [],
-          _order: (entry as any).order ?? 999,
+          _order: entry.order ?? 999,
         }))
-        .sort((a, b) => a._order - b._order)
-        .map(({ _order: _, ...s }) => s as Service)
+        .sort((a: any, b: any) => a._order - b._order)
+        .map(({ _order: _, ...s }: any) => s as Service)
     }
   } catch (err) {
     console.error('[content] getServices failed:', err)
@@ -151,9 +159,9 @@ export async function getServices(): Promise<Service[]> {
 
 export async function getTestimonials(): Promise<Testimonial[]> {
   try {
-    const entries = await reader.collections.testimonials.all()
-    if (entries.length > 0) {
-      return entries.map(({ entry }) => ({
+    const entries = await reader?.collections.testimonials.all()
+    if (entries?.length) {
+      return entries.map(({ entry }: any) => ({
         quote: entry.quote,
         author: entry.author,
         role: entry.role,
@@ -167,7 +175,7 @@ export async function getTestimonials(): Promise<Testimonial[]> {
 
 export async function getSiteSettings(): Promise<SiteSettings> {
   try {
-    const doc = await reader.singletons.siteSettings.read()
+    const doc = await reader?.singletons.siteSettings.read()
     if (doc) {
       return {
         siteName: doc.siteName,
