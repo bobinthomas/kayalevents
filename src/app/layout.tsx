@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { DM_Sans, Fraunces, Montserrat } from "next/font/google";
 import "./globals.css";
 import { getSiteSettings } from "@/lib/content";
-import LoadingScreen from "@/components/LoadingScreen";
 
 const display = Fraunces({
   variable: "--font-display",
@@ -52,7 +51,6 @@ export default function RootLayout({
   return (
     <html lang="en-AU" className={`${display.variable} ${body.variable} ${montserrat.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col">
-        <LoadingScreen />
         {children}
       </body>
     </html>
