@@ -1,5 +1,5 @@
 import sharp from "sharp";
-import { readdir, stat, rename, writeFile } from "fs/promises";
+import { readdir, stat, rename } from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -9,12 +9,25 @@ const dir = path.join(__dirname, "../public/images");
 const MAX_WIDTH = 1920;
 const JPEG_QUALITY = 82;
 
-const files = (await readdir(dir)).filter((f) => /\.(jpe?g)$/i.test(f));
+async function collectJpegs(base) {
+  const entries = await readdir(base, { withFileTypes: true });
+  const files = [];
+  for (const e of entries) {
+    const full = path.join(base, e.name);
+    if (e.isDirectory()) {
+      files.push(...(await collectJpegs(full)));
+    } else if (/\.(jpe?g)$/i.test(e.name)) {
+      files.push(full);
+    }
+  }
+  return files;
+}
+
+const files = await collectJpegs(dir);
 let totalBefore = 0;
 let totalAfter = 0;
 
-for (const file of files) {
-  const fp = path.join(dir, file);
+for (const fp of files) {
   const tmp = fp + ".tmp";
   const before = (await stat(fp)).size;
   totalBefore += before;
@@ -32,10 +45,11 @@ for (const file of files) {
 
   await rename(tmp, fp);
 
+  const rel = path.relative(dir, fp);
   const pct = (((before - after) / before) * 100).toFixed(0);
-  console.log(`${file}: ${(before / 1e6).toFixed(1)}MB → ${(after / 1e6).toFixed(1)}MB (−${pct}%)`);
+  console.log(`${rel}: ${(before / 1e6).toFixed(1)}MB → ${(after / 1e6).toFixed(1)}MB (−${pct}%)`);
 }
 
 console.log(
-  `\nTotal: ${(totalBefore / 1e9).toFixed(2)} GB → ${(totalAfter / 1e6).toFixed(0)} MB`
+  `\nTotal: ${(totalBefore / 1e6).toFixed(0)} MB → ${(totalAfter / 1e6).toFixed(0)} MB`
 );

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -44,12 +45,15 @@ export function Header() {
           scrolled ? "h-14 md:h-16" : "h-16 md:h-20"
         }`}
       >
-        <Link
-          href="/"
-          className="font-display text-xl tracking-wide text-sand md:text-2xl"
-          aria-label="Kayal Events — home"
-        >
-          KAYAL<span className="text-lagoon"> EVENTS</span>
+        <Link href="/" aria-label="Kayal Events — home" className="flex items-center">
+          <Image
+            src="/kayal-events-logo.svg"
+            alt="Kayal Events"
+            width={160}
+            height={86}
+            priority
+            className="h-9 w-auto md:h-10"
+          />
         </Link>
 
         {/* Desktop nav */}

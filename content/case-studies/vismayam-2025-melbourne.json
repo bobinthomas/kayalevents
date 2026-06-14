@@ -1,0 +1,29 @@
+{
+  "title": "Vismayam 2025",
+  "year": "2025",
+  "summary": "A sold-out night of Malayalam music and dance that became Melbourne's largest Kerala community event of the year.",
+  "description": "Vismayam brought a 12-piece live band, classical and cinematic dance ensembles, and full theatrical production design to a 2,400-capacity venue. Kayal Events handled artist logistics from Kochi to Melbourne, staging, ticketing strategy and a marketing campaign that sold out fourteen days before doors.",
+  "heroImage": "/images/048A0374.jpg",
+  "stats": [
+    { "label": "Attendance", "value": "2,400" },
+    { "label": "Sold out", "value": "14 days early" },
+    { "label": "Artists flown in", "value": "18" },
+    { "label": "Production crew", "value": "40+" }
+  ],
+  "gallery": [
+    { "src": "/images/048A0207.jpg", "alt": "Venue during doors-open — audience taking their seats" },
+    { "src": "/images/048A0226.jpg", "alt": "Stage and production setup before the show" },
+    { "src": "/images/048A0236.jpg", "alt": "Female vocalist performing in traditional Kerala attire" },
+    { "src": "/images/048A0253.jpg", "alt": "Artist performing to the early crowd" },
+    { "src": "/images/048A0261.jpg", "alt": "Live band in full flight mid-set" },
+    { "src": "/images/048A0313.jpg", "alt": "Lead vocalist performing with the 12-piece live band" },
+    { "src": "/images/048A0331.jpg", "alt": "Stage performance under warm concert lighting" },
+    { "src": "/images/048A1000.jpg", "alt": "Audience fully engaged during the concert finale" }
+  ],
+  "videoUrl": "",
+  "testimonial": {
+    "quote": "Kayal ran our biggest community night flawlessly — artists, staging, ticketing, everything. It felt like a film premiere, not a function.",
+    "author": "Anoop Krishnan",
+    "role": "President, Melbourne Malayalee Association"
+  }
+}

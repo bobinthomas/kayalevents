@@ -1,6 +1,5 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { Countdown } from "@/components/countdown";
 import { Poster } from "@/components/poster";
@@ -83,7 +82,7 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
 
   return (
     <section
-      className="relative -mt-16 md:-mt-20"
+      className="relative -mt-16 overflow-hidden md:-mt-20"
       aria-label="Featured events"
       aria-roledescription="carousel"
       onMouseEnter={() => setPaused(true)}
@@ -134,32 +133,18 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
       {/* Lagoon ambient ripple */}
       <div className="hero-ripple pointer-events-none absolute inset-0" aria-hidden="true" />
 
-      {/* Slide content — AnimatePresence cross-fade on slide change */}
+      {/* Slide content */}
       <div className="relative mx-auto flex min-h-dvh max-w-6xl flex-col justify-end px-5 pb-20 pt-36 md:px-8 md:pb-28">
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.div
+          <div
             key={`content-${slide.id}`}
             role="group"
             aria-roledescription="slide"
             aria-label={`${current + 1} of ${count}: ${slide.heroHeadline}`}
-            initial={shouldReduce ? {} : { opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={shouldReduce ? {} : { opacity: 0, y: -8 }}
-            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
           >
             {slide.status && <StatusBadge status={slide.status} />}
 
-            <h1 className="headline mt-5 max-w-4xl text-5xl md:text-8xl">
-              {slide.heroHeadline.split(" ").map((word, i) => (
-                <span
-                  key={i}
-                  className={`mr-[0.22em] inline-block ${
-                    i === 0 ? "text-gradient" : "text-sand"
-                  }`}
-                >
-                  {word}
-                </span>
-              ))}
+            <h1 className="headline mt-5 max-w-4xl text-5xl text-sand md:text-8xl">
+              {slide.heroHeadline}
             </h1>
 
             {slide.heroSubcopy && (
@@ -244,8 +229,7 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
                 </div>
               </div>
             )}
-          </motion.div>
-        </AnimatePresence>
+          </div>
       </div>
 
       {/* Prev / Next buttons (desktop only; mobile uses swipe) */}

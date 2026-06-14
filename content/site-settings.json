@@ -1,0 +1,17 @@
+{
+  "siteName": "Kayal Events",
+  "tagline": "Australia's home of South Indian live entertainment",
+  "email": "kayaleventsofficial@gmail.com",
+  "phone": "+61450250111",
+  "phoneDisplay": "+61 450 250 111",
+  "whatsapp": "61450250111",
+  "instagram": "https://www.instagram.com/kayalevents",
+  "facebook": "",
+  "baseUrl": "https://kayalevents.com.au",
+  "heroImage": "/images/048A0885.jpg",
+  "heroVideo": "",
+  "fallbackHeroHeadline": "Australia's home of South Indian live entertainment",
+  "fallbackHeroSubcopy": "Concerts, national tours, corporate galas and festivals — produced end to end.",
+  "fallbackHeroCtaLabel": "Explore Events",
+  "fallbackHeroCtaUrl": "/events"
+}

@@ -1,0 +1,29 @@
+{
+  "title": "Thiruvathira National Tour",
+  "year": "2024",
+  "summary": "A four-city national tour — Melbourne, Sydney, Brisbane, Perth — featuring headline playback singers from Kerala.",
+  "description": "Kayal Events routed, produced and promoted a four-city Australian tour for a headline Malayalam playback lineup: inter-state logistics, four venue contracts, local crews in every city, and a unified national marketing campaign that delivered 7,800 total tickets.",
+  "heroImage": "/images/048A0761.jpg",
+  "stats": [
+    { "label": "Cities", "value": "4" },
+    { "label": "Total attendance", "value": "7,800" },
+    { "label": "Tour duration", "value": "10 days" },
+    { "label": "Sell-through", "value": "92%" }
+  ],
+  "gallery": [
+    { "src": "/images/048A0630.jpg", "alt": "Opening night — full stage lineup under pink lights" },
+    { "src": "/images/048A0631.jpg", "alt": "Artists performing together on stage" },
+    { "src": "/images/048A0632.jpg", "alt": "Concert production with full LED lighting rig" },
+    { "src": "/images/048A0633.jpg", "alt": "Multiple performers during the ensemble number" },
+    { "src": "/images/048A0634.jpg", "alt": "Band in full flight during the headline set" },
+    { "src": "/images/048A0639.jpg", "alt": "Artists performing under dramatic stage spotlights" },
+    { "src": "/images/048A0643.jpg", "alt": "Full stage panoramic during the show" },
+    { "src": "/images/048A0649.jpg", "alt": "Closing moments of the concert with all artists" }
+  ],
+  "videoUrl": "",
+  "testimonial": {
+    "quote": "Four cities, ten days, zero missed cues. Kayal is the team we trust with our artists in Australia.",
+    "author": "Artist Management Representative",
+    "role": "Kochi, India"
+  }
+}

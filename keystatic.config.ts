@@ -1,0 +1,161 @@
+import { config, collection, singleton, fields } from '@keystatic/core'
+
+export default config({
+  storage: { kind: 'local' },
+
+  collections: {
+    events: collection({
+      label: 'Events',
+      slugField: 'slug',
+      path: 'content/events/*',
+      format: { data: 'json' },
+      schema: {
+        slug: fields.text({ label: 'URL Slug', description: 'URL-safe identifier, e.g. mohanlal-live-2026' }),
+        title: fields.text({ label: 'Title' }),
+        artists: fields.array(
+          fields.text({ label: 'Artist' }),
+          { label: 'Artists', itemLabel: (props) => props.value }
+        ),
+        tagline: fields.text({ label: 'Tagline', validation: { isRequired: false } }),
+        description: fields.text({ label: 'Description', multiline: true }),
+        status: fields.select({
+          label: 'Status',
+          options: [
+            { label: 'On Sale', value: 'on-sale' },
+            { label: 'Selling Fast', value: 'selling-fast' },
+            { label: 'Sold Out', value: 'sold-out' },
+            { label: 'Past', value: 'past' },
+          ],
+          defaultValue: 'on-sale',
+        }),
+        heroImage: fields.image({ label: 'Hero Image', directory: 'public/images', publicPath: '/images/', validation: { isRequired: false } }),
+        posterImage: fields.image({ label: 'Poster Image', directory: 'public/images', publicPath: '/images/', validation: { isRequired: false } }),
+        shows: fields.array(
+          fields.object({
+            city: fields.text({ label: 'City' }),
+            venue: fields.text({ label: 'Venue' }),
+            start: fields.text({ label: 'Date/Time (ISO 8601)' }),
+            ticketUrl: fields.text({ label: 'Ticket URL', validation: { isRequired: false } }),
+            soldOut: fields.checkbox({ label: 'Sold Out', defaultValue: false }),
+          }),
+          { label: 'Shows' }
+        ),
+        ticketTiers: fields.array(
+          fields.object({
+            name: fields.text({ label: 'Tier Name' }),
+            price: fields.text({ label: 'Price' }),
+          }),
+          { label: 'Ticket Tiers' }
+        ),
+        ageRestriction: fields.text({ label: 'Age Restriction', validation: { isRequired: false } }),
+        entryConditions: fields.array(
+          fields.text({ label: 'Condition' }),
+          { label: 'Entry Conditions', itemLabel: (props) => props.value }
+        ),
+        faqs: fields.array(
+          fields.object({
+            question: fields.text({ label: 'Question' }),
+            answer: fields.text({ label: 'Answer', multiline: true }),
+          }),
+          { label: 'FAQs' }
+        ),
+        featured: fields.checkbox({ label: 'Featured on Homepage', defaultValue: false }),
+        heroHeadline: fields.text({ label: 'Hero Headline', validation: { isRequired: false } }),
+        heroSubcopy: fields.text({ label: 'Hero Subcopy', validation: { isRequired: false } }),
+        heroCtaLabel: fields.text({ label: 'Hero CTA Label', validation: { isRequired: false } }),
+        heroCtaUrl: fields.text({ label: 'Hero CTA URL', validation: { isRequired: false } }),
+        heroOrder: fields.integer({ label: 'Hero Order' }),
+      },
+    }),
+
+    caseStudies: collection({
+      label: 'Portfolio / Case Studies',
+      slugField: 'slug',
+      path: 'content/case-studies/*',
+      format: { data: 'json' },
+      schema: {
+        slug: fields.text({ label: 'URL Slug', description: 'URL-safe identifier, e.g. vismayam-2025' }),
+        title: fields.text({ label: 'Title' }),
+        year: fields.text({ label: 'Year' }),
+        summary: fields.text({ label: 'Summary', multiline: true }),
+        description: fields.text({ label: 'Description', multiline: true }),
+        heroImage: fields.image({ label: 'Hero Image', directory: 'public/images', publicPath: '/images/', validation: { isRequired: false } }),
+        stats: fields.array(
+          fields.object({
+            label: fields.text({ label: 'Label' }),
+            value: fields.text({ label: 'Value' }),
+          }),
+          { label: 'Stats' }
+        ),
+        gallery: fields.array(
+          fields.object({
+            src: fields.image({ label: 'Image', directory: 'public/images', publicPath: '/images/' }),
+            alt: fields.text({ label: 'Alt Text' }),
+          }),
+          { label: 'Gallery' }
+        ),
+        videoUrl: fields.text({ label: 'Video URL', validation: { isRequired: false } }),
+        testimonial: fields.object({
+          quote: fields.text({ label: 'Quote', multiline: true }),
+          author: fields.text({ label: 'Author' }),
+          role: fields.text({ label: 'Role' }),
+        }),
+      },
+    }),
+
+    services: collection({
+      label: 'Services',
+      slugField: 'slug',
+      path: 'content/services/*',
+      format: { data: 'json' },
+      schema: {
+        slug: fields.text({ label: 'URL Slug', description: 'URL-safe identifier, e.g. live-concerts' }),
+        title: fields.text({ label: 'Title' }),
+        order: fields.integer({ label: 'Display Order', description: 'Lower numbers appear first' }),
+        description: fields.text({ label: 'Description', multiline: true }),
+        highlights: fields.array(
+          fields.text({ label: 'Highlight' }),
+          { label: 'Highlights', itemLabel: (props) => props.value }
+        ),
+      },
+    }),
+
+    testimonials: collection({
+      label: 'Testimonials',
+      slugField: 'slug',
+      path: 'content/testimonials/*',
+      format: { data: 'json' },
+      schema: {
+        slug: fields.text({ label: 'Identifier', description: 'URL-safe identifier, e.g. anoop-krishnan' }),
+        author: fields.text({ label: 'Author' }),
+        quote: fields.text({ label: 'Quote', multiline: true }),
+        role: fields.text({ label: 'Role' }),
+      },
+    }),
+  },
+
+  singletons: {
+    siteSettings: singleton({
+      label: 'Site Settings',
+      path: 'content/site-settings',
+      format: { data: 'json' },
+      schema: {
+        siteName: fields.text({ label: 'Site Name' }),
+        tagline: fields.text({ label: 'Tagline' }),
+        email: fields.text({ label: 'Email' }),
+        phone: fields.text({ label: 'Phone' }),
+        phoneDisplay: fields.text({ label: 'Phone Display' }),
+        whatsapp: fields.text({ label: 'WhatsApp Number' }),
+        instagram: fields.text({ label: 'Instagram URL' }),
+        facebook: fields.text({ label: 'Facebook URL', validation: { isRequired: false } }),
+        baseUrl: fields.text({ label: 'Base URL' }),
+        heroImage: fields.image({ label: 'Hero Image', directory: 'public/images', publicPath: '/images/', validation: { isRequired: false } }),
+        heroVideo: fields.text({ label: 'Hero Video Path', validation: { isRequired: false } }),
+        fallbackHeroHeadline: fields.text({ label: 'Fallback Hero Headline', validation: { isRequired: false } }),
+        fallbackHeroSubcopy: fields.text({ label: 'Fallback Hero Subcopy', validation: { isRequired: false } }),
+        fallbackHeroCtaLabel: fields.text({ label: 'Fallback Hero CTA Label', validation: { isRequired: false } }),
+        fallbackHeroCtaUrl: fields.text({ label: 'Fallback Hero CTA URL', validation: { isRequired: false } }),
+      },
+    }),
+  },
+})
