@@ -1,5 +1,3 @@
-export const runtime = 'edge'
-
 export async function GET() {
   return Response.json({
     has_client_id: !!process.env.KEYSTATIC_GITHUB_CLIENT_ID,
