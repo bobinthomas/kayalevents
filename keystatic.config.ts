@@ -1,13 +1,19 @@
 import { config, collection, singleton, fields } from '@keystatic/core'
 
+/**
+ * GitHub storage is the production default (Cloudflare Workers has no filesystem).
+ * Set KEYSTATIC_STORAGE=local in .env.local for offline CMS editing without GitHub.
+ */
+const storage =
+  process.env.KEYSTATIC_STORAGE === 'local'
+    ? ({ kind: 'local' } as const)
+    : ({
+        kind: 'github',
+        repo: 'bobinthomas/kayalevents',
+      } as const)
+
 export default config({
-  storage:
-    process.env.NEXT_PUBLIC_KEYSTATIC_GITHUB_CLIENT_ID
-      ? {
-          kind: 'github',
-          repo: 'bobinthomas/kayalevents',
-        }
-      : { kind: 'local' },
+  storage,
 
   collections: {
     events: collection({

@@ -9,4 +9,8 @@
   "vars": {
     "NEXT_PUBLIC_KEYSTATIC_GITHUB_CLIENT_ID": "Ov23likSh8xSq5c6hudN"
   }
+  // Set these as Wrangler secrets (never commit values):
+  //   KEYSTATIC_GITHUB_CLIENT_SECRET
+  //   KEYSTATIC_SECRET
+  //   KEYSTATIC_GITHUB_TOKEN   (read-only PAT for site content reader)
 }

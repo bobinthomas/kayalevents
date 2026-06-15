@@ -7,6 +7,14 @@ import { WhatsAppButton } from "@/components/whatsapp-button";
 import { getSiteSettings, keystaticReader } from "@/lib/content";
 import { ReaderRefresh } from "@keystatic/next/reader-refresh";
 
+/** ReaderRefresh only works with the local filesystem reader (needs repoPath). */
+const localReader =
+  keystaticReader &&
+  "repoPath" in keystaticReader &&
+  typeof keystaticReader.repoPath === "string"
+    ? keystaticReader
+    : null;
+
 export default async function SiteLayout({
   children,
 }: Readonly<{
@@ -15,7 +23,7 @@ export default async function SiteLayout({
   const settings = await getSiteSettings();
   return (
     <SmoothScroll>
-      {keystaticReader ? <ReaderRefresh reader={keystaticReader} /> : null}
+      {localReader ? <ReaderRefresh reader={localReader} /> : null}
       <LoadingScreen />
       <Header />
       <main className="flex-1 pt-16 md:pt-20">{children}</main>

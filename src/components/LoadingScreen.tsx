@@ -85,6 +85,22 @@ export default function LoadingScreen({ oncePerSession = true }: { oncePerSessio
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+    // getBBox() returns zeros when ancestors are visibility:hidden — unhide for measurement (iOS Safari).
+    const bwEl = root.querySelector(".ki-bigwords") as HTMLElement | null;
+    const cnEl = root.querySelector(".ki-center") as HTMLElement | null;
+    const kwEl = root.querySelector(".ki-words") as HTMLElement | null;
+    if (bwEl) bwEl.style.visibility = "visible";
+    if (cnEl) cnEl.style.visibility = "visible";
+    if (kwEl) kwEl.style.visibility = "visible";
+
+    const pathX = (p: SVGPathElement, index: number) => {
+      try {
+        return p.getBBox().x;
+      } catch {
+        return index;
+      }
+    };
+
     const groupOrder = ["wordmark", "waves", "palmTrunk", "palmFronds", "lagoon", "tm"];
     const cfg: Record<string, { base: number; stagger: number; draw: number; w: number }> = {
       wordmark: { base: 0.15, stagger: 0.13, draw: 0.85, w: 5 },
@@ -103,7 +119,7 @@ export default function LoadingScreen({ oncePerSession = true }: { oncePerSessio
       const grp = logo.querySelector("#" + g);
       if (!grp) return;
       const paths = Array.from(grp.querySelectorAll("path")) as SVGPathElement[];
-      paths.sort((a, b) => a.getBBox().x - b.getBBox().x);
+      paths.sort((a, b) => pathX(a, 0) - pathX(b, 1));
       paths.forEach((p, i) => {
         const fill = p.getAttribute("fill") || "#fff";
         let len = 0; try { len = p.getTotalLength(); } catch { len = 400; }
@@ -128,15 +144,7 @@ export default function LoadingScreen({ oncePerSession = true }: { oncePerSessio
       bigWords.forEach((chs) => gsap.set(chs, { yPercent: 120 }));
       gsap.set(smallChars, { yPercent: 120 });
 
-      // All content is now primed invisible by GSAP — safe to unhide the containers.
-      // The dark background was already visible; nothing will flash.
-      const bwEl = root.querySelector(".ki-bigwords") as HTMLElement | null;
-      const cnEl = root.querySelector(".ki-center") as HTMLElement | null;
-      const kwEl = root.querySelector(".ki-words") as HTMLElement | null;
-      if (bwEl) bwEl.style.visibility = "visible";
-      if (cnEl) cnEl.style.visibility = "visible";
-      if (kwEl) kwEl.style.visibility = "visible";
-
+      // Containers are visible for measurement; GSAP has primed everything invisible.
       if (reduce) {
         items.forEach((o) => gsap.set(o.p, { fillOpacity: 1, strokeOpacity: 0, strokeDashoffset: 0 }));
         gsap.set(center, { y: -64, scale: 0.72 });
