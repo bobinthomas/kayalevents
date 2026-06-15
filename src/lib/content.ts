@@ -1,6 +1,6 @@
 import { connection } from 'next/server'
 import * as seed from '@/data/seed'
-import { keystaticReader } from '@/lib/keystatic-reader'
+import { getKeystaticReader } from '@/lib/keystatic-reader'
 import type {
   CaseStudy,
   KayalEvent,
@@ -9,10 +9,7 @@ import type {
   Testimonial,
 } from '@/lib/types'
 
-export { keystaticReader }
-
-/* eslint-disable @typescript-eslint/no-explicit-any */
-const reader: any = keystaticReader
+export { getKeystaticReader }
 
 /** Opt out of static caching in dev so ReaderRefresh picks up content/ edits. */
 async function ensureFreshInDev() {
@@ -75,6 +72,7 @@ function mapCaseStudy(slug: string, c: any): CaseStudy {
 
 export async function getEvents(): Promise<KayalEvent[]> {
   await ensureFreshInDev()
+  const reader: any = getKeystaticReader()
   try {
     const entries = await reader?.collections.events.all()
     if (entries?.length) {
@@ -102,6 +100,7 @@ export async function getPastEvents(): Promise<KayalEvent[]> {
 
 export async function getEvent(slug: string): Promise<KayalEvent | null> {
   await ensureFreshInDev()
+  const reader: any = getKeystaticReader()
   try {
     const entry = await reader?.collections.events.read(slug)
     if (entry) return mapEvent(slug, entry)
@@ -118,6 +117,7 @@ export async function getFeaturedEvent(): Promise<KayalEvent | null> {
 
 export async function getCaseStudies(): Promise<CaseStudy[]> {
   await ensureFreshInDev()
+  const reader: any = getKeystaticReader()
   try {
     const entries = await reader?.collections.caseStudies.all()
     if (entries?.length) {
@@ -133,6 +133,7 @@ export async function getCaseStudies(): Promise<CaseStudy[]> {
 
 export async function getCaseStudy(slug: string): Promise<CaseStudy | null> {
   await ensureFreshInDev()
+  const reader: any = getKeystaticReader()
   try {
     const entry = await reader?.collections.caseStudies.read(slug)
     if (entry) return mapCaseStudy(slug, entry)
@@ -144,6 +145,7 @@ export async function getCaseStudy(slug: string): Promise<CaseStudy | null> {
 
 export async function getServices(): Promise<Service[]> {
   await ensureFreshInDev()
+  const reader: any = getKeystaticReader()
   try {
     const entries = await reader?.collections.services.all()
     if (entries?.length) {
@@ -171,6 +173,7 @@ export async function getServices(): Promise<Service[]> {
 
 export async function getTestimonials(): Promise<Testimonial[]> {
   await ensureFreshInDev()
+  const reader: any = getKeystaticReader()
   try {
     const entries = await reader?.collections.testimonials.all()
     if (entries?.length) {
@@ -188,6 +191,7 @@ export async function getTestimonials(): Promise<Testimonial[]> {
 
 export async function getSiteSettings(): Promise<SiteSettings> {
   await ensureFreshInDev()
+  const reader: any = getKeystaticReader()
   try {
     const doc = await reader?.singletons.siteSettings.read()
     if (doc) {

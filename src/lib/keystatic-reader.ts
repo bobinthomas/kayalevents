@@ -1,6 +1,7 @@
 import { createReader } from '@keystatic/core/reader'
 import { createGitHubReader } from '@keystatic/core/reader/github'
 import keystaticConfig from '../../keystatic.config'
+import { getRuntimeEnv } from '@/lib/runtime-env'
 
 const REPO = 'bobinthomas/kayalevents' as const
 
@@ -22,14 +23,14 @@ function patchFetchForGitHubApi() {
 }
 
 function createContentReader() {
-  const token = process.env.KEYSTATIC_GITHUB_TOKEN
+  const token = getRuntimeEnv('KEYSTATIC_GITHUB_TOKEN')
 
   if (token) {
     patchFetchForGitHubApi()
     return createGitHubReader(keystaticConfig, { repo: REPO, token })
   }
 
-  if (process.env.KEYSTATIC_GITHUB_CLIENT_ID) {
+  if (getRuntimeEnv('KEYSTATIC_GITHUB_CLIENT_ID')) {
     console.warn(
       '[content] KEYSTATIC_GITHUB_TOKEN is not set — CMS saves go to GitHub but the site reads local content/*.json. Add a read-only GitHub PAT to .env.local and Cloudflare secrets.',
     )
@@ -42,5 +43,12 @@ function createContentReader() {
   }
 }
 
-/** Keystatic reader — GitHub API when token is set, otherwise local filesystem. */
-export const keystaticReader = createContentReader()
+let cachedReader: ReturnType<typeof createContentReader> | undefined
+
+/** Lazy reader — env bindings are only guaranteed at request time on Workers. */
+export function getKeystaticReader() {
+  if (cachedReader === undefined) {
+    cachedReader = createContentReader()
+  }
+  return cachedReader
+}
