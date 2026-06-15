@@ -1,5 +1,6 @@
-import { createReader } from '@keystatic/core/reader'
+import { connection } from 'next/server'
 import * as seed from '@/data/seed'
+import { keystaticReader } from '@/lib/keystatic-reader'
 import type {
   CaseStudy,
   KayalEvent,
@@ -7,20 +8,18 @@ import type {
   SiteSettings,
   Testimonial,
 } from '@/lib/types'
-import keystaticConfig from '../../keystatic.config'
 
-// createReader uses fs at runtime — guard for environments without a filesystem
-// (e.g. Cloudflare Workers). All content functions fall back to seed data on error.
+export { keystaticReader }
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
-let reader: any = null
-try {
-  reader = createReader(process.cwd(), keystaticConfig)
-} catch {
-  // fs not available; seed fallback applies in every content function below
-}
+const reader: any = keystaticReader
 
-/** Exposed for @keystatic/next ReaderRefresh (dev-time CMS → page sync). */
-export const keystaticReader = reader
+/** Opt out of static caching in dev so ReaderRefresh picks up content/ edits. */
+async function ensureFreshInDev() {
+  if (process.env.NODE_ENV === 'development') {
+    await connection()
+  }
+}
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -75,6 +74,7 @@ function mapCaseStudy(slug: string, c: any): CaseStudy {
 }
 
 export async function getEvents(): Promise<KayalEvent[]> {
+  await ensureFreshInDev()
   try {
     const entries = await reader?.collections.events.all()
     if (entries?.length) {
@@ -101,6 +101,7 @@ export async function getPastEvents(): Promise<KayalEvent[]> {
 }
 
 export async function getEvent(slug: string): Promise<KayalEvent | null> {
+  await ensureFreshInDev()
   try {
     const entry = await reader?.collections.events.read(slug)
     if (entry) return mapEvent(slug, entry)
@@ -116,6 +117,7 @@ export async function getFeaturedEvent(): Promise<KayalEvent | null> {
 }
 
 export async function getCaseStudies(): Promise<CaseStudy[]> {
+  await ensureFreshInDev()
   try {
     const entries = await reader?.collections.caseStudies.all()
     if (entries?.length) {
@@ -130,6 +132,7 @@ export async function getCaseStudies(): Promise<CaseStudy[]> {
 }
 
 export async function getCaseStudy(slug: string): Promise<CaseStudy | null> {
+  await ensureFreshInDev()
   try {
     const entry = await reader?.collections.caseStudies.read(slug)
     if (entry) return mapCaseStudy(slug, entry)
@@ -140,6 +143,7 @@ export async function getCaseStudy(slug: string): Promise<CaseStudy | null> {
 }
 
 export async function getServices(): Promise<Service[]> {
+  await ensureFreshInDev()
   try {
     const entries = await reader?.collections.services.all()
     if (entries?.length) {
@@ -166,6 +170,7 @@ export async function getServices(): Promise<Service[]> {
 }
 
 export async function getTestimonials(): Promise<Testimonial[]> {
+  await ensureFreshInDev()
   try {
     const entries = await reader?.collections.testimonials.all()
     if (entries?.length) {
@@ -182,6 +187,7 @@ export async function getTestimonials(): Promise<Testimonial[]> {
 }
 
 export async function getSiteSettings(): Promise<SiteSettings> {
+  await ensureFreshInDev()
   try {
     const doc = await reader?.singletons.siteSettings.read()
     if (doc) {

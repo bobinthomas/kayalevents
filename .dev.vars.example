@@ -1,7 +1,14 @@
 # Cloudflare Workers secrets — mirror of .env.example for wrangler dev / deploy
 # Copy to .dev.vars and fill in real values (never commit .dev.vars)
 
-# --- Sanity CMS ---
+# --- Keystatic CMS ---
+KEYSTATIC_GITHUB_CLIENT_ID=
+KEYSTATIC_GITHUB_CLIENT_SECRET=
+KEYSTATIC_SECRET=
+KEYSTATIC_GITHUB_TOKEN=                    # read-only PAT for content reader on Workers
+NEXT_PUBLIC_KEYSTATIC_GITHUB_CLIENT_ID=
+
+# --- Sanity CMS (legacy) ---
 NEXT_PUBLIC_SANITY_PROJECT_ID=
 NEXT_PUBLIC_SANITY_DATASET=production
 
