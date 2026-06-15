@@ -64,7 +64,10 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
   const onTouchEnd = (e: React.TouchEvent) => {
     if (touchStart === null) return;
     const diff = touchStart - e.changedTouches[0].clientX;
-    if (Math.abs(diff) >= 40) diff > 0 ? next() : prev();
+    if (Math.abs(diff) >= 40) {
+      if (diff > 0) next();
+      else prev();
+    }
     setTouchStart(null);
   };
 

@@ -19,6 +19,9 @@ try {
   // fs not available; seed fallback applies in every content function below
 }
 
+/** Exposed for @keystatic/next ReaderRefresh (dev-time CMS → page sync). */
+export const keystaticReader = reader
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 function mapEvent(slug: string, e: any): KayalEvent {
@@ -146,10 +149,15 @@ export async function getServices(): Promise<Service[]> {
           title: entry.title,
           description: entry.description ?? '',
           highlights: entry.highlights ?? [],
-          _order: entry.order ?? 999,
+          order: entry.order ?? 999,
         }))
-        .sort((a: any, b: any) => a._order - b._order)
-        .map(({ _order: _, ...s }: any) => s as Service)
+        .sort((a, b) => a.order - b.order)
+        .map(({ slug, title, description, highlights }) => ({
+          slug,
+          title,
+          description,
+          highlights,
+        }))
     }
   } catch (err) {
     console.error('[content] getServices failed:', err)

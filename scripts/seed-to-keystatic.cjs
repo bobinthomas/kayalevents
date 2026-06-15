@@ -1,6 +1,6 @@
 ﻿const fs = require('fs');
 const path = require('path');
-const root = 'd:/Kayal/KE/kayalevents/content';
+const root = path.join(__dirname, '..', 'content');
 
 const files = {
   'events/mohanlal-live-in-australia-2026.json': {"slug":"mohanlal-live-in-australia-2026","title":"Mohanlal Live in Australia","artists":["Mohanlal"],"tagline":"The Complete Actor. One unforgettable night.","description":"For the first time on Australian soil, the legend of Malayalam cinema takes the stage. An evening of cinema, conversation and celebration with Padma Bhushan Mohanlal - a once-in-a-generation event for the South Indian community in Australia. Produced end-to-end by Kayal Events with full concert-grade staging, sound and lighting.","status":"on-sale","heroImage":"/images/048A0938.jpg","posterImage":"/images/048A1047.jpg","shows":[{"city":"Melbourne","venue":"Melbourne Convention and Exhibition Centre","start":"2026-09-12T19:00:00+10:00","ticketUrl":"https://www.trybooking.com/","soldOut":false},{"city":"Sydney","venue":"Sydney Olympic Park - Quaycentre","start":"2026-09-13T19:00:00+10:00","ticketUrl":"https://www.trybooking.com/","soldOut":false}],"ticketTiers":[{"name":"Platinum","price":"$249"},{"name":"Gold","price":"$149"},{"name":"Silver","price":"$99"},{"name":"General Admission","price":"$69"}],"ageRestriction":"All ages. Under 15s must be accompanied by an adult.","entryConditions":["Doors open 90 minutes before showtime.","Tickets are non-refundable except as required by Australian Consumer Law.","Professional cameras and recording equipment are not permitted."],"faqs":[{"question":"Will there be a meet and greet?","answer":"A limited Platinum meet-and-greet allocation is available per city. Details are included with Platinum tickets."},{"question":"Is parking available at the venue?","answer":"Both venues offer on-site and nearby paid parking. We recommend public transport on event night."},{"question":"What languages is the show in?","answer":"The evening is presented primarily in Malayalam with English where appropriate."}],"featured":true,"heroHeadline":"Mohanlal Live in Australia","heroSubcopy":"The Complete Actor. One unforgettable night.","heroCtaLabel":"Buy Tickets","heroCtaUrl":"https://www.trybooking.com/","heroOrder":1},
@@ -33,5 +33,7 @@ for (const [file, data] of Object.entries(files)) {
   fs.writeFileSync(fullPath, JSON.stringify(data, null, 2));
   console.log('wrote', file);
 }
-fs.writeFileSync(path.join(root, 'site-settings.json'), JSON.stringify(siteSettings, null, 2));
-console.log('wrote site-settings.json');
+const siteSettingsPath = path.join(root, 'site-settings', 'index.json');
+fs.mkdirSync(path.dirname(siteSettingsPath), { recursive: true });
+fs.writeFileSync(siteSettingsPath, JSON.stringify(siteSettings, null, 2));
+console.log('wrote site-settings/index.json');

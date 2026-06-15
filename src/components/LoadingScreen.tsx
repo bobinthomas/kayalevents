@@ -48,15 +48,13 @@ const CSS = `
 `;
 
 export default function LoadingScreen({ oncePerSession = true }: { oncePerSession?: boolean }) {
-  const [hidden, setHidden] = useState(false);
+  const [hidden, setHidden] = useState(
+    () => Boolean(oncePerSession && introPlayed),
+  );
   const rootRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    // Skip if already played during this page session (module-level flag resets on hard reload)
-    if (oncePerSession && introPlayed) {
-      setHidden(true);
-      return;
-    }
+    if (oncePerSession && introPlayed) return;
     const root = rootRef.current;
     if (!root) return;
 

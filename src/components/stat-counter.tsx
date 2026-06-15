@@ -19,13 +19,15 @@ export function StatCounter({
 }) {
   const ref = useRef<HTMLSpanElement>(null);
   const [inView, setInView] = useState(false);
-  const [display, setDisplay] = useState(0);
+  const [animated, setAnimated] = useState(0);
 
   const shouldReduce = useSyncExternalStore(
     subscribeMotion,
     () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
     () => true,
   );
+
+  const display = !inView ? 0 : shouldReduce ? value : animated;
 
   useEffect(() => {
     const el = ref.current;
@@ -39,14 +41,14 @@ export function StatCounter({
   }, []);
 
   useEffect(() => {
-    if (!inView || shouldReduce) { setDisplay(value); return; }
+    if (!inView || shouldReduce) return;
     const duration = 2200;
     const start = performance.now();
     let raf: number;
     const tick = (now: number) => {
       const t = Math.min((now - start) / duration, 1);
       const ease = 1 - Math.pow(1 - t, 3);
-      setDisplay(Math.round(ease * value));
+      setAnimated(Math.round(ease * value));
       if (t < 1) raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);

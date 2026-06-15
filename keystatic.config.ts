@@ -143,7 +143,7 @@ export default config({
   singletons: {
     siteSettings: singleton({
       label: 'Site Settings',
-      path: 'content/site-settings',
+      path: 'content/site-settings/',
       format: { data: 'json' },
       schema: {
         siteName: fields.text({ label: 'Site Name' }),
