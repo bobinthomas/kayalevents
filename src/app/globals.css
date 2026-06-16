@@ -16,11 +16,11 @@
 
   /* Text */
   --sand: #FBF7EF;
-  --sand-muted: #6b9ab0;
+  --sand-muted: #8ab5cc;
 
   /* Lagoon accent palette */
-  --lagoon-green: #23A455;
-  --lagoon-bright: #2dba62;
+  --lagoon-green: #2dba62;
+  --lagoon-bright: #3fcf72;
   --ocean-blue: #1AA3DC;
   --deep-marine: #0B6FB0;
   --coral: #E8443B;
@@ -186,6 +186,7 @@ body {
    ───────────────────────────────────────────────────────────── */
 
 .coral-glow {
+  cursor: pointer;
   box-shadow:
     0 4px 24px color-mix(in srgb, var(--coral) 40%, transparent),
     0 1px 3px rgba(0, 0, 0, 0.3);
@@ -299,7 +300,7 @@ body {
 
 /* Ken Burns on poster images (applied via className on <img>) */
 .ken-burns {
-  animation: ken-burns 28s ease-in-out infinite alternate;
+  animation: ken-burns 28s linear infinite alternate;
   transform-origin: center center;
 }
 

@@ -42,7 +42,7 @@ export function StatCounter({
 
   useEffect(() => {
     if (!inView || shouldReduce) return;
-    const duration = 2200;
+    const duration = 1400;
     const start = performance.now();
     let raf: number;
     const tick = (now: number) => {
@@ -56,7 +56,7 @@ export function StatCounter({
   }, [inView, value, shouldReduce]);
 
   return (
-    <span ref={ref} className="tabular-nums">
+    <span ref={ref} className="tabular-nums" aria-hidden="true">
       {prefix}{display.toLocaleString()}{suffix}
     </span>
   );

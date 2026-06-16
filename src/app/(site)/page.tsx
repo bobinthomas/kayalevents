@@ -101,6 +101,7 @@ export default async function HomePage() {
   return (
     <div>
       {/* ── HERO CAROUSEL ──────────────────────────────────────── */}
+      <h1 className="sr-only">Kayal Events</h1>
       <HeroCarousel slides={heroSlides} />
 
       {/* ── STATS BAR ────────────────────────────────────────── */}
@@ -190,7 +191,7 @@ export default async function HomePage() {
             </Reveal>
             <div className="mt-10 grid gap-8 md:grid-cols-2">
               {upcoming.slice(0, 2).map((event, i) => (
-                <Reveal key={event.slug} delay={i * 80}>
+                <Reveal key={event.slug} delay={i * 120}>
                   <EventCard event={event} />
                 </Reveal>
               ))}
@@ -218,13 +219,13 @@ export default async function HomePage() {
           </Reveal>
           <div className="mt-10 grid gap-6 md:grid-cols-3">
             {studies.slice(0, 3).map((study, i) => (
-              <Reveal key={study.slug} delay={i * 80}>
+              <Reveal key={study.slug} delay={i * 120}>
                 <Link
                   href={`/portfolio/${study.slug}`}
-                  className="group block overflow-hidden rounded-2xl border border-border bg-surface transition-all duration-300 hover:border-lagoon/40"
+                  className="group block overflow-hidden rounded-2xl border border-border bg-surface transition-all duration-500 hover:border-lagoon/40 hover:shadow-[0_8px_40px_rgba(0,0,0,0.4)]"
                 >
                   <div
-                    className="poster-placeholder aspect-[4/3] transition-transform duration-700 group-hover:scale-[1.02]"
+                    className="poster-placeholder aspect-[4/3] transition-transform duration-500 group-hover:scale-[1.04]"
                     aria-hidden="true"
                   />
                   <div className="p-6">
@@ -252,14 +253,22 @@ export default async function HomePage() {
             </Reveal>
             <div className="mt-10 grid gap-6 md:grid-cols-3">
               {testimonials.slice(0, 3).map((t, i) => (
-                <Reveal key={t.author} delay={i * 80}>
+                <Reveal key={t.author} delay={i * 120}>
                   <figure className="flex h-full flex-col justify-between rounded-2xl border border-border bg-surface p-7 transition-colors hover:border-lagoon/30">
                     <blockquote className="font-display text-lg leading-snug text-sand">
                       &ldquo;{t.quote}&rdquo;
                     </blockquote>
-                    <figcaption className="mt-5 text-sm text-sand-muted">
-                      <span className="font-semibold text-lagoon">{t.author}</span>
-                      {t.role && <> — {t.role}</>}
+                    <figcaption className="mt-5 flex items-center gap-3">
+                      <div
+                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-lagoon/20 text-sm font-semibold text-lagoon"
+                        aria-hidden="true"
+                      >
+                        {t.author.charAt(0)}
+                      </div>
+                      <div className="text-sm text-sand-muted">
+                        <span className="font-semibold text-lagoon">{t.author}</span>
+                        {t.role && <> — {t.role}</>}
+                      </div>
                     </figcaption>
                   </figure>
                 </Reveal>

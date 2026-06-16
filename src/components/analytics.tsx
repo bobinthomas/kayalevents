@@ -1,7 +1,7 @@
 "use client";
 
 import Script from "next/script";
-import { useSyncExternalStore } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
 import {
   getServerConsent,
   getStoredConsent,
@@ -62,6 +62,14 @@ export function ConsentBanner() {
     getStoredConsent,
     getServerConsent
   );
+  const acceptRef = useRef<HTMLButtonElement>(null);
+
+  // Move focus to Accept button when banner appears
+  useEffect(() => {
+    if (consent === null) {
+      acceptRef.current?.focus();
+    }
+  }, [consent]);
 
   // "pending" = server render / pre-hydration; only show once we know
   // there is genuinely no stored choice.
@@ -75,22 +83,24 @@ export function ConsentBanner() {
     <div
       role="dialog"
       aria-label="Cookie consent"
-      className="fixed inset-x-4 bottom-4 z-50 mx-auto max-w-xl rounded-xl border border-ink-border bg-ink-raised/95 p-5 shadow-2xl backdrop-blur"
+      aria-describedby="consent-description"
+      className="fixed inset-x-4 bottom-4 z-50 mx-auto max-w-xl rounded-xl border border-border bg-surface/95 p-5 shadow-2xl backdrop-blur"
     >
-      <p className="text-sm text-ivory-muted">
+      <p id="consent-description" className="text-sm text-sand-muted">
         We use cookies for analytics and to measure our advertising (Google
         Analytics, Meta Pixel). No marketing emails without your consent.
       </p>
       <div className="mt-4 flex gap-3">
         <button
+          ref={acceptRef}
           onClick={() => choose("granted")}
-          className="rounded-full bg-gold px-5 py-2 text-sm font-semibold text-ink transition hover:bg-gold-bright"
+          className="rounded-full bg-coral px-5 py-2 text-sm font-semibold text-sand transition hover:bg-coral-bright"
         >
           Accept
         </button>
         <button
           onClick={() => choose("denied")}
-          className="rounded-full border border-ink-border px-5 py-2 text-sm text-ivory-muted transition hover:text-ivory"
+          className="rounded-full border border-border px-5 py-2 text-sm text-sand-muted transition hover:text-sand"
         >
           Decline
         </button>

@@ -28,6 +28,7 @@ export function BuyButton({
       className={`coral-glow inline-flex items-center justify-center rounded-full bg-coral px-7 py-3.5 text-sm font-semibold tracking-wide text-sand transition-all duration-200 hover:scale-[1.03] hover:bg-coral-bright ${className}`}
     >
       {label}
+      <span className="sr-only"> (opens in new tab)</span>
     </a>
   );
 }

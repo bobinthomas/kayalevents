@@ -47,7 +47,7 @@ export function EventCard({ event }: { event: KayalEvent }) {
 
         {/* Body */}
         <div className="flex flex-col gap-3 p-5">
-          <h3 className="text-lg font-semibold leading-snug text-sand group-hover:text-lagoon transition-colors duration-200">
+          <h3 className="font-display text-xl leading-snug text-sand group-hover:text-lagoon transition-colors duration-200">
             {event.title}
           </h3>
 

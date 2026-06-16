@@ -28,7 +28,7 @@ const CSS = `
 .kayal-intro::after{content:"";position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 240px 40px rgba(0,0,0,.55);}
 .kayal-intro .ki-bigwords{position:absolute;inset:0;pointer-events:none;}
 .kayal-intro .ki-bigword{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:inline-flex;gap:.01em;
-  color:#F2E9CC;font:300 clamp(38px,8.5vw,88px)/1 'Montserrat',-apple-system,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  color:#F2E9CC;font:300 clamp(38px,8.5vw,88px)/1 var(--font-montserrat),-apple-system,"Helvetica Neue",Helvetica,Arial,sans-serif;
   letter-spacing:.01em;text-transform:uppercase;white-space:nowrap;}
 .kayal-intro .ki-bigword .ki-cmask{display:inline-block;overflow:hidden;}
 .kayal-intro .ki-bigword .ki-char{display:inline-block;will-change:transform;}
@@ -38,7 +38,7 @@ const CSS = `
 .kayal-intro .ki-words{position:absolute;left:0;right:0;top:50%;margin-top:100px;display:flex;flex-wrap:wrap;
   justify-content:center;align-items:center;gap:12px 30px;padding:0 28px;pointer-events:none;}
 .kayal-intro .ki-words .ki-word{display:inline-flex;gap:.14em;color:#E6DABA;
-  font:300 clamp(11px,1.45vw,15px)/1.05 'Montserrat',-apple-system,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  font:300 clamp(11px,1.45vw,15px)/1.05 var(--font-montserrat),-apple-system,"Helvetica Neue",Helvetica,Arial,sans-serif;
   text-transform:uppercase;white-space:nowrap;}
 .kayal-intro .ki-words .ki-cmask{display:inline-block;overflow:hidden;}
 .kayal-intro .ki-words .ki-char{display:inline-block;will-change:transform;}
@@ -59,11 +59,14 @@ export default function LoadingScreen({ oncePerSession = true }: { oncePerSessio
     if (!root) return;
 
     document.body.style.overflow = "hidden";
+    let safetyTimer: ReturnType<typeof setTimeout>;
     const finish = () => {
+      clearTimeout(safetyTimer);
       introPlayed = true;
       document.body.style.overflow = "";
       setHidden(true);
     };
+    safetyTimer = setTimeout(finish, 8000);
 
     const splitWord = (word: Element) => {
       const text = word.textContent || "";
@@ -84,6 +87,11 @@ export default function LoadingScreen({ oncePerSession = true }: { oncePerSessio
     root.querySelectorAll(".ki-words .ki-word").forEach((w) => splitWord(w).forEach((c) => smallChars.push(c)));
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (reduce) {
+      finish();
+      return;
+    }
 
     // getBBox() returns zeros when ancestors are visibility:hidden — unhide for measurement (iOS Safari).
     const bwEl = root.querySelector(".ki-bigwords") as HTMLElement | null;

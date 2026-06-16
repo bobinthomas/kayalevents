@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import { track } from "@/lib/analytics";
 
@@ -77,7 +78,8 @@ export function InsiderForm({
             name="email"
             required
             placeholder="Email address"
-            className="w-full rounded-full border border-border bg-marine-black px-5 py-3 text-sm text-sand placeholder:text-sand-muted/50 transition-colors focus:border-lagoon focus:outline-none"
+            aria-describedby={status === "error" ? "insider-error" : undefined}
+            className="w-full rounded-full border border-border bg-marine-black px-5 py-3 text-sm text-sand placeholder:text-sand-muted/50 transition-colors focus:border-lagoon focus:outline-none focus:ring-2 focus:ring-lagoon/50 focus:ring-offset-1 focus:ring-offset-marine-black"
           />
         </label>
         <label className="flex-1">
@@ -86,7 +88,7 @@ export function InsiderForm({
             type="tel"
             name="phone"
             placeholder="Mobile (optional)"
-            className="w-full rounded-full border border-border bg-marine-black px-5 py-3 text-sm text-sand placeholder:text-sand-muted/50 transition-colors focus:border-lagoon focus:outline-none"
+            className="w-full rounded-full border border-border bg-marine-black px-5 py-3 text-sm text-sand placeholder:text-sand-muted/50 transition-colors focus:border-lagoon focus:outline-none focus:ring-2 focus:ring-lagoon/50 focus:ring-offset-1 focus:ring-offset-marine-black"
           />
         </label>
       </div>
@@ -98,13 +100,17 @@ export function InsiderForm({
         {status === "loading" ? "Joining…" : buttonLabel}
       </button>
       {status === "error" && (
-        <p role="alert" className="text-sm text-coral">
+        <p id="insider-error" role="alert" className="text-sm text-coral">
           Something went wrong — please try again.
         </p>
       )}
       <p className="text-xs text-sand-muted/60">
         By joining you consent to receive event updates from Kayal Events.
-        Unsubscribe anytime. See our privacy policy.
+        Unsubscribe anytime. See our{" "}
+        <Link href="/privacy" className="underline hover:text-sand-muted">
+          privacy policy
+        </Link>
+        .
       </p>
     </form>
   );

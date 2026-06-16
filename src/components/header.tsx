@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const links = [
   { href: "/events", label: "Events" },
@@ -17,6 +17,8 @@ export function Header() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
+  const hamburgerRef = useRef<HTMLButtonElement>(null);
+  const drawerRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 40);
@@ -30,6 +32,42 @@ export function Header() {
     return () => {
       document.body.style.overflow = "";
     };
+  }, [open]);
+
+  // Focus management: move focus into drawer on open, return to hamburger on close
+  useEffect(() => {
+    if (open) {
+      const firstLink = drawerRef.current?.querySelector("a");
+      firstLink?.focus();
+    } else {
+      hamburgerRef.current?.focus();
+    }
+  }, [open]);
+
+  // Trap focus inside drawer while open
+  useEffect(() => {
+    if (!open) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") { setOpen(false); return; }
+      if (e.key !== "Tab") return;
+      const drawer = drawerRef.current;
+      if (!drawer) return;
+      const focusable = Array.from(
+        drawer.querySelectorAll<HTMLElement>("a[href], button:not([disabled])")
+      );
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
   }, [open]);
 
   return (
@@ -79,9 +117,11 @@ export function Header() {
 
         {/* Mobile hamburger */}
         <button
+          ref={hamburgerRef}
           className="flex h-10 w-10 flex-col items-center justify-center gap-[5px] md:hidden"
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
+          aria-controls="mobile-nav"
           aria-label={open ? "Close menu" : "Open menu"}
         >
           <span
@@ -105,8 +145,12 @@ export function Header() {
       {/* Mobile drawer */}
       {open && (
         <nav
+          id="mobile-nav"
+          ref={drawerRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Site navigation"
           className="flex h-[calc(100dvh-4rem)] flex-col gap-2 bg-marine-black/95 backdrop-blur-xl px-5 pt-8 md:hidden"
-          aria-label="Mobile"
         >
           {links.map((l, i) => (
             <Link

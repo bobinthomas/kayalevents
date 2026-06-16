@@ -40,7 +40,7 @@ export function StickyBuyBar({ event }: { event: KayalEvent }) {
 
   return (
     <div
-      aria-hidden={!visible}
+      inert={!visible}
       className={`fixed inset-x-0 bottom-0 z-30 border-t border-border/60 bg-marine-black/92 backdrop-blur-xl transition-transform duration-300 ${
         visible ? "translate-y-0" : "translate-y-full"
       }`}
@@ -58,7 +58,6 @@ export function StickyBuyBar({ event }: { event: KayalEvent }) {
           href={href}
           target={isExternal ? "_blank" : undefined}
           rel={isExternal ? "noopener noreferrer" : undefined}
-          tabIndex={visible ? 0 : -1}
           onClick={() =>
             isExternal &&
             track("buy_ticket_click", {

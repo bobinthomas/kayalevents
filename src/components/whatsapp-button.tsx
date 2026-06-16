@@ -10,7 +10,7 @@ export function WhatsAppButton({ number }: { number: string }) {
       rel="noopener noreferrer"
       onClick={() => track("whatsapp_click")}
       aria-label="Chat with Kayal Events on WhatsApp"
-      className="fixed bottom-5 right-5 z-40 flex h-13 w-13 items-center justify-center rounded-full bg-[#25D366] shadow-lg transition hover:scale-105"
+      className="fixed bottom-20 right-5 z-40 flex h-13 w-13 items-center justify-center rounded-full bg-[#25D366] shadow-lg transition hover:scale-105 md:bottom-5"
       style={{ width: "3.25rem", height: "3.25rem" }}
     >
       <svg viewBox="0 0 32 32" className="h-7 w-7 fill-white" aria-hidden="true">

@@ -143,6 +143,8 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
             role="group"
             aria-roledescription="slide"
             aria-label={`${current + 1} of ${count}: ${slide.heroHeadline}`}
+            className={shouldReduce ? undefined : "kayal-anim"}
+            style={shouldReduce ? undefined : { animation: "kayal-fade-in 0.5s cubic-bezier(0.22,1,0.36,1) both" }}
           >
             {slide.status && <StatusBadge status={slide.status} />}
 
@@ -180,6 +182,7 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
                 }
               >
                 {slide.heroCtaLabel}
+                {isTicketCta && <span className="sr-only"> (opens in new tab)</span>}
               </a>
               {slide.eventSlug && (
                 <a
@@ -194,7 +197,7 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
             {/* Slide indicators + pause control */}
             {count > 1 && (
               <div className="mt-10 flex items-center gap-3">
-                {!shouldReduce && (
+                {count > 1 && (
                   <button
                     onClick={() => setPaused((p) => !p)}
                     aria-label={paused ? "Resume slideshow" : "Pause slideshow"}
@@ -222,12 +225,15 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
                       aria-selected={i === current}
                       aria-label={`Slide ${i + 1}: ${s.heroHeadline}`}
                       onClick={() => goTo(i)}
-                      className={`h-1.5 rounded-full transition-all duration-300 ${
+                      className="flex items-center justify-center p-2"
+                      style={shouldReduce ? undefined : { animationDelay: `${i * 40}ms` }}
+                    >
+                      <span className={`h-1.5 rounded-full transition-all duration-300 ${
                         i === current
                           ? "w-6 bg-lagoon"
                           : "w-1.5 bg-sand/25 hover:bg-sand/50"
-                      }`}
-                    />
+                      }`} />
+                    </button>
                   ))}
                 </div>
               </div>

@@ -21,7 +21,7 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
     if (prefersReducedMotion) return;
 
     const lenis = new Lenis({
-      lerp: 0.08,
+      lerp: 0.11,
       smoothWheel: true,
       syncTouch: false,
     });
@@ -35,7 +35,18 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
     gsap.ticker.add(tickerCallback);
     gsap.ticker.lagSmoothing(0);
 
+    // Destroy Lenis if the user enables reduced-motion while the page is open
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const onMotionChange = () => {
+      if (mq.matches) {
+        gsap.ticker.remove(tickerCallback);
+        lenis.destroy();
+      }
+    };
+    mq.addEventListener("change", onMotionChange);
+
     return () => {
+      mq.removeEventListener("change", onMotionChange);
       gsap.ticker.remove(tickerCallback);
       lenis.destroy();
     };

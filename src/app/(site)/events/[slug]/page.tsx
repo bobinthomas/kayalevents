@@ -349,10 +349,17 @@ export default async function EventPage({
                 {event.faqs.map((faq, i) => (
                   <Reveal key={faq.question} delay={i * 50}>
                     <details className="group rounded-xl border border-border bg-surface transition-colors hover:border-lagoon/30">
-                      <summary className="cursor-pointer list-none px-6 py-4 font-medium text-sand transition hover:text-lagoon [&::-webkit-details-marker]:hidden">
+                      <summary className="flex cursor-pointer list-none items-center justify-between px-6 py-4 font-medium text-sand transition hover:text-lagoon [&::-webkit-details-marker]:hidden">
                         {faq.question}
+                        <svg
+                          className="ml-4 h-4 w-4 shrink-0 text-sand-muted transition-transform duration-300 group-open:rotate-180"
+                          viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                          aria-hidden="true"
+                        >
+                          <path d="M4 6l4 4 4-4" />
+                        </svg>
                       </summary>
-                      <p className="px-6 pb-5 text-sm leading-relaxed text-sand-muted">
+                      <p className="px-6 pb-5 text-sm leading-relaxed text-sand-muted [details[open]_&]:animate-[kayal-fade-in_0.3s_cubic-bezier(0.22,1,0.36,1)]">
                         {faq.answer}
                       </p>
                     </details>

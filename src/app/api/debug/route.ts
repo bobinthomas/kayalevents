@@ -1,6 +1,10 @@
 import { getRuntimeEnv, hasRuntimeEnv } from '@/lib/runtime-env'
 
 export async function GET() {
+  if (process.env.NODE_ENV !== 'development') {
+    return new Response('Not Found', { status: 404 })
+  }
+
   const token = getRuntimeEnv('KEYSTATIC_GITHUB_TOKEN')
   const githubMode = hasRuntimeEnv('KEYSTATIC_GITHUB_CLIENT_ID')
 
