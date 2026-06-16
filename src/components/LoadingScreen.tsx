@@ -1,7 +1,15 @@
 "use client";
 
+import { Montserrat } from "next/font/google";
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
+
+const montserrat = Montserrat({
+  variable: "--font-montserrat",
+  subsets: ["latin"],
+  weight: ["300"],
+  display: "swap",
+});
 
 // Resets on every hard page load; prevents re-play on SPA navigation only
 let introPlayed = false;
@@ -189,7 +197,7 @@ export default function LoadingScreen({ oncePerSession = true }: { oncePerSessio
   if (hidden) return null;
 
   return (
-    <div ref={rootRef} className="kayal-intro" aria-hidden="true" role="presentation">
+    <div ref={rootRef} className={`kayal-intro ${montserrat.variable}`} aria-hidden="true" role="presentation">
       <style>{CSS}</style>
       <div className="ki-bigwords">
         {WORDS.map((w) => <span className="ki-bigword" key={"big-" + w}>{w}</span>)}

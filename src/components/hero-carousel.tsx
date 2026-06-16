@@ -83,6 +83,13 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
   const showVideo = Boolean(slide.heroVideo) && !shouldReduce;
   const isTicketCta = slide.isTicketUrl;
 
+  const shouldLoadSlideImage = (index: number) => {
+    if (count <= 2) return true;
+    const prev = (current - 1 + count) % count;
+    const next = (current + 1) % count;
+    return index === current || index === prev || index === next;
+  };
+
   return (
     <section
       className="relative -mt-16 overflow-hidden md:-mt-20"
@@ -108,7 +115,17 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
           }`}
           aria-hidden="true"
         >
-          <Poster src={s.heroImage} alt="" className="absolute inset-0" priority={i === 0} />
+          {shouldLoadSlideImage(i) ? (
+            <Poster
+              src={s.heroImage}
+              alt=""
+              className="absolute inset-0"
+              sizes="100vw"
+              priority={i === 0}
+            />
+          ) : (
+            <div className="poster-placeholder absolute inset-0" aria-hidden="true" />
+          )}
         </div>
       ))}
 

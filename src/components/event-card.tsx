@@ -34,6 +34,7 @@ export function EventCard({ event }: { event: KayalEvent }) {
             src={event.heroImage ?? event.posterImage}
             alt={event.title}
             className="relative aspect-[4/3]"
+            sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 384px"
           />
           {/* Gradient */}
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-surface/80 via-transparent to-transparent" />

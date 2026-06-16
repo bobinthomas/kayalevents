@@ -35,7 +35,7 @@ export function Poster({
           src={src}
           alt={alt}
           fill
-          sizes={sizes ?? "100vw"}
+          sizes={sizes ?? "(max-width: 768px) 100vw, 50vw"}
           priority={priority}
           className={`object-cover ${kenBurns ? "ken-burns" : ""}`}
         />
