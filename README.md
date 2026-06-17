@@ -97,19 +97,25 @@ in the Cloudflare dashboard.
 
 **Workflow:** merge to `dev` → deploy staging → test → merge to `main` → `npm run deploy` for production.
 
-First-time staging setup — copy production secrets to the staging Worker:
+### Staging CMS (separate GitHub OAuth App)
+
+GitHub **OAuth Apps only allow one callback URL**. Keep your existing app on production; create a **second** OAuth app for staging:
+
+1. https://github.com/settings/developers → **New OAuth App**
+2. **Application name:** `Kayal Events CMS (Staging)`
+3. **Homepage URL:** `https://kayalevents-dev.bobinthomas.workers.dev`
+4. **Authorization callback URL:**
+   `https://kayalevents-dev.bobinthomas.workers.dev/api/keystatic/github/oauth/callback`
+5. Copy the new **Client ID** and **Client secret**, then:
 
 ```bash
-wrangler secret put KEYSTATIC_GITHUB_CLIENT_SECRET --env staging
-wrangler secret put KEYSTATIC_SECRET --env staging
-wrangler secret put KEYSTATIC_GITHUB_TOKEN --env staging
+KEYSTATIC_GITHUB_CLIENT_ID=<staging-client-id> \
+KEYSTATIC_GITHUB_CLIENT_SECRET=<staging-client-secret> \
+npm run setup:staging-secrets
+npm run deploy:staging
 ```
 
-Or run `npm run setup:staging-secrets` (prompts for the OAuth client secret).
-
-Add this OAuth callback in your GitHub app (alongside production):
-
-`https://kayalevents-dev.bobinthomas.workers.dev/api/keystatic/github/oauth/callback`
+Also set `KEYSTATIC_SECRET` and `KEYSTATIC_GITHUB_TOKEN` on staging if not already done (same values as production are fine).
 
 Verify the content reader after deploy:
 
