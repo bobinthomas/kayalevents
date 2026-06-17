@@ -19,7 +19,7 @@ Luxury, cinematic marketing + ticketing-referral site for Kayal Events, an Austr
 
 - **Next.js 16** (App Router) + **TypeScript** + **Tailwind CSS 4**. Dev/build use `--webpack` (not Turbopack). Pages use `revalidate = 60` where set; production renders dynamically on Workers when the Keystatic GitHub reader runs per-request.
 - **Deploy:** **OpenNext + Cloudflare Workers** (`npm run deploy`). Not Vercel. Env bindings read via `src/lib/runtime-env.ts` (`getRuntimeEnv()` / `hasRuntimeEnv()`).
-- **CMS:** **Keystatic** — Git-backed. Schema in `keystatic.config.ts`. Content JSON in `content/`; images in `public/images/`. Admin UI at `/keystatic` (API at `/api/keystatic/[...params]`).
+- **CMS:** **Keystatic** — Git-backed. Schema in `keystatic.config.ts`. Content JSON in `content/`; images in `content/media/images/` (served via `GET /api/media/images/…`, not bundled in `public/`). Admin UI at `/keystatic` (API at `/api/keystatic/[...params]`).
 - **Content layer pattern (load-bearing):** all pages read content ONLY through `src/lib/content.ts`. It reads via `getKeystaticReader()` in `src/lib/keystatic-reader.ts`, falling back to seed data in `src/data/seed.ts` on failure. Never bypass this module.
 - **Keystatic storage modes:**
   - **Production default:** GitHub storage (`bobinthomas/kayalevents`). CMS saves commit to the repo via OAuth in the browser.
@@ -65,7 +65,7 @@ Theme: **"Lagoon, after dark"** — marine-black canvas, lagoon/ocean accents, c
 - **GitHub API on Workers:** `patchFetchForGitHubApi()` in `keystatic-reader.ts` adds User-Agent (Cloudflare Workers omit it by default).
 - **`LoadingScreen` on mobile:** `getBBox()` returns zeros when ancestors are `visibility:hidden` — unhide containers before measuring (iOS Safari).
 - **`next.config.ts`:** `turbopack.root` pinned to silence stray home-directory lockfile warning. `transpilePackages` lists legacy framer-motion entries (unused — safe to remove in cleanup). Webpack aliases for `gsap` and `lenis`.
-- **Images:** hero/event JPEGs live in `public/images/`; run `npm run images:compress` before commit. `Poster` uses responsive `sizes`; hero carousel only loads current ± adjacent slide images.
+- **Images:** CMS uploads go to `content/media/images/` via Keystatic's native `fields.image()` picker (server-side commit to GitHub). Served at `/api/media/images/…` — disk in dev, GitHub raw API on Workers (`KEYSTATIC_GITHUB_TOKEN`). `resolveMediaUrl()` in `src/lib/media-url.ts` rewrites legacy `/images/` paths. Run `npm run images:migrate` once to move `public/images/`. Delete `public/images/` after verify to shrink Worker bundle. See `docs/media-storage.md`.
 - `.gitignore` has `.env*` with `!.env.example` exception.
 
 ## Performance notes

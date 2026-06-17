@@ -4,7 +4,7 @@
   "year": "2025",
   "summary": "An 800-guest corporate Diwali gala for a national technology firm - concept to curtain in six weeks.",
   "description": "A black-tie Diwali celebration delivered for a major corporate client: bespoke stage design, a curated South Asian performance program, full AV production, and white-glove guest management. Delivered on a six-week timeline with a 98% post-event guest satisfaction score.",
-  "heroImage": "/images/048A0608.jpg",
+  "heroImage": "/api/media/images/048A0608.jpg",
   "stats": [
     {
       "label": "Guests",
@@ -25,35 +25,35 @@
   ],
   "gallery": [
     {
-      "src": "/images/048A0400.jpg",
+      "src": "/api/media/images/048A0400.jpg",
       "alt": "Full stage and production under event lighting"
     },
     {
-      "src": "/images/048A0407.jpg",
+      "src": "/api/media/images/048A0407.jpg",
       "alt": "Artist performing to a packed house"
     },
     {
-      "src": "/images/048A0413.jpg",
+      "src": "/api/media/images/048A0413.jpg",
       "alt": "Performer on stage during the live show"
     },
     {
-      "src": "/images/048A0418.jpg",
+      "src": "/api/media/images/048A0418.jpg",
       "alt": "Stage setup with professional lighting and LED backdrop"
     },
     {
-      "src": "/images/048A0427.jpg",
+      "src": "/api/media/images/048A0427.jpg",
       "alt": "Live performance with full band accompaniment"
     },
     {
-      "src": "/images/048A0435.jpg",
+      "src": "/api/media/images/048A0435.jpg",
       "alt": "Vocalist performing under dramatic stage lights"
     },
     {
-      "src": "/images/048A0474.jpg",
+      "src": "/api/media/images/048A0474.jpg",
       "alt": "Concert production showcasing AV capability"
     },
     {
-      "src": "/images/048A0484.jpg",
+      "src": "/api/media/images/048A0484.jpg",
       "alt": "Artists and band on stage during the finale"
     }
   ],

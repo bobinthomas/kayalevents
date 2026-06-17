@@ -5,6 +5,7 @@ import { Countdown } from "@/components/countdown";
 import { Poster } from "@/components/poster";
 import { StatusBadge } from "@/components/status-badge";
 import { track } from "@/lib/analytics";
+import { resolveMediaUrl } from "@/lib/media-url";
 import type { HeroSlide } from "@/lib/types";
 
 const INTERVAL_MS = 7000;
@@ -135,7 +136,7 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
           key={`video-${slide.id}`}
           className="absolute inset-0 h-full w-full object-cover"
           src={slide.heroVideo}
-          poster={slide.heroImage}
+          poster={resolveMediaUrl(slide.heroImage)}
           autoPlay
           muted
           loop

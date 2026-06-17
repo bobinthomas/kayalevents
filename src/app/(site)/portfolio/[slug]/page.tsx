@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { Poster } from "@/components/poster";
 import { Reveal } from "@/components/reveal";
 import { getCaseStudies, getCaseStudy } from "@/lib/content";
+import { resolveMediaUrl } from "@/lib/media-url";
 
 export const revalidate = 60;
 
@@ -20,6 +21,7 @@ export async function generateMetadata({
   const { slug } = await params;
   const study = await getCaseStudy(slug);
   if (!study) return {};
+  const image = resolveMediaUrl(study.heroImage);
   return {
     title: `${study.title} — Case Study`,
     description: study.summary,
@@ -27,7 +29,7 @@ export async function generateMetadata({
     openGraph: {
       title: `${study.title} — Case Study`,
       description: study.summary,
-      ...(study.heroImage ? { images: [{ url: study.heroImage }] } : {}),
+      ...(image ? { images: [{ url: image }] } : {}),
     },
   };
 }

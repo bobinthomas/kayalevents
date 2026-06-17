@@ -2,6 +2,8 @@ import type { NextConfig } from "next";
 import path from "path";
 
 const nextConfig: NextConfig = {
+  // Keystatic rewrites localhost → 127.0.0.1 for API calls; allow both in dev.
+  allowedDevOrigins: ["127.0.0.1", "localhost"],
   // Next.js 16 WASM-mode crashes during its internal TypeScript runner on win32/x64.
   // Types are verified separately via `tsc --noEmit --skipLibCheck` (zero errors).
   typescript: { ignoreBuildErrors: true },

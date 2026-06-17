@@ -8,7 +8,7 @@ Indian live entertainment. Built per the v1.0 PRD (June 2026).
 ## Stack
 
 - **Next.js 16** (App Router) + **TypeScript** + **Tailwind CSS 4**
-- **Keystatic** — Git-backed CMS; content lives in `content/` as JSON, images in `public/images/`
+- **Keystatic** — Git-backed CMS; content in `content/` as JSON; images in `content/media/images/` served via `GET /api/media/images/…` (not bundled in the Worker deploy)
 - **OpenNext + Cloudflare Workers** — production deployment (`npm run deploy`)
 - **GSAP + Lenis** — intro animation and smooth scroll (code-split, deferred after first paint)
 
@@ -59,7 +59,7 @@ is baked at build time.
 | `npm run build` | Next.js production build |
 | `npm run preview` | Build + preview on Cloudflare Workers locally |
 | `npm run deploy` | Build + deploy to Cloudflare Workers |
-| `npm run images:compress` | Recompress JPEGs in `public/images/` (requires `sharp`) |
+| `npm run images:migrate` | Copy `public/images/` → `content/media/images/` and rewrite content JSON paths |
 
 ## Architecture notes
 
@@ -69,6 +69,10 @@ is baked at build time.
   Workers, local filesystem when `KEYSTATIC_STORAGE=local`.
 - `src/lib/runtime-env.ts` — reads env from `process.env` and Cloudflare
   `getCloudflareContext().env` on Workers.
+- `src/lib/media.ts` + `src/lib/media-url.ts` — CMS images live in
+  `content/media/images/`; served at `/api/media/images/…` (GitHub API on
+  Workers, disk in dev). Legacy `/images/*` 301-redirects. See
+  `docs/media-storage.md`.
 - Event detail pages emit Schema.org `Event` JSON-LD per city/show and support
   status states: On Sale / Selling Fast / Sold Out (waitlist) / Past.
 - Conversion events: `buy_ticket_click`, `insider_signup`, `inquiry_submit`,

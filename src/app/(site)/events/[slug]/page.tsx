@@ -16,6 +16,7 @@ import {
   formatShowTime,
   priceRange,
 } from "@/lib/format";
+import { resolveMediaUrl } from "@/lib/media-url";
 import type { KayalEvent, SiteSettings } from "@/lib/types";
 
 export const revalidate = 60;
@@ -36,6 +37,7 @@ export async function generateMetadata({
   const description = `${event.title} — ${eventDateRange(event)} in ${eventCities(
     event
   )}. Official tickets from Kayal Events.`;
+  const image = resolveMediaUrl(event.posterImage ?? event.heroImage);
   return {
     title: event.title,
     description,
@@ -43,9 +45,7 @@ export async function generateMetadata({
     openGraph: {
       title: event.title,
       description,
-      ...(event.posterImage || event.heroImage
-        ? { images: [{ url: (event.posterImage ?? event.heroImage)! }] }
-        : {}),
+      ...(image ? { images: [{ url: image }] } : {}),
     },
   };
 }
@@ -74,8 +74,15 @@ function eventJsonLd(event: KayalEvent, settings: SiteSettings) {
         addressCountry: "AU",
       },
     },
-    ...(event.posterImage || event.heroImage
-      ? { image: [event.posterImage ?? event.heroImage] }
+    ...(resolveMediaUrl(event.posterImage ?? event.heroImage)
+      ? {
+          image: [
+            new URL(
+              resolveMediaUrl(event.posterImage ?? event.heroImage)!,
+              settings.baseUrl,
+            ).href,
+          ],
+        }
       : {}),
     description: event.description,
     performer: event.artists.map((name) => ({ "@type": "Person", name })),

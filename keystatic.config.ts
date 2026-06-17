@@ -1,16 +1,29 @@
 import { config, collection, singleton, fields } from '@keystatic/core'
 
+/** CMS images live outside public/ so they are not bundled into the Worker deploy. */
+const imageField = (label: string) =>
+  fields.image({
+    label,
+    directory: 'content/media/images',
+    publicPath: '/api/media/images/',
+    validation: { isRequired: false },
+  })
+
 /**
  * GitHub storage is the production default (Cloudflare Workers has no filesystem).
  * Set KEYSTATIC_STORAGE=local in .env.local for offline CMS editing without GitHub.
+ * NEXT_PUBLIC_KEYSTATIC_STORAGE mirrors this for the client bundle (keystatic page is 'use client').
  */
-const storage =
-  process.env.KEYSTATIC_STORAGE === 'local'
-    ? ({ kind: 'local' } as const)
-    : ({
-        kind: 'github',
-        repo: 'bobinthomas/kayalevents',
-      } as const)
+const isLocalStorage =
+  process.env.KEYSTATIC_STORAGE === 'local' ||
+  process.env.NEXT_PUBLIC_KEYSTATIC_STORAGE === 'local'
+
+const storage = isLocalStorage
+  ? ({ kind: 'local' } as const)
+  : ({
+      kind: 'github',
+      repo: 'bobinthomas/kayalevents',
+    } as const)
 
 export default config({
   storage,
@@ -40,8 +53,8 @@ export default config({
           ],
           defaultValue: 'on-sale',
         }),
-        heroImage: fields.image({ label: 'Hero Image', directory: 'public/images', publicPath: '/images/', validation: { isRequired: false } }),
-        posterImage: fields.image({ label: 'Poster Image', directory: 'public/images', publicPath: '/images/', validation: { isRequired: false } }),
+        heroImage: imageField('Hero Image'),
+        posterImage: imageField('Poster Image'),
         shows: fields.array(
           fields.object({
             city: fields.text({ label: 'City' }),
@@ -91,7 +104,7 @@ export default config({
         year: fields.text({ label: 'Year' }),
         summary: fields.text({ label: 'Summary', multiline: true }),
         description: fields.text({ label: 'Description', multiline: true }),
-        heroImage: fields.image({ label: 'Hero Image', directory: 'public/images', publicPath: '/images/', validation: { isRequired: false } }),
+        heroImage: imageField('Hero Image'),
         stats: fields.array(
           fields.object({
             label: fields.text({ label: 'Label' }),
@@ -101,7 +114,7 @@ export default config({
         ),
         gallery: fields.array(
           fields.object({
-            src: fields.image({ label: 'Image', directory: 'public/images', publicPath: '/images/' }),
+            src: imageField('Image'),
             alt: fields.text({ label: 'Alt Text' }),
           }),
           { label: 'Gallery' }
@@ -161,7 +174,7 @@ export default config({
         instagram: fields.text({ label: 'Instagram URL' }),
         facebook: fields.text({ label: 'Facebook URL', validation: { isRequired: false } }),
         baseUrl: fields.text({ label: 'Base URL' }),
-        heroImage: fields.image({ label: 'Hero Image', directory: 'public/images', publicPath: '/images/', validation: { isRequired: false } }),
+        heroImage: imageField('Hero Image'),
         heroVideo: fields.text({ label: 'Hero Video Path', validation: { isRequired: false } }),
         fallbackHeroHeadline: fields.text({ label: 'Fallback Hero Headline', validation: { isRequired: false } }),
         fallbackHeroSubcopy: fields.text({ label: 'Fallback Hero Subcopy', validation: { isRequired: false } }),
