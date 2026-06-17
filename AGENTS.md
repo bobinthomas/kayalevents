@@ -13,12 +13,12 @@ Last updated: 16 June 2026. Built from the v1.0 PRD ("Kayal Events Website Rebui
 Luxury, cinematic marketing + ticketing-referral site for Kayal Events, an Australian promoter of large-scale South Indian live entertainment (e.g. "Mohanlal Live in Australia", "Onam Vibes"). Replaces a GoDaddy-builder site whose event CTAs linked to Instagram.
 
 - **Repo:** https://github.com/bobinthomas/kayalevents
-- **Staging:** https://kayalevents.bobinthomas.workers.dev
+- **Staging:** https://kayalevents-dev.bobinthomas.workers.dev
 
 ## Stack & architecture decisions
 
 - **Next.js 16** (App Router) + **TypeScript** + **Tailwind CSS 4**. Dev/build use `--webpack` (not Turbopack). Pages use `revalidate = 60` where set; production renders dynamically on Workers when the Keystatic GitHub reader runs per-request.
-- **Deploy:** **OpenNext + Cloudflare Workers** (`npm run deploy`). Not Vercel. Env bindings read via `src/lib/runtime-env.ts` (`getRuntimeEnv()` / `hasRuntimeEnv()`).
+- **Deploy:** **OpenNext + Cloudflare Workers** (`npm run deploy` = production/`main`, `npm run deploy:staging` = `dev`). Not Vercel. Env bindings read via `src/lib/runtime-env.ts` (`getRuntimeEnv()` / `hasRuntimeEnv()`).
 - **CMS:** **Keystatic** — Git-backed. Schema in `keystatic.config.ts`. Content JSON in `content/`; images in `content/media/images/` (served via `GET /api/media/images/…`, not bundled in `public/`). Admin UI at `/keystatic` (API at `/api/keystatic/[...params]`).
 - **Content layer pattern (load-bearing):** all pages read content ONLY through `src/lib/content.ts`. It reads via `getKeystaticReader()` in `src/lib/keystatic-reader.ts`, falling back to seed data in `src/data/seed.ts` on failure. Never bypass this module.
 - **Keystatic storage modes:**

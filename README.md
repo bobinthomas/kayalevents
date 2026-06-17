@@ -3,7 +3,8 @@
 Luxury, cinematic web presence for Kayal Events: Australia's home of South
 Indian live entertainment. Built per the v1.0 PRD (June 2026).
 
-**Live (staging):** https://kayalevents.bobinthomas.workers.dev
+**Staging (dev branch):** https://kayalevents-dev.bobinthomas.workers.dev  
+**Production (main branch):** https://kayalevents.bobinthomas.workers.dev (→ kayalevents.com.au at DNS cutover)
 
 ## Stack
 
@@ -27,6 +28,7 @@ reader. If the reader fails, it falls back to seed data in `src/data/seed.ts`.
 
 - **Local (GitHub mode):** http://localhost:3000/keystatic — sign in with GitHub; edits commit to the repo
 - **Local (offline):** set `KEYSTATIC_STORAGE=local` in `.env.local` — edits write directly to `content/` on disk
+- **Staging:** https://kayalevents-dev.bobinthomas.workers.dev/keystatic
 - **Production:** https://kayalevents.bobinthomas.workers.dev/keystatic
 
 Collections: Events, Case Studies, Services, Testimonials, Site Settings
@@ -86,16 +88,33 @@ is baked at build time.
 ## Deploy to Cloudflare Workers
 
 Requires `CLOUDFLARE_API_TOKEN` (or `wrangler login`) and secrets configured
-in the Cloudflare dashboard:
+in the Cloudflare dashboard.
+
+| Branch | Command | Worker | URL |
+|---|---|---|---|
+| `dev` | `npm run deploy:staging` | `kayalevents-dev` | https://kayalevents-dev.bobinthomas.workers.dev |
+| `main` | `npm run deploy` | `kayalevents` | https://kayalevents.bobinthomas.workers.dev |
+
+**Workflow:** merge to `dev` → deploy staging → test → merge to `main` → `npm run deploy` for production.
+
+First-time staging setup — copy production secrets to the staging Worker:
 
 ```bash
-npm run deploy
+wrangler secret put KEYSTATIC_GITHUB_CLIENT_SECRET --env staging
+wrangler secret put KEYSTATIC_SECRET --env staging
+wrangler secret put KEYSTATIC_GITHUB_TOKEN --env staging
 ```
+
+Or run `npm run setup:staging-secrets` (prompts for the OAuth client secret).
+
+Add this OAuth callback in your GitHub app (alongside production):
+
+`https://kayalevents-dev.bobinthomas.workers.dev/api/keystatic/github/oauth/callback`
 
 Verify the content reader after deploy:
 
 ```bash
-curl https://kayalevents.bobinthomas.workers.dev/api/debug
+curl https://kayalevents-dev.bobinthomas.workers.dev/api/debug
 ```
 
 Expect `reader_mode: "github-api"` and `has_github_token: true`.

@@ -2,6 +2,7 @@ import { createReader } from '@keystatic/core/reader'
 import { createGitHubReader } from '@keystatic/core/reader/github'
 import keystaticConfig from '../../keystatic.config'
 import { getRuntimeEnv } from '@/lib/runtime-env'
+import { getGitHubContentRef } from '@/lib/github-content-ref'
 
 const REPO = 'bobinthomas/kayalevents' as const
 
@@ -27,7 +28,12 @@ function createContentReader() {
 
   if (token) {
     patchFetchForGitHubApi()
-    return createGitHubReader(keystaticConfig, { repo: REPO, token })
+    const ref = getGitHubContentRef()
+    return createGitHubReader(keystaticConfig, {
+      repo: REPO,
+      token,
+      ...(ref ? { ref } : {}),
+    })
   }
 
   if (getRuntimeEnv('KEYSTATIC_GITHUB_CLIENT_ID')) {

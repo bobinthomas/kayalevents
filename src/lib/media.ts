@@ -2,6 +2,7 @@ import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { getCloudflareContext } from '@opennextjs/cloudflare'
 import { getRuntimeEnv } from '@/lib/runtime-env'
+import { getGitHubContentRef } from '@/lib/github-content-ref'
 import { MEDIA_URL_PREFIX } from '@/lib/media-url'
 
 const REPO = 'bobinthomas/kayalevents'
@@ -39,8 +40,11 @@ async function readFromGitHub(repoPath: string): Promise<ArrayBuffer> {
     throw new Error('KEYSTATIC_GITHUB_TOKEN is required to serve media on Workers')
   }
 
-  const url = `https://api.github.com/repos/${REPO}/contents/${repoPath}`
-  const res = await fetch(url, {
+  const url = new URL(`https://api.github.com/repos/${REPO}/contents/${repoPath}`)
+  const ref = getGitHubContentRef()
+  if (ref) url.searchParams.set('ref', ref)
+
+  const res = await fetch(url.toString(), {
     headers: {
       Authorization: `Bearer ${token}`,
       Accept: 'application/vnd.github.raw',
