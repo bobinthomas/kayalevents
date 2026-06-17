@@ -11,12 +11,13 @@ const imageField = (label: string) =>
 
 /**
  * GitHub storage is the production default (Cloudflare Workers has no filesystem).
- * Set KEYSTATIC_STORAGE=local in .env.local for offline CMS editing without GitHub.
- * NEXT_PUBLIC_KEYSTATIC_STORAGE mirrors this for the client bundle (keystatic page is 'use client').
+ * Local mode is dev-only (`next dev`) — never bake it into Workers builds.
+ * Set KEYSTATIC_STORAGE=local + NEXT_PUBLIC_KEYSTATIC_STORAGE=local in .env.local.
  */
 const isLocalStorage =
-  process.env.KEYSTATIC_STORAGE === 'local' ||
-  process.env.NEXT_PUBLIC_KEYSTATIC_STORAGE === 'local'
+  process.env.NODE_ENV === 'development' &&
+  (process.env.KEYSTATIC_STORAGE === 'local' ||
+    process.env.NEXT_PUBLIC_KEYSTATIC_STORAGE === 'local')
 
 const storage = isLocalStorage
   ? ({ kind: 'local' } as const)
