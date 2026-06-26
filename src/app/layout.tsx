@@ -1,7 +1,18 @@
 import type { Metadata } from "next";
 import { DM_Sans, Fraunces } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import { getSiteSettings } from "@/lib/content";
+
+// Keep in sync with src/components/LoadingScreen.tsx (SESSION_KEY / PENDING_CLASS).
+// Runs before paint so the intro never flashes already-rendered content: hides
+// everything except the loader until LoadingScreen finishes (or skips itself
+// on inner pages / repeat visits, in which case this never adds the class).
+const INTRO_BOOT_SCRIPT = `
+  if (location.pathname === "/" && sessionStorage.getItem("kayalIntroPlayed") !== "1") {
+    document.documentElement.classList.add("intro-pending");
+  }
+`;
 
 const display = Fraunces({
   variable: "--font-display",
@@ -44,6 +55,9 @@ export default function RootLayout({
   return (
     <html lang="en-AU" className={`${display.variable} ${body.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col">
+        <Script id="kayal-intro-boot" strategy="beforeInteractive">
+          {INTRO_BOOT_SCRIPT}
+        </Script>
         {children}
       </body>
     </html>

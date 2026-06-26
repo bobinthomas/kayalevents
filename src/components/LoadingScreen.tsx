@@ -11,8 +11,9 @@ const montserrat = Montserrat({
   display: "swap",
 });
 
-// Resets on every hard page load; prevents re-play on SPA navigation only
-let introPlayed = false;
+// Keep in sync with the blocking boot script in src/app/layout.tsx.
+const SESSION_KEY = "kayalIntroPlayed";
+const PENDING_CLASS = "intro-pending";
 
 /**
  * Kayal Events — intro / loading screen.
@@ -57,24 +58,27 @@ const CSS = `
 
 export default function LoadingScreen({ oncePerSession = true }: { oncePerSession?: boolean }) {
   const [hidden, setHidden] = useState(
-    () => Boolean(oncePerSession && introPlayed),
+    () => Boolean(oncePerSession && sessionStorage.getItem(SESSION_KEY) === "1"),
   );
   const rootRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (oncePerSession && introPlayed) return;
+    if (oncePerSession && sessionStorage.getItem(SESSION_KEY) === "1") {
+      document.documentElement.classList.remove(PENDING_CLASS);
+      return;
+    }
     const root = rootRef.current;
     if (!root) return;
 
     document.body.style.overflow = "hidden";
-    let safetyTimer: ReturnType<typeof setTimeout>;
     const finish = () => {
       clearTimeout(safetyTimer);
-      introPlayed = true;
+      sessionStorage.setItem(SESSION_KEY, "1");
+      document.documentElement.classList.remove(PENDING_CLASS);
       document.body.style.overflow = "";
       setHidden(true);
     };
-    safetyTimer = setTimeout(finish, 8000);
+    const safetyTimer = setTimeout(finish, 8000);
 
     const splitWord = (word: Element) => {
       const text = word.textContent || "";

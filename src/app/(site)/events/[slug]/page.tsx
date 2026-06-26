@@ -138,18 +138,18 @@ export default async function EventPage({
       />
 
       {/* ── HERO ─────────────────────────────────────────────── */}
-      <section className="relative" aria-label={`${event.title} hero`}>
+      <section className="relative -mt-16 md:-mt-20" aria-label={`${event.title} hero`}>
         <Poster
           src={event.heroImage ?? event.posterImage}
           alt={`${event.title} — hero image`}
           className="absolute inset-0"
           priority
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-marine-black via-marine-black/50 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-marine-black from-0% via-marine-black/85 via-45% to-transparent to-100%" />
         {/* Lagoon ambient ripple */}
         <div className="hero-ripple pointer-events-none absolute inset-0" aria-hidden="true" />
 
-        <div className="relative mx-auto flex min-h-[70vh] max-w-6xl flex-col justify-end px-5 pb-14 pt-28 md:px-8 md:pb-20">
+        <div className="relative mx-auto flex min-h-[70vh] max-w-6xl flex-col items-start justify-end px-5 pb-14 pt-28 md:px-8 md:pb-20">
           <StatusBadge status={event.status} />
           <h1 className="headline mt-4 max-w-3xl text-5xl md:text-7xl">
             {event.title}
