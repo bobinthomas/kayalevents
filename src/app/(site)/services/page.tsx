@@ -29,7 +29,7 @@ export default async function ServicesPage() {
       <div className="mt-12 grid gap-6 md:grid-cols-2">
         {services.map((service, i) => (
           <Reveal key={service.slug} delay={i * 60}>
-            <div className="flex h-full flex-col rounded-2xl border border-ink-border bg-ink-raised p-8">
+            <div className="gradient-border flex h-full flex-col rounded-2xl border border-ink-border bg-ink-raised p-8">
               <h2 className="headline text-2xl text-ivory md:text-3xl">
                 {service.title}
               </h2>
@@ -54,7 +54,7 @@ export default async function ServicesPage() {
       <Reveal className="mt-16 text-center">
         <Link
           href="/contact"
-          className="inline-flex items-center justify-center rounded-full bg-gold px-8 py-3.5 text-sm font-semibold text-ink transition hover:bg-gold-bright"
+          className="gradient-border inline-flex items-center justify-center rounded-full bg-gold px-8 py-3.5 text-sm font-semibold text-ink transition hover:bg-gold-bright"
         >
           Discuss Your Event
         </Link>

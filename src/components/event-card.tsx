@@ -26,7 +26,7 @@ export function EventCard({ event }: { event: KayalEvent }) {
     <div className={`h-full${shouldReduce ? "" : " transition-transform duration-300 ease-out hover:-translate-y-2"}`}>
       <Link
         href={`/events/${event.slug}`}
-        className="group block h-full overflow-hidden rounded-2xl border border-border bg-surface transition-colors duration-300 hover:border-lagoon/40"
+        className="gradient-border group block h-full overflow-hidden rounded-2xl border border-border bg-surface transition-colors duration-300 hover:border-lagoon/40"
       >
         {/* Poster with Ken Burns */}
         <div className="relative overflow-hidden">

@@ -65,7 +65,7 @@ export function StickyBuyBar({ event }: { event: KayalEvent }) {
               placement: "sticky",
             })
           }
-          className="coral-glow shrink-0 rounded-full bg-coral px-6 py-2.5 text-sm font-semibold tracking-wide text-sand transition-all hover:bg-coral-bright"
+          className="gradient-border coral-glow shrink-0 rounded-full bg-coral px-6 py-2.5 text-sm font-semibold tracking-wide text-sand transition-all hover:bg-coral-bright"
         >
           {label}
         </a>

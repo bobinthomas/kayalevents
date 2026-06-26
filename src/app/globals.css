@@ -230,6 +230,68 @@ body {
 }
 
 /* ─────────────────────────────────────────────────────────────
+   GRADIENT BORDER (animated conic sweep on hover)
+   ───────────────────────────────────────────────────────────── */
+
+@property --border-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+/* Animated gradient ring, overlaid via a masked ::before so it never
+   disturbs the element's own background/border — works on filled
+   buttons, outline buttons, cards and input wrappers alike. */
+.gradient-border {
+  position: relative;
+  isolation: isolate;
+}
+
+.gradient-border::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: 5;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(
+    from var(--border-angle, 0deg),
+    transparent 0%,
+    var(--lagoon-green) 18%,
+    var(--ocean-blue) 36%,
+    transparent 54%
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.gradient-border:hover::before,
+.gradient-border:focus-within::before,
+.gradient-border:focus-visible::before {
+  opacity: 1;
+  animation: border-rotate 2.5s linear infinite;
+}
+
+@keyframes border-rotate {
+  to {
+    --border-angle: 360deg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gradient-border:hover::before,
+  .gradient-border:focus-within::before,
+  .gradient-border:focus-visible::before {
+    animation: none;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
    KEYFRAMES
    ───────────────────────────────────────────────────────────── */
 

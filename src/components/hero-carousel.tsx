@@ -195,8 +195,8 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
                 }}
                 className={
                   isTicketCta
-                    ? "coral-glow inline-flex items-center justify-center rounded-full bg-coral px-8 py-3.5 text-sm font-semibold tracking-wide text-sand transition-all duration-200 hover:scale-[1.03] hover:bg-coral-bright"
-                    : "inline-flex items-center justify-center rounded-full border border-lagoon/40 bg-lagoon/10 px-8 py-3.5 text-sm font-semibold text-lagoon transition-all duration-200 hover:bg-lagoon/20"
+                    ? "gradient-border coral-glow inline-flex items-center justify-center rounded-full bg-coral px-8 py-3.5 text-sm font-semibold tracking-wide text-sand transition-all duration-200 hover:scale-[1.03] hover:bg-coral-bright"
+                    : "gradient-border inline-flex items-center justify-center rounded-full border border-lagoon/40 bg-lagoon/10 px-8 py-3.5 text-sm font-semibold text-lagoon transition-all duration-200 hover:bg-lagoon/20"
                 }
               >
                 {slide.heroCtaLabel}
@@ -205,7 +205,7 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
               {slide.eventSlug && (
                 <a
                   href={`/events/${slide.eventSlug}`}
-                  className="inline-flex items-center justify-center rounded-full border border-sand/20 px-8 py-3.5 text-sm font-semibold text-sand transition-all duration-200 hover:border-lagoon hover:text-lagoon"
+                  className="gradient-border inline-flex items-center justify-center rounded-full border border-sand/20 px-8 py-3.5 text-sm font-semibold text-sand transition-all duration-200 hover:border-lagoon hover:text-lagoon"
                 >
                   Event details →
                 </a>
@@ -219,7 +219,7 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
                   <button
                     onClick={() => setPaused((p) => !p)}
                     aria-label={paused ? "Resume slideshow" : "Pause slideshow"}
-                    className="flex h-7 w-7 items-center justify-center rounded-full border border-sand/20 text-sand/60 transition hover:border-lagoon hover:text-lagoon"
+                    className="gradient-border flex h-7 w-7 items-center justify-center rounded-full border border-sand/20 text-sand/60 transition hover:border-lagoon hover:text-lagoon"
                   >
                     {paused ? (
                       // Play icon
@@ -265,7 +265,7 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
           <button
             onClick={prev}
             aria-label="Previous slide"
-            className="absolute left-3 top-1/2 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-sand/20 bg-marine-black/40 text-sand backdrop-blur-sm transition hover:border-lagoon hover:text-lagoon md:flex"
+            className="gradient-border absolute left-3 top-1/2 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-sand/20 bg-marine-black/40 text-sand backdrop-blur-sm transition hover:border-lagoon hover:text-lagoon md:flex"
           >
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M10 3L5 8L10 13" />
@@ -274,7 +274,7 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
           <button
             onClick={next}
             aria-label="Next slide"
-            className="absolute right-3 top-1/2 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-sand/20 bg-marine-black/40 text-sand backdrop-blur-sm transition hover:border-lagoon hover:text-lagoon md:flex"
+            className="gradient-border absolute right-3 top-1/2 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-sand/20 bg-marine-black/40 text-sand backdrop-blur-sm transition hover:border-lagoon hover:text-lagoon md:flex"
           >
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M6 3L11 8L6 13" />

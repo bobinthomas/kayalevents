@@ -64,7 +64,7 @@ export default async function CaseStudyPage({
       <div className="mx-auto max-w-6xl px-5 md:px-8">
         {/* Stat strip */}
         <Reveal>
-          <div className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-ink-border bg-ink-border md:grid-cols-4 -mt-10 relative z-10">
+          <div className="gradient-border grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-ink-border bg-ink-border md:grid-cols-4 -mt-10 relative z-10">
             {study.stats.map((stat) => (
               <div key={stat.label} className="bg-ink-raised p-6 text-center">
                 <p className="font-display text-3xl text-gold md:text-4xl">{stat.value}</p>
@@ -88,7 +88,7 @@ export default async function CaseStudyPage({
         {/* Highlight video */}
         {study.videoUrl && (
           <Reveal className="pb-14">
-            <div className="aspect-video overflow-hidden rounded-2xl border border-ink-border">
+            <div className="gradient-border aspect-video overflow-hidden rounded-2xl border border-ink-border">
               <iframe
                 src={study.videoUrl}
                 title={`${study.title} highlight video`}
@@ -151,7 +151,7 @@ export default async function CaseStudyPage({
             </p>
             <Link
               href="/contact"
-              className="mt-7 inline-flex items-center justify-center rounded-full bg-gold px-8 py-3.5 text-sm font-semibold text-ink transition hover:bg-gold-bright"
+              className="gradient-border mt-7 inline-flex items-center justify-center rounded-full bg-gold px-8 py-3.5 text-sm font-semibold text-ink transition hover:bg-gold-bright"
             >
               Start an Inquiry
             </Link>

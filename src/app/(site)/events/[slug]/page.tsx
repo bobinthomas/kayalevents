@@ -182,14 +182,14 @@ export default async function EventPage({
             {isSoldOut ? (
               <a
                 href="#waitlist"
-                className="inline-flex items-center justify-center rounded-full border border-lagoon/40 bg-lagoon/10 px-7 py-3.5 text-sm font-semibold text-lagoon transition-all hover:bg-lagoon/20"
+                className="gradient-border inline-flex items-center justify-center rounded-full border border-lagoon/40 bg-lagoon/10 px-7 py-3.5 text-sm font-semibold text-lagoon transition-all hover:bg-lagoon/20"
               >
                 Join Waitlist
               </a>
             ) : isPast ? (
               <Link
                 href="/portfolio"
-                className="inline-flex items-center justify-center rounded-full border border-border px-7 py-3.5 text-sm font-semibold text-sand-muted transition hover:border-lagoon hover:text-lagoon"
+                className="gradient-border inline-flex items-center justify-center rounded-full border border-border px-7 py-3.5 text-sm font-semibold text-sand-muted transition hover:border-lagoon hover:text-lagoon"
               >
                 View Gallery
               </Link>
@@ -198,7 +198,7 @@ export default async function EventPage({
             ) : (
               <a
                 href="#tickets"
-                className="coral-glow inline-flex items-center justify-center rounded-full bg-coral px-7 py-3.5 text-sm font-semibold tracking-wide text-sand transition-all hover:scale-[1.03] hover:bg-coral-bright"
+                className="gradient-border coral-glow inline-flex items-center justify-center rounded-full bg-coral px-7 py-3.5 text-sm font-semibold tracking-wide text-sand transition-all hover:scale-[1.03] hover:bg-coral-bright"
               >
                 Buy Tickets
               </a>
@@ -219,7 +219,7 @@ export default async function EventPage({
           <div className="mt-8 space-y-4">
             {event.shows.map((show, i) => (
               <Reveal key={`${show.city}-${show.start}`} delay={i * 60}>
-                <div className="flex flex-col gap-4 rounded-2xl border border-border bg-surface p-6 transition-colors hover:border-lagoon/30 sm:flex-row sm:items-center sm:justify-between">
+                <div className="gradient-border flex flex-col gap-4 rounded-2xl border border-border bg-surface p-6 transition-colors hover:border-lagoon/30 sm:flex-row sm:items-center sm:justify-between">
                   <div>
                     <p className="headline text-2xl text-sand">{show.city}</p>
                     <p className="mt-1 text-sm text-sand-muted">{show.venue}</p>
@@ -230,7 +230,7 @@ export default async function EventPage({
                   {isPast ? null : show.soldOut || isSoldOut ? (
                     <a
                       href="#waitlist"
-                      className="inline-flex shrink-0 items-center justify-center rounded-full border border-border px-7 py-3 text-sm font-semibold text-sand-muted transition hover:border-lagoon hover:text-lagoon"
+                      className="gradient-border inline-flex shrink-0 items-center justify-center rounded-full border border-border px-7 py-3 text-sm font-semibold text-sand-muted transition hover:border-lagoon hover:text-lagoon"
                     >
                       Sold Out — Join Waitlist
                     </a>
@@ -252,7 +252,7 @@ export default async function EventPage({
           {/* Ticket tier pricing table */}
           {event.ticketTiers.length > 0 && !isPast && (
             <Reveal className="mt-8">
-              <div className="overflow-hidden rounded-2xl border border-border">
+              <div className="gradient-border overflow-hidden rounded-2xl border border-border">
                 <table className="w-full text-sm">
                   <caption className="sr-only">Ticket tiers and prices</caption>
                   <thead>
@@ -304,7 +304,7 @@ export default async function EventPage({
             </p>
           </Reveal>
           <Reveal delay={100}>
-            <div className="space-y-6 rounded-2xl border border-border bg-surface p-6 text-sm">
+            <div className="gradient-border space-y-6 rounded-2xl border border-border bg-surface p-6 text-sm">
               {event.ageRestriction && (
                 <div>
                   <p className="eyebrow">Age &amp; entry</p>
@@ -355,7 +355,7 @@ export default async function EventPage({
               <div className="mt-8 space-y-3">
                 {event.faqs.map((faq, i) => (
                   <Reveal key={faq.question} delay={i * 50}>
-                    <details className="group rounded-xl border border-border bg-surface transition-colors hover:border-lagoon/30">
+                    <details className="gradient-border group rounded-xl border border-border bg-surface transition-colors hover:border-lagoon/30">
                       <summary className="flex cursor-pointer list-none items-center justify-between px-6 py-4 font-medium text-sand transition hover:text-lagoon [&::-webkit-details-marker]:hidden">
                         {faq.question}
                         <svg

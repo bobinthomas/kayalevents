@@ -46,7 +46,7 @@ export function InsiderForm({
 
   if (status === "success") {
     return (
-      <div className="rounded-xl border border-lagoon/30 bg-lagoon/8 p-6 text-center">
+      <div className="gradient-border rounded-xl border border-lagoon/30 bg-lagoon/8 p-6 text-center">
         <p className="font-display text-xl text-lagoon">
           You&apos;re on the list.
         </p>
@@ -73,29 +73,33 @@ export function InsiderForm({
       <div className="flex flex-col gap-3 sm:flex-row">
         <label className="flex-1">
           <span className="sr-only">Email address</span>
-          <input
-            type="email"
-            name="email"
-            required
-            placeholder="Email address"
-            aria-describedby={status === "error" ? "insider-error" : undefined}
-            className="w-full rounded-full border border-border bg-marine-black px-5 py-3 text-sm text-sand placeholder:text-sand-muted/50 transition-colors focus:border-lagoon focus:outline-none focus:ring-2 focus:ring-lagoon/50 focus:ring-offset-1 focus:ring-offset-marine-black"
-          />
+          <div className="gradient-border rounded-full">
+            <input
+              type="email"
+              name="email"
+              required
+              placeholder="Email address"
+              aria-describedby={status === "error" ? "insider-error" : undefined}
+              className="w-full rounded-full border border-border bg-marine-black px-5 py-3 text-sm text-sand placeholder:text-sand-muted/50 transition-colors focus:border-lagoon focus:outline-none focus:ring-2 focus:ring-lagoon/50 focus:ring-offset-1 focus:ring-offset-marine-black"
+            />
+          </div>
         </label>
         <label className="flex-1">
           <span className="sr-only">Mobile (optional)</span>
-          <input
-            type="tel"
-            name="phone"
-            placeholder="Mobile (optional)"
-            className="w-full rounded-full border border-border bg-marine-black px-5 py-3 text-sm text-sand placeholder:text-sand-muted/50 transition-colors focus:border-lagoon focus:outline-none focus:ring-2 focus:ring-lagoon/50 focus:ring-offset-1 focus:ring-offset-marine-black"
-          />
+          <div className="gradient-border rounded-full">
+            <input
+              type="tel"
+              name="phone"
+              placeholder="Mobile (optional)"
+              className="w-full rounded-full border border-border bg-marine-black px-5 py-3 text-sm text-sand placeholder:text-sand-muted/50 transition-colors focus:border-lagoon focus:outline-none focus:ring-2 focus:ring-lagoon/50 focus:ring-offset-1 focus:ring-offset-marine-black"
+            />
+          </div>
         </label>
       </div>
       <button
         type="submit"
         disabled={status === "loading"}
-        className="w-full rounded-full border border-lagoon/40 bg-lagoon/12 px-6 py-3 text-sm font-semibold text-lagoon transition-all hover:bg-lagoon/20 disabled:opacity-60 sm:w-auto"
+        className="gradient-border w-full rounded-full border border-lagoon/40 bg-lagoon/12 px-6 py-3 text-sm font-semibold text-lagoon transition-all hover:bg-lagoon/20 disabled:opacity-60 sm:w-auto"
       >
         {status === "loading" ? "Joining…" : buttonLabel}
       </button>

@@ -109,7 +109,7 @@ export function Header() {
           ))}
           <Link
             href="/events"
-            className="coral-glow rounded-full bg-coral px-5 py-2 text-sm font-semibold tracking-wide text-sand transition-all duration-200 hover:scale-[1.04] hover:bg-coral-bright"
+            className="gradient-border coral-glow rounded-full bg-coral px-5 py-2 text-sm font-semibold tracking-wide text-sand transition-all duration-200 hover:scale-[1.04] hover:bg-coral-bright"
           >
             Buy Tickets
           </Link>
@@ -166,7 +166,7 @@ export function Header() {
           <Link
             href="/events"
             onClick={() => setOpen(false)}
-            className="coral-glow mt-6 rounded-full bg-coral px-6 py-3.5 text-center font-semibold tracking-wide text-sand"
+            className="gradient-border coral-glow mt-6 rounded-full bg-coral px-6 py-3.5 text-center font-semibold tracking-wide text-sand"
           >
             Buy Tickets
           </Link>

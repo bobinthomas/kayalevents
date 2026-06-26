@@ -84,7 +84,7 @@ export function ConsentBanner() {
       role="dialog"
       aria-label="Cookie consent"
       aria-describedby="consent-description"
-      className="fixed inset-x-4 bottom-4 z-50 mx-auto max-w-xl rounded-xl border border-border bg-surface/95 p-5 shadow-2xl backdrop-blur"
+      className="gradient-border fixed inset-x-4 bottom-4 z-50 mx-auto max-w-xl rounded-xl border border-border bg-surface/95 p-5 shadow-2xl backdrop-blur"
     >
       <p id="consent-description" className="text-sm text-sand-muted">
         We use cookies for analytics and to measure our advertising (Google
@@ -94,7 +94,7 @@ export function ConsentBanner() {
         <button
           ref={acceptRef}
           onClick={() => choose("granted")}
-          className="rounded-full bg-coral px-5 py-2 text-sm font-semibold text-sand transition hover:bg-coral-bright"
+          className="gradient-border rounded-full bg-coral px-5 py-2 text-sm font-semibold text-sand transition hover:bg-coral-bright"
         >
           Accept
         </button>

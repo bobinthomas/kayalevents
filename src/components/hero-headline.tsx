@@ -93,14 +93,14 @@ export function HeroHeadline({
       <div className="mt-8 flex flex-wrap gap-4 kayal-anim" style={a ? a(1.05) : undefined}>
         <Link
           href={primaryHref}
-          className="coral-glow inline-flex items-center justify-center rounded-full bg-coral px-8 py-3.5 text-sm font-semibold tracking-wide text-sand transition-all duration-200 hover:scale-[1.03] hover:bg-coral-bright"
+          className="gradient-border coral-glow inline-flex items-center justify-center rounded-full bg-coral px-8 py-3.5 text-sm font-semibold tracking-wide text-sand transition-all duration-200 hover:scale-[1.03] hover:bg-coral-bright"
         >
           {primaryLabel}
         </Link>
         {secondaryHref && secondaryLabel && (
           <Link
             href={secondaryHref}
-            className="inline-flex items-center justify-center rounded-full border border-sand/20 px-8 py-3.5 text-sm font-semibold text-sand transition-all duration-200 hover:border-lagoon hover:text-lagoon"
+            className="gradient-border inline-flex items-center justify-center rounded-full border border-sand/20 px-8 py-3.5 text-sm font-semibold text-sand transition-all duration-200 hover:border-lagoon hover:text-lagoon"
           >
             {secondaryLabel}
           </Link>

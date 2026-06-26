@@ -222,7 +222,7 @@ export default async function HomePage() {
               <Reveal key={study.slug} delay={i * 120}>
                 <Link
                   href={`/portfolio/${study.slug}`}
-                  className="group block overflow-hidden rounded-2xl border border-border bg-surface transition-all duration-500 hover:border-lagoon/40 hover:shadow-[0_8px_40px_rgba(0,0,0,0.4)]"
+                  className="gradient-border group block overflow-hidden rounded-2xl border border-border bg-surface transition-all duration-500 hover:border-lagoon/40 hover:shadow-[0_8px_40px_rgba(0,0,0,0.4)]"
                 >
                   <div
                     className="poster-placeholder aspect-[4/3] transition-transform duration-500 group-hover:scale-[1.04]"
@@ -254,7 +254,7 @@ export default async function HomePage() {
             <div className="mt-10 grid gap-6 md:grid-cols-3">
               {testimonials.slice(0, 3).map((t, i) => (
                 <Reveal key={t.author} delay={i * 120}>
-                  <figure className="flex h-full flex-col justify-between rounded-2xl border border-border bg-surface p-7 transition-colors hover:border-lagoon/30">
+                  <figure className="gradient-border flex h-full flex-col justify-between rounded-2xl border border-border bg-surface p-7 transition-colors hover:border-lagoon/30">
                     <blockquote className="font-display text-lg leading-snug text-sand">
                       &ldquo;{t.quote}&rdquo;
                     </blockquote>
@@ -280,7 +280,7 @@ export default async function HomePage() {
         {/* ── B2B CTA ───────────────────────────────────────────── */}
         <section className="pb-24 md:pb-32">
           <Reveal>
-            <div className="relative overflow-hidden rounded-3xl border border-lagoon/20 bg-surface p-10 text-center md:p-16">
+            <div className="gradient-border relative overflow-hidden rounded-3xl border border-lagoon/20 bg-surface p-10 text-center md:p-16">
               {/* Lagoon glow accent */}
               <div
                 className="pointer-events-none absolute inset-0 lagoon-wash"
@@ -296,7 +296,7 @@ export default async function HomePage() {
                 </p>
                 <Link
                   href="/contact"
-                  className="coral-glow mt-8 inline-flex items-center justify-center rounded-full bg-coral px-8 py-3.5 text-sm font-semibold tracking-wide text-sand transition-all duration-200 hover:scale-[1.03] hover:bg-coral-bright"
+                  className="gradient-border coral-glow mt-8 inline-flex items-center justify-center rounded-full bg-coral px-8 py-3.5 text-sm font-semibold tracking-wide text-sand transition-all duration-200 hover:scale-[1.03] hover:bg-coral-bright"
                 >
                   Start an Inquiry
                 </Link>

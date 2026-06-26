@@ -32,7 +32,7 @@ export default async function PortfolioPage() {
           <Reveal key={study.slug} delay={i * 60}>
             <Link
               href={`/portfolio/${study.slug}`}
-              className="group grid overflow-hidden rounded-2xl border border-ink-border bg-ink-raised transition hover:border-gold/40 md:grid-cols-2"
+              className="gradient-border group grid overflow-hidden rounded-2xl border border-ink-border bg-ink-raised transition hover:border-gold/40 md:grid-cols-2"
             >
               <Poster
                 src={study.heroImage}
