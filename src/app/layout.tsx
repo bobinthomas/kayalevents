@@ -8,7 +8,19 @@ import { getSiteSettings } from "@/lib/content";
 // Runs before paint so the intro never flashes already-rendered content: hides
 // everything except the loader until LoadingScreen finishes (or skips itself
 // on inner pages / repeat visits, in which case this never adds the class).
+//
+// Also resets scroll position on a fresh load: the browser's default
+// scroll-restoration replays the scroll offset from the last visit/reload,
+// which (combined with Lenis taking over native scroll on mount) made the
+// page appear to load already scrolled to the bottom. Skipped when the URL
+// has a real hash, since that's an intentional in-page anchor link.
 const INTRO_BOOT_SCRIPT = `
+  if ("scrollRestoration" in history) {
+    history.scrollRestoration = "manual";
+  }
+  if (!location.hash) {
+    window.scrollTo(0, 0);
+  }
   if (location.pathname === "/" && sessionStorage.getItem("kayalIntroPlayed") !== "1") {
     document.documentElement.classList.add("intro-pending");
   }

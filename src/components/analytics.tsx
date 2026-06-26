@@ -64,10 +64,15 @@ export function ConsentBanner() {
   );
   const acceptRef = useRef<HTMLButtonElement>(null);
 
-  // Move focus to Accept button when banner appears
+  // Move focus to Accept button when banner appears. preventScroll: true
+  // because this dialog is position:fixed at the bottom of a tall
+  // document (rendered after the footer) — without it, the browser's
+  // default scroll-into-view for focus() can jump the page down to the
+  // banner's in-flow position instead of recognizing it's already fixed
+  // in the viewport.
   useEffect(() => {
     if (consent === null) {
-      acceptRef.current?.focus();
+      acceptRef.current?.focus({ preventScroll: true });
     }
   }, [consent]);
 

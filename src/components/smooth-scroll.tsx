@@ -9,11 +9,27 @@ import { useEffect } from "react";
  */
 export function SmoothScrollInit() {
   useEffect(() => {
+    // Belt-and-suspenders against the browser restoring the previous scroll
+    // position on a fresh load (the boot script in app/layout.tsx already
+    // does this as early as possible, but some browsers re-apply scroll
+    // restoration again after layout settles — e.g. once images/fonts load
+    // and the page's real height is known — which can override an earlier
+    // reset). Re-asserting here (mount) and on `load` covers both cases.
+    // Skipped when the URL has a real #hash, since that's an intentional
+    // in-page anchor link.
+    const resetScroll = () => {
+      if (!location.hash) window.scrollTo(0, 0);
+    };
+    resetScroll();
+    window.addEventListener("load", resetScroll, { once: true });
+
     const prefersReducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
     ).matches;
 
-    if (prefersReducedMotion) return;
+    if (prefersReducedMotion) {
+      return () => window.removeEventListener("load", resetScroll);
+    }
 
     let lenis: import("lenis").default | null = null;
     let rafId = 0;
@@ -48,6 +64,7 @@ export function SmoothScrollInit() {
     });
 
     return () => {
+      window.removeEventListener("load", resetScroll);
       cancelled = true;
       removeMotionListener?.();
       cancelAnimationFrame(rafId);
