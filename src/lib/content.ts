@@ -11,15 +11,17 @@ import type {
 
 export { getKeystaticReader }
 
-/** Opt out of static caching in dev so content/ edits are picked up immediately.
+/** Opt out of static rendering: the Keystatic GitHub reader (used whenever
+ * KEYSTATIC_GITHUB_TOKEN is set, which is runtime-only on Workers) issues
+ * `cache: 'no-store'` fetches. A route prerendered as static at build time
+ * (when the token is absent) crashes at runtime once the token activates
+ * that reader, so every content-backed route must be dynamic consistently.
  * Silently skips when called outside request context (e.g. generateStaticParams). */
 async function ensureFreshInDev() {
-  if (process.env.NODE_ENV === 'development') {
-    try {
-      await connection()
-    } catch {
-      // Not in request context — safe to skip (generateStaticParams, build-time calls)
-    }
+  try {
+    await connection()
+  } catch {
+    // Not in request context — safe to skip (generateStaticParams, build-time calls)
   }
 }
 
