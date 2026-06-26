@@ -11,8 +11,14 @@ const nextConfig: NextConfig = {
   turbopack: { root: process.cwd() },
   // Force webpack to transpile these ESM packages for consistent CJS bundling
   transpilePackages: ["framer-motion", "motion", "motion-dom", "motion-utils"],
+  // OpenNext's /_next/image proxy on Cloudflare Workers serves relative URLs
+  // only via the static-assets binding, which can't reach our dynamic
+  // /api/media/images route (images come from GitHub/disk at request time,
+  // not the build-time asset manifest) — every request 404s there. There's
+  // also no Cloudflare Images binding configured, so optimization was a
+  // no-op passthrough anyway. Skip the proxy and serve images directly.
   images: {
-    formats: ["image/avif", "image/webp"],
+    unoptimized: true,
     remotePatterns: [
       // Sanity image CDN
       { protocol: "https", hostname: "cdn.sanity.io" },
