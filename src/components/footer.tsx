@@ -59,8 +59,8 @@ export function Footer({ settings }: { settings: SiteSettings }) {
           <nav aria-label="Footer navigation" className="space-y-3">
             <p className="eyebrow">Explore</p>
             {[
-              ["Upcoming Events", "/events"],
-              ["Portfolio", "/portfolio"],
+              ["Current Events", "/events"],
+              ["Previous Events", "/portfolio"],
               ["Services", "/services"],
               ["About", "/about"],
               ["Contact", "/contact"],
