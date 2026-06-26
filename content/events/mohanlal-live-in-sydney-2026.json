@@ -1,26 +1,25 @@
 {
   "title": "Mohanlal Live in Australia 2026",
   "artists": [
-    "Mohanlal"
+    "Mohanlal",
+    "Chithra",
+    "Manoj K Jayan",
+    "Kalabhavan Shajon",
+    "Aju Varghese",
+    "Stephen Devasy",
+    "Paris Lakshmi"
   ],
   "tagline": "The Complete Actor. One unforgettable night.",
   "description": "For the first time on Australian soil, the legend of Malayalam cinema takes the stage. An evening of cinema, conversation and celebration with Padma Bhushan Mohanlal - a once-in-a-generation event for the South Indian community in Australia. Produced end-to-end by Kayal Events with full concert-grade staging, sound and lighting.",
   "status": "on-sale",
-  "heroImage": "/api/media/images/mohanlal-live-in-australia-2026/heroImage.jpg",
-  "posterImage": "/api/media/images/mohanlal-live-in-australia-2026/posterImage.jpg",
+  "heroImage": "/api/media/images/mohanlal-live-in-sydney-2026/heroImage.jpg",
+  "posterImage": "/api/media/images/mohanlal-live-in-sydney-2026/posterImage.jpg",
   "shows": [
     {
-      "city": "Melbourne",
-      "venue": "Melbourne Convention and Exhibition Centre",
-      "start": "2026-09-12T19:00:00+10:00",
-      "ticketUrl": "https://www.trybooking.com/",
-      "soldOut": false
-    },
-    {
       "city": "Sydney",
-      "venue": "Sydney Olympic Park - Quaycentre",
-      "start": "2026-09-13T19:00:00+10:00",
-      "ticketUrl": "https://www.trybooking.com/",
+      "venue": "Norwest Convention Centre",
+      "start": "2026-08-08",
+      "ticketUrl": "www.justeasybook.com/events/mohanlal-live-sydney",
       "soldOut": false
     }
   ],
