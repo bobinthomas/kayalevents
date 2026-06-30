@@ -44,6 +44,9 @@ export async function POST(req: NextRequest) {
     videoFileId?: string;
     videoLastModified?: number | null;
     declarationChecked?: boolean;
+    freshnessCode?: string;
+    issuedAt?: string;
+    codeToken?: string;
   };
 
   try {

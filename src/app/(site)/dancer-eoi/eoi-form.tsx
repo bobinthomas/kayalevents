@@ -220,7 +220,7 @@ export function EOIForm() {
     setErrorMsg(null);
 
     let videoFileId = "";
-    let sid = "";
+    let sid = crypto.randomUUID();
 
     try {
       if (videoFile) {
