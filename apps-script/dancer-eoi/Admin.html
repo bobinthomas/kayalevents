@@ -262,21 +262,6 @@
       margin: 6px 0;
     }
 
-    .video-wrap {
-      margin: 8px 0;
-      border-radius: 10px;
-      overflow: hidden;
-      background: #000;
-      position: relative;
-    }
-
-    .video-wrap iframe {
-      width: 100%;
-      aspect-ratio: 16/9;
-      border: none;
-      display: block;
-    }
-
     .link-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
     .link-pill {
       font-size: 12px;
@@ -534,31 +519,10 @@
       if (row.link_youtube) links.push({ label: 'YouTube', url: row.link_youtube });
       if (row.link_other) links.push({ label: 'Other', url: row.link_other });
 
-      var videoPreviewUrl = row.video_drive_file_id
-        ? 'https://drive.google.com/file/d/' + row.video_drive_file_id + '/preview'
-        : '';
-
       var html = [
         // Reference
         '<div class="section-label">Reference</div>',
         '<div class="detail-value">' + row.submission_id + ' &nbsp;·&nbsp; Submitted ' + formatTs(row.submitted_at) + '</div>',
-
-        // Freshness code — most important for the reviewer to see first
-        '<div class="section-label" style="margin-top:18px">Freshness code (must appear in clip)</div>',
-        '<div class="code-box">' + esc(row.freshness_code) + '</div>',
-        '<div style="font-size:12px;color:var(--muted);margin-top:4px">Issued ' + formatTs(row.code_issued_at) + '</div>',
-
-        // Video
-        videoPreviewUrl ? [
-          '<div class="section-label" style="margin-top:18px">Proof video</div>',
-          '<div class="video-wrap">',
-          '  <iframe src="' + videoPreviewUrl + '" allow="autoplay" allowfullscreen></iframe>',
-          '</div>',
-          row.video_last_modified
-            ? '<div style="font-size:11px;color:var(--muted);margin-top:4px">File lastModified: ' + esc(row.video_last_modified) + '</div>'
-            : '',
-          '<div style="margin-top:6px"><a href="' + esc(row.video_drive_url) + '" target="_blank" class="link-pill">Open in Drive</a></div>',
-        ].join('\n') : '',
 
         // Group details
         '<div class="section-label" style="margin-top:18px">About the group</div>',
@@ -678,8 +642,7 @@
         'submission_id','submitted_at','group_name','num_performers',
         'contact_name','contact_email','contact_phone',
         'link_instagram','link_youtube','link_other',
-        'status','reviewer_notes','reviewed_by','reviewed_at',
-        'freshness_code','video_drive_url'
+        'status','reviewer_notes','reviewed_by','reviewed_at'
       ];
 
       var lines = [headers.join(',')];

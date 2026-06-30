@@ -327,7 +327,7 @@ function serveAdminPage(token) {
         "</body></html>"
     )
       .setTitle("Access denied — Kayal Events EOI")
-      .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.DENY);
+      .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.DEFAULT);
   }
 
   var tmpl = HtmlService.createTemplateFromFile("Admin");
@@ -335,7 +335,7 @@ function serveAdminPage(token) {
   return tmpl
     .evaluate()
     .setTitle("EOI Panel — Kayal Events")
-    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.DENY);
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.DEFAULT);
 }
 
 // ── Admin server-side functions (called from Admin.html via google.script.run) ─
