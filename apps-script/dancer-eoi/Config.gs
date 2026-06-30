@@ -1,0 +1,61 @@
+/**
+ * Kayal Events — Dancer EOI Backend Configuration
+ *
+ * SETUP STEPS (do in order):
+ *
+ * 1. Fill in every field marked TODO.
+ * 2. Run bootstrapResources() once from the Apps Script IDE to create the
+ *    Sheet and master Drive folder, then paste their IDs back here.
+ * 3. Deploy as a Web App:
+ *    - Execute as: Me (the owner)
+ *    - Who has access: Anyone (anonymous — required so the Next.js proxy can call it)
+ * 4. Copy the deployment URL into EOI_APPS_SCRIPT_URL in your .env.local and
+ *    Cloudflare Workers secrets.
+ * 5. Rotate HMAC_SECRET periodically. All codes issued before rotation become
+ *    invalid — do not rotate during an open submission window.
+ */
+
+// eslint-disable-next-line no-unused-vars
+const CONFIG = {
+  ORG_NAME: "Kayal Events",
+  EVENT_NAME: "Vaikittu Endha Paripadi - Mohanlal Live in Sydney",
+
+  // TODO: The Gmail address that owns the Drive folder and Sheet.
+  OWNER_EMAIL: "kayaleventsofficial@gmail.com",
+
+  // TODO: Run bootstrapResources() and paste IDs here. Leave blank to auto-create.
+  SHEET_ID: "1hlhN-QnVH3o6gSn6a1mLcSxrb0dZmbE2ikLxR3uFRo0",
+  DRIVE_PARENT_FOLDER: "1S991-1rkCBdesaI_VgglFTWvgDfL6R_i",
+
+  // TODO: Google email addresses for the admin panel. Owner is always included.
+  PANEL_ALLOWLIST: [
+    "kayaleventsofficial@gmail.com",
+    // "panelist2@gmail.com",
+  ],
+
+  // Deadline: 8 July 2026, 17:00 AEST (UTC+10 — no DST in July).
+  // Stored as UTC so Date parsing is unambiguous everywhere.
+  DEADLINE_UTC: "2026-07-08T07:00:00Z",
+  DEADLINE_DISPLAY: "8 July 2026, 5 pm AEST",
+
+  CODE_PREFIX: "KYL",
+  CODE_TTL_MINUTES: 240,
+
+  // TODO: Generate with: openssl rand -hex 32
+  // Keep this secret. Do not share or commit to version control.
+  HMAC_SECRET: "a5f67de4b47b16f1d7a4785af73a0a47c13420a65147dcf92a37aea5d6e814ac",
+
+  // TODO: Generate with: openssl rand -hex 16
+  // Protects the admin panel: visit DEPLOYMENT_URL?page=admin&token=YOUR_TOKEN
+  ADMIN_TOKEN: "",
+
+  VIDEO_MAX_MB: 50,
+  VIDEO_MAX_BYTES: 50 * 1024 * 1024,
+  VIDEO_ALLOWED_MIME: ["video/mp4", "video/quicktime", "video/webm"],
+
+  // TODO: From Cloudflare Turnstile dashboard (server-side secret key).
+  // Note: Turnstile verification is handled by the Next.js API route, so
+  // this field is only used if you bypass the Next.js proxy and call Apps
+  // Script directly. Keep it here as a backup validation layer.
+  TURNSTILE_SECRET: "0x4AAAAAADtJ66z6WslPYVGetndHggBYsNw",
+};
