@@ -253,18 +253,9 @@ function handleCreateUploadSession(body) {
 // ── Full submission ───────────────────────────────────────────────────────────
 
 function handleSubmit(body) {
-  // 1. Freshness code verification
-  var codeCheck = verifyFreshnessCode(
-    body.freshnessCode,
-    body.issuedAt,
-    body.codeToken
-  );
-  if (!codeCheck.ok) {
-    var msg =
-      codeCheck.reason === "expired"
-        ? "Your freshness code expired. Reload the form and record a new clip."
-        : "Invalid freshness code. Reload the form and try again.";
-    return jsonErr(msg);
+  // 1. Generate submissionId if not provided (no video upload path)
+  if (!body.submissionId) {
+    body.submissionId = generateSubmissionId();
   }
 
   // 2. Deadline
@@ -272,7 +263,6 @@ function handleSubmit(body) {
 
   // 3. Required fields
   var required = [
-    "submissionId",
     "groupName",
     "profileAbout",
     "achievements",
@@ -280,7 +270,6 @@ function handleSubmit(body) {
     "contactName",
     "contactEmail",
     "contactPhone",
-    "videoFileId",
   ];
   for (var i = 0; i < required.length; i++) {
     if (!body[required[i]]) {
@@ -296,24 +285,23 @@ function handleSubmit(body) {
     return jsonErr("Declaration must be checked.");
   }
 
-  // 4. Get the uploaded Drive file and make it private
-  var videoFile;
-  var videoDriveUrl;
-  try {
-    videoFile = DriveApp.getFileById(body.videoFileId);
-    // Private: no public sharing
-    videoFile.setSharing(DriveApp.Access.PRIVATE, DriveApp.Permission.NONE);
-    // Share with all panel members so they can preview it in the admin page
-    CONFIG.PANEL_ALLOWLIST.forEach(function (email) {
-      try {
-        videoFile.addViewer(email);
-      } catch (e) {
-        Logger.log("Could not add viewer " + email + ": " + e.message);
-      }
-    });
-    videoDriveUrl = videoFile.getUrl();
-  } catch (e) {
-    return jsonErr("Could not access uploaded video. Please try again.");
+  // 4. Get the uploaded Drive file and make it private (optional)
+  var videoDriveUrl = "";
+  if (body.videoFileId) {
+    try {
+      var videoFile = DriveApp.getFileById(body.videoFileId);
+      videoFile.setSharing(DriveApp.Access.PRIVATE, DriveApp.Permission.NONE);
+      CONFIG.PANEL_ALLOWLIST.forEach(function (email) {
+        try {
+          videoFile.addViewer(email);
+        } catch (e) {
+          Logger.log("Could not add viewer " + email + ": " + e.message);
+        }
+      });
+      videoDriveUrl = videoFile.getUrl();
+    } catch (e) {
+      return jsonErr("Could not access uploaded video. Please try again.");
+    }
   }
 
   // 5. Append Sheet row
@@ -322,15 +310,6 @@ function handleSubmit(body) {
   var videoLastModifiedStr = body.videoLastModified
     ? new Date(body.videoLastModified).toISOString()
     : "";
-
-  // Flag if file lastModified is older than 36h (advisory, not rejection)
-  var lastModifiedFlag = "";
-  if (body.videoLastModified) {
-    var ageHours = (Date.now() - body.videoLastModified) / 3600000;
-    if (ageHours > 36) {
-      lastModifiedFlag = " [FLAG: file modified " + Math.round(ageHours) + "h ago]";
-    }
-  }
 
   sheet.appendRow([
     now,
@@ -346,10 +325,10 @@ function handleSubmit(body) {
     body.linkYoutube || "",
     body.linkOther || "",
     videoDriveUrl,
-    body.videoFileId,
-    videoLastModifiedStr + lastModifiedFlag,
-    body.freshnessCode,
-    body.issuedAt,
+    body.videoFileId || "",
+    videoLastModifiedStr,
+    "", // freshness_code (removed)
+    "", // code_issued_at (removed)
     body.declarationChecked ? "YES" : "NO",
     "Pending", // status
     "", // reviewer_notes
@@ -437,10 +416,9 @@ function sendPanelAlert(body, videoDriveUrl) {
         "</a></p>"
       : "",
     "<hr>",
-    '<p><strong>Video:</strong> <a href="' + videoDriveUrl + '">Open in Drive</a></p>',
-    "<p><strong>Freshness code (check video for this):</strong> " +
-      body.freshnessCode +
-      "</p>",
+    videoDriveUrl
+      ? '<p><strong>Video:</strong> <a href="' + videoDriveUrl + '">Open in Drive</a></p>'
+      : "<p><strong>Video:</strong> Not uploaded — see performance links above.</p>",
     "<hr>",
     '<p><a href="' + adminUrl + '">Open admin dashboard</a></p>',
   ].join("\n");

@@ -43,9 +43,6 @@ export async function POST(req: NextRequest) {
     linkOther?: string;
     videoFileId?: string;
     videoLastModified?: number | null;
-    freshnessCode?: string;
-    issuedAt?: string;
-    codeToken?: string;
     declarationChecked?: boolean;
   };
 
@@ -65,9 +62,8 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Required fields
+  // Required fields (submissionId and videoFileId are optional — server generates if absent)
   const required = [
-    "submissionId",
     "groupName",
     "profileAbout",
     "achievements",
@@ -75,10 +71,6 @@ export async function POST(req: NextRequest) {
     "contactName",
     "contactEmail",
     "contactPhone",
-    "videoFileId",
-    "freshnessCode",
-    "issuedAt",
-    "codeToken",
   ] as const;
 
   for (const field of required) {

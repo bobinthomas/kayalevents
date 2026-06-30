@@ -15,26 +15,34 @@ const links = [
 
 export function Header() {
   const [open, setOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+  const [visible, setVisible] = useState(true);
+  const lastScrollYRef = useRef(0);
   const pathname = usePathname();
   const hamburgerRef = useRef<HTMLButtonElement>(null);
   const drawerRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 40);
+    const handleScroll = () => {
+      const current = window.scrollY;
+      if (current < 80) {
+        setVisible(true);
+      } else if (current > lastScrollYRef.current) {
+        setVisible(false);
+        setOpen(false);
+      } else {
+        setVisible(true);
+      }
+      lastScrollYRef.current = current;
+    };
     window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
+    return () => { document.body.style.overflow = ""; };
   }, [open]);
 
-  // Focus management: move focus into drawer on open, return to hamburger on close
   useEffect(() => {
     if (open) {
       const firstLink = drawerRef.current?.querySelector("a");
@@ -44,7 +52,6 @@ export function Header() {
     }
   }, [open]);
 
-  // Trap focus inside drawer while open
   useEffect(() => {
     if (!open) return;
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -71,86 +78,81 @@ export function Header() {
   }, [open]);
 
   return (
-    <header
-      className={`fixed inset-x-0 top-0 z-40 transition-all duration-500 ${
-        scrolled
-          ? "border-b border-border/50 bg-marine-black/88 shadow-[0_1px_40px_rgba(0,0,0,0.5)] backdrop-blur-xl"
-          : "border-b border-transparent bg-transparent"
-      }`}
-    >
-      <div
-        className={`mx-auto flex max-w-6xl items-center justify-between px-5 md:px-8 transition-all duration-500 ${
-          scrolled ? "h-14 md:h-16" : "h-16 md:h-20"
+    <>
+      <header
+        className={`fixed inset-x-0 top-4 z-40 flex justify-center px-4 pointer-events-none transition-[transform,opacity] duration-300 ease-in-out ${
+          visible ? "translate-y-0 opacity-100" : "-translate-y-20 opacity-0"
         }`}
       >
-        <Link href="/" aria-label="Kayal Events — home" className="flex items-center">
-          <Image
-            src="/kayal-events-logo.svg"
-            alt="Kayal Events"
-            width={160}
-            height={86}
-            priority
-            className="h-9 w-auto md:h-10"
-          />
-        </Link>
+        <div className="w-full max-w-6xl flex items-center gap-3">
 
-        {/* Desktop nav */}
-        <nav className="hidden items-center gap-8 md:flex" aria-label="Primary">
-          {links.map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              className={`text-sm tracking-wide transition duration-200 hover:text-lagoon ${
-                pathname.startsWith(l.href) ? "text-lagoon" : "text-sand/65"
-              }`}
-            >
-              {l.label}
-            </Link>
-          ))}
+          {/* Logo pill — white bg */}
           <Link
-            href="/events"
-            className="gradient-border coral-glow rounded-full bg-coral px-5 py-2 text-sm font-semibold tracking-wide text-sand transition-all duration-200 hover:scale-[1.04] hover:bg-coral-bright"
+            href="/"
+            aria-label="Kayal Events — home"
+            className="pointer-events-auto flex items-center flex-shrink-0 px-6 h-16 rounded-full bg-white/95 border border-white/60 shadow-[0_8px_40px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.8)]"
           >
-            Buy Tickets
+            <Image
+              src="/kayal-events-logo.svg"
+              alt="Kayal Events"
+              width={160}
+              height={86}
+              priority
+              className="h-9 w-auto"
+            />
           </Link>
-        </nav>
 
-        {/* Mobile hamburger */}
-        <button
-          ref={hamburgerRef}
-          className="flex h-10 w-10 flex-col items-center justify-center gap-[5px] md:hidden"
-          onClick={() => setOpen((v) => !v)}
-          aria-expanded={open}
-          aria-controls="mobile-nav"
-          aria-label={open ? "Close menu" : "Open menu"}
-        >
-          <span
-            className={`block h-px w-6 bg-sand origin-center transition-transform duration-300 ${
-              open ? "translate-y-[5px] rotate-45" : ""
-            }`}
-          />
-          <span
-            className={`block h-px w-6 bg-sand transition-all duration-300 ${
-              open ? "opacity-0" : ""
-            }`}
-          />
-          <span
-            className={`block h-px w-6 bg-sand origin-center transition-transform duration-300 ${
-              open ? "-translate-y-[5px] -rotate-45" : ""
-            }`}
-          />
-        </button>
-      </div>
+          {/* Nav pill — dark glass */}
+          <div className="pointer-events-auto flex flex-1 items-center h-16 rounded-full border border-white/20 bg-white/10 backdrop-blur-2xl shadow-[0_8px_40px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.25)]">
+
+            {/* Desktop nav */}
+            <nav className="hidden md:flex flex-1 items-center justify-end gap-6 px-8" aria-label="Primary">
+              {links.map((l) => (
+                <Link
+                  key={l.href}
+                  href={l.href}
+                  className={`text-sm tracking-wide transition duration-200 hover:text-lagoon whitespace-nowrap ${
+                    pathname.startsWith(l.href) ? "text-lagoon" : "text-sand/65"
+                  }`}
+                >
+                  {l.label}
+                </Link>
+              ))}
+              <Link
+                href="/events"
+                className="gradient-border coral-glow rounded-full bg-coral px-5 py-2 text-sm font-semibold tracking-wide text-sand transition-all duration-200 hover:scale-[1.04] hover:bg-coral-bright"
+              >
+                Buy Tickets
+              </Link>
+            </nav>
+
+            {/* Mobile hamburger */}
+            <button
+              ref={hamburgerRef}
+              className="flex md:hidden h-10 w-10 mx-3 flex-col items-center justify-center gap-[5px]"
+              onClick={() => setOpen((v) => !v)}
+              aria-expanded={open}
+              aria-controls="mobile-nav"
+              aria-label={open ? "Close menu" : "Open menu"}
+            >
+              <span className={`block h-px w-6 bg-sand origin-center transition-transform duration-300 ${open ? "translate-y-[5px] rotate-45" : ""}`} />
+              <span className={`block h-px w-6 bg-sand transition-all duration-300 ${open ? "opacity-0" : ""}`} />
+              <span className={`block h-px w-6 bg-sand origin-center transition-transform duration-300 ${open ? "-translate-y-[5px] -rotate-45" : ""}`} />
+            </button>
+
+          </div>
+        </div>
+      </header>
 
       {/* Mobile drawer */}
       {open && (
         <nav
           id="mobile-nav"
-          ref={drawerRef}
+          ref={drawerRef as React.RefObject<HTMLElement>}
           role="dialog"
           aria-modal="true"
           aria-label="Site navigation"
-          className="flex h-[calc(100dvh-4rem)] flex-col gap-2 bg-marine-black/95 backdrop-blur-xl px-5 pt-8 md:hidden"
+          className="fixed inset-0 z-30 flex flex-col gap-2 bg-marine-black/95 backdrop-blur-xl px-5 pt-24 md:hidden"
         >
           {links.map((l, i) => (
             <Link
@@ -172,6 +174,6 @@ export function Header() {
           </Link>
         </nav>
       )}
-    </header>
+    </>
   );
 }

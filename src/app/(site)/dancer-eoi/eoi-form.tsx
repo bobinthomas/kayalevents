@@ -1,7 +1,7 @@
 "use client";
 
 import Script from "next/script";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 declare global {
   interface Window {
@@ -10,6 +10,7 @@ declare global {
         el: HTMLElement,
         opts: {
           sitekey: string;
+          appearance?: "always" | "execute" | "interaction-only";
           callback: (token: string) => void;
           "expired-callback": () => void;
         }
@@ -25,21 +26,11 @@ const VIDEO_MAX_MB = 50;
 const ALLOWED_MIME = ["video/mp4", "video/quicktime", "video/webm"];
 
 type Phase =
-  | "loading-code"
-  | "code-error"
-  | "closed"
   | "form"
   | "uploading"
   | "submitting"
   | "success"
   | "error";
-
-type FreshnessCode = {
-  code: string;
-  issuedAt: string;
-  token: string;
-  deadline: string;
-};
 
 type UploadSession = {
   sessionUri: string;
@@ -85,41 +76,43 @@ async function uploadChunked(
     const end = Math.min(offset + CHUNK, file.size);
     const chunk = file.slice(offset, end);
 
-    const res = await fetch(sessionUri, {
-      method: "PUT",
+    // Proxy through our server — Google Drive's resumable upload API
+    // doesn't include CORS headers, so direct browser PUTs are blocked.
+    const res = await fetch("/api/eoi/upload-chunk", {
+      method: "POST",
       headers: {
         "Content-Type": file.type,
-        "Content-Range": `bytes ${offset}-${end - 1}/${file.size}`,
+        "x-session-uri": sessionUri,
+        "x-content-range": `bytes ${offset}-${end - 1}/${file.size}`,
       },
       body: chunk,
     });
 
-    offset = end;
+    if (!res.ok) {
+      const err = (await res.json().catch(() => ({}))) as { error?: string };
+      throw new Error(err.error ?? `Upload error (${res.status}).`);
+    }
+
+    const result = (await res.json()) as {
+      done: boolean;
+      id?: string;
+      nextOffset?: number;
+    };
+
+    if (result.done && result.id) {
+      onProgress(100);
+      return result.id;
+    }
+
+    offset = result.nextOffset ?? end;
     onProgress(Math.round((offset / file.size) * 100));
-
-    if (res.status === 200 || res.status === 201) {
-      const data = (await res.json()) as { id: string };
-      return data.id;
-    }
-
-    if (res.status !== 308) {
-      throw new Error(`Upload error (${res.status}).`);
-    }
-
-    // 308 Resume Incomplete: check how much Drive confirmed
-    const range = res.headers.get("Range");
-    if (range) {
-      const m = range.match(/bytes=0-(\d+)/);
-      if (m) offset = parseInt(m[1], 10) + 1;
-    }
   }
 
   throw new Error("Upload ended without a file ID.");
 }
 
 export function EOIForm() {
-  const [phase, setPhase] = useState<Phase>("loading-code");
-  const [freshnessCode, setFreshnessCode] = useState<FreshnessCode | null>(null);
+  const [phase, setPhase] = useState<Phase>("form");
   const [uploadPct, setUploadPct] = useState(0);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [submissionId, setSubmissionId] = useState<string | null>(null);
@@ -132,30 +125,11 @@ export function EOIForm() {
   const turnstileRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
 
-  useEffect(() => {
-    async function loadCode() {
-      try {
-        const res = await fetch("/api/eoi/issue-code");
-        if (!res.ok) throw new Error("fetch failed");
-        const data = (await res.json()) as FreshnessCode;
-        if (Date.now() > new Date(data.deadline).getTime()) {
-          setPhase("closed");
-          return;
-        }
-        setFreshnessCode(data);
-        setPhase("form");
-      } catch {
-        setPhase("code-error");
-      }
-    }
-
-    loadCode();
-  }, []);
-
   function handleTurnstileLoad() {
     if (turnstileRef.current && window.turnstile && TURNSTILE_SITE_KEY) {
       window.turnstile.render(turnstileRef.current, {
         sitekey: TURNSTILE_SITE_KEY,
+        appearance: "always",
         callback: (token) => setTurnstileToken(token),
         "expired-callback": () => setTurnstileToken(null),
       });
@@ -202,13 +176,12 @@ export function EOIForm() {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (!freshnessCode || !videoFile) return;
 
     const form = e.currentTarget;
     const fd = new FormData(form);
     const get = (k: string) => (fd.get(k) as string | null) ?? "";
 
-    // At least one link required
+    // At least one performance link required
     if (!get("linkInstagram") && !get("linkYoutube") && !get("linkOther")) {
       setErrorMsg("Provide at least one performance link — Instagram, YouTube, or other.");
       return;
@@ -221,32 +194,36 @@ export function EOIForm() {
 
     setErrorMsg(null);
 
+    let videoFileId = "";
+    let sid = "";
+
     try {
-      // Create Drive upload session
-      setPhase("uploading");
-      setUploadPct(0);
+      if (videoFile) {
+        // Create Drive upload session
+        setPhase("uploading");
+        setUploadPct(0);
 
-      const sessionRes = await fetch("/api/eoi/create-upload-session", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          filename: videoFile.name,
-          contentType: videoFile.type,
-          fileSize: videoFile.size,
-          groupName: get("groupName"),
-        }),
-      });
+        const sessionRes = await fetch("/api/eoi/create-upload-session", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            filename: videoFile.name,
+            contentType: videoFile.type,
+            fileSize: videoFile.size,
+            groupName: get("groupName"),
+          }),
+        });
 
-      if (!sessionRes.ok) {
-        const err = (await sessionRes.json().catch(() => ({}))) as { error?: string };
-        throw new Error(err.error ?? "Could not start upload. Please try again.");
+        if (!sessionRes.ok) {
+          const err = (await sessionRes.json().catch(() => ({}))) as { error?: string };
+          throw new Error(err.error ?? "Could not start upload. Please try again.");
+        }
+
+        const session = (await sessionRes.json()) as UploadSession;
+        sid = session.submissionId;
+
+        videoFileId = await uploadChunked(videoFile, session.sessionUri, setUploadPct);
       }
-
-      const { sessionUri, submissionId: sid } =
-        (await sessionRes.json()) as UploadSession;
-
-      // Upload file directly to Drive
-      const fileId = await uploadChunked(videoFile, sessionUri, setUploadPct);
 
       // Submit form data
       setPhase("submitting");
@@ -266,12 +243,8 @@ export function EOIForm() {
           linkInstagram: get("linkInstagram"),
           linkYoutube: get("linkYoutube"),
           linkOther: get("linkOther"),
-          videoFileId: fileId,
-          videoLastModified: videoLastModified,
-          freshnessCode: freshnessCode.code,
-          issuedAt: freshnessCode.issuedAt,
-          codeToken: freshnessCode.token,
-          declarationChecked: fd.get("declaration") === "on",
+          videoFileId,
+          videoLastModified: videoFile?.lastModified ?? null,
           turnstileToken: turnstileToken ?? "",
         }),
       });
@@ -292,58 +265,6 @@ export function EOIForm() {
   }
 
   // ─── States ────────────────────────────────────────────────────────────────
-
-  if (phase === "loading-code") {
-    return (
-      <div className="flex flex-col items-center gap-4 py-16 text-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-border border-t-lagoon" />
-        <p className="text-sm text-sand-muted">Preparing your application…</p>
-      </div>
-    );
-  }
-
-  if (phase === "code-error") {
-    return (
-      <div className="rounded-2xl border border-border bg-surface-raised p-8 text-center">
-        <p className="font-medium text-sand">Could not load the application form.</p>
-        <p className="mt-2 text-sm text-sand-muted">
-          Check your connection and try again. If the problem persists, email us at{" "}
-          <a
-            href="mailto:kayaleventsofficial@gmail.com"
-            className="text-lagoon underline"
-          >
-            kayaleventsofficial@gmail.com
-          </a>
-          .
-        </p>
-        <button
-          onClick={() => {
-            setPhase("loading-code");
-            // re-trigger by reloading
-            window.location.reload();
-          }}
-          className="mt-6 rounded-full border border-lagoon px-6 py-2.5 text-sm text-lagoon transition hover:bg-lagoon/10"
-        >
-          Try again
-        </button>
-      </div>
-    );
-  }
-
-  if (phase === "closed") {
-    return (
-      <div className="rounded-2xl border border-border bg-surface-raised p-8 text-center">
-        <p className="eyebrow">Applications closed</p>
-        <p className="mt-3 font-display text-2xl text-sand">
-          Submissions are now closed.
-        </p>
-        <p className="mt-2 text-sand-muted">
-          The deadline was 8 July 2026, 5 pm AEST. Thank you to everyone who applied — the
-          panel will be in touch with selected groups.
-        </p>
-      </div>
-    );
-  }
 
   if (phase === "success") {
     return (
@@ -525,49 +446,16 @@ export function EOIForm() {
 
         <div className="hairline" />
 
-        {/* ── Freshness code ── */}
-        {freshnessCode && (
-          <section className="rounded-2xl border border-ocean/30 bg-ocean/5 p-6">
-            <h2 className="eyebrow text-ocean mb-4">Your freshness code</h2>
-            <div className="flex flex-col gap-5 sm:flex-row sm:items-start">
-              <div className="shrink-0 rounded-xl border border-ocean/40 bg-marine-black px-6 py-5 text-center">
-                <p className="font-mono text-3xl font-bold tracking-[0.2em] text-ocean">
-                  {freshnessCode.code}
-                </p>
-                <p className="mt-1 text-xs text-sand-muted">
-                  {new Date().toLocaleDateString("en-AU", {
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric",
-                  })}
-                </p>
-              </div>
-              <div className="space-y-2 text-sm text-sand-muted">
-                <p>
-                  <strong className="text-sand">Record your clip now.</strong> Your video
-                  must show one group member saying this code or holding a sign with it,
-                  then a few seconds of your group performing.
-                </p>
-                <p>
-                  The code proves your clip was made today. The panel will verify it
-                  matches when they review your submission.
-                </p>
-                <p className="text-xs">
-                  This code expires in 4 hours. If you step away, reload the page to get
-                  a new code before recording.
-                </p>
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* ── Video upload ── */}
+        {/* ── Video ── */}
         <section>
           <div className="mb-4">
-            <h2 className="eyebrow">Proof video *</h2>
+            <h2 className="eyebrow">Recent performance video</h2>
             <p className="mt-1 text-sm text-sand-muted">
-              MP4, MOV, or WebM · max {VIDEO_MAX_SECONDS}s · max {VIDEO_MAX_MB} MB ·
-              must show the code above
+              Upload a recent clip of your group performing — ideally shot within the last
+              week. Or share a link in the Performance Links section above. Either works.
+            </p>
+            <p className="mt-1 text-xs text-sand-muted/60">
+              MP4, MOV, or WebM · max {VIDEO_MAX_SECONDS}s · max {VIDEO_MAX_MB} MB
             </p>
           </div>
 
@@ -599,9 +487,7 @@ export function EOIForm() {
               ) : (
                 <div className="space-y-1">
                   <p className="text-sm text-sand">Tap to choose your video</p>
-                  <p className="text-xs text-sand-muted">
-                    Must show the code from the box above
-                  </p>
+                  <p className="text-xs text-sand-muted">Optional — or share a link above</p>
                 </div>
               )}
             </div>
@@ -631,21 +517,6 @@ export function EOIForm() {
 
         <div className="hairline" />
 
-        {/* ── Declaration ── */}
-        <label className="flex cursor-pointer gap-3">
-          <input
-            type="checkbox"
-            name="declaration"
-            required
-            disabled={isBusy}
-            className="mt-0.5 h-4 w-4 shrink-0 accent-lagoon"
-          />
-          <span className="text-sm text-sand-muted">
-            I confirm this clip was recorded today and shows the code displayed above.
-            All information in this application is accurate.
-          </span>
-        </label>
-
         {/* ── Turnstile ── */}
         {TURNSTILE_SITE_KEY && (
           <div>
@@ -670,7 +541,7 @@ export function EOIForm() {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
           <button
             type="submit"
-            disabled={isBusy || !!videoError || !videoFile}
+            disabled={isBusy || !!videoError}
             className="gradient-border coral-glow rounded-full bg-coral px-8 py-4 text-sm font-semibold tracking-wide text-sand transition-all hover:scale-[1.02] hover:bg-coral-bright disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
           >
             {phase === "uploading"
