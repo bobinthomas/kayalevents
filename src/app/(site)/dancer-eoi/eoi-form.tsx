@@ -219,7 +219,7 @@ export function EOIForm() {
 
     setErrorMsg(null);
 
-    let videoFileId = "";
+    let videoFileId = "NO_VIDEO";
     let sid = crypto.randomUUID();
 
     try {
@@ -269,7 +269,7 @@ export function EOIForm() {
           linkYoutube: get("linkYoutube"),
           linkOther: get("linkOther"),
           videoFileId,
-          videoLastModified: videoFile?.lastModified ?? null,
+          videoLastModified: videoFile?.lastModified ?? 0,
           turnstileToken: turnstileToken ?? "",
           declarationChecked: declared,
           freshnessCode: freshnessCode?.code ?? "",
