@@ -41,8 +41,6 @@ export async function POST(req: NextRequest) {
     linkInstagram?: string;
     linkYoutube?: string;
     linkOther?: string;
-    videoFileId?: string;
-    videoLastModified?: number | null;
     declarationChecked?: boolean;
     freshnessCode?: string;
     issuedAt?: string;
@@ -65,7 +63,6 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Required fields (submissionId and videoFileId are optional — server generates if absent)
   const required = [
     "groupName",
     "profileAbout",
@@ -95,7 +92,6 @@ export async function POST(req: NextRequest) {
 
   // Honeypot: if body has 'website' field with content, reject silently
   if ("website" in body && body.website) {
-    // Silently appear to succeed
     return NextResponse.json({ submissionId: body.submissionId, success: true });
   }
 
@@ -109,12 +105,18 @@ export async function POST(req: NextRequest) {
       },
       body: JSON.stringify({
         action: "submit",
-        ...body,
-        // Only pass videoFileId if it looks like a real Drive ID (25+ chars).
-        // Omitting it causes the Apps Script to skip DriveApp.getFileById entirely.
-        videoFileId: body.videoFileId && body.videoFileId.length > 20
-          ? body.videoFileId
-          : undefined,
+        submissionId: body.submissionId,
+        groupName: body.groupName,
+        profileAbout: body.profileAbout,
+        achievements: body.achievements,
+        numPerformers: body.numPerformers,
+        contactName: body.contactName,
+        contactEmail: body.contactEmail,
+        contactPhone: body.contactPhone,
+        linkInstagram: body.linkInstagram ?? "",
+        linkYoutube: body.linkYoutube ?? "",
+        linkOther: body.linkOther ?? "",
+        declarationChecked: body.declarationChecked,
       }),
     });
 

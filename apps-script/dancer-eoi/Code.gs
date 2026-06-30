@@ -40,8 +40,7 @@ function jsonOk(data) {
   );
 }
 
-function jsonErr(msg, _code) {
-  // ContentService cannot set HTTP status codes; the client checks the error field.
+function jsonErr(msg) {
   return ContentService.createTextOutput(
     JSON.stringify({ error: msg })
   ).setMimeType(ContentService.MimeType.JSON);
@@ -55,10 +54,6 @@ function bootstrapResources() {
   if (!CONFIG.SHEET_ID) {
     var ss = SpreadsheetApp.create("Kayal Events EOI Submissions");
     Logger.log("SHEET_ID: " + ss.getId());
-  }
-  if (!CONFIG.DRIVE_PARENT_FOLDER) {
-    var folder = DriveApp.createFolder("Kayal Events — EOI Submissions");
-    Logger.log("DRIVE_PARENT_FOLDER: " + folder.getId());
   }
 }
 
@@ -77,11 +72,6 @@ var SHEET_HEADERS = [
   "link_instagram",
   "link_youtube",
   "link_other",
-  "video_drive_url",
-  "video_drive_file_id",
-  "video_last_modified",
-  "freshness_code",
-  "code_issued_at",
   "declaration_checked",
   "status",
   "reviewer_notes",
@@ -94,7 +84,6 @@ function getSheet() {
   if (CONFIG.SHEET_ID) {
     ss = SpreadsheetApp.openById(CONFIG.SHEET_ID);
   } else {
-    // Auto-create and cache ID in script properties for this session
     var props = PropertiesService.getScriptProperties();
     var cachedId = props.getProperty("auto_sheet_id");
     if (cachedId) {
@@ -112,23 +101,6 @@ function getSheet() {
     sheet.setFrozenRows(1);
   }
   return sheet;
-}
-
-// ── Drive ─────────────────────────────────────────────────────────────────────
-
-function getMasterFolder() {
-  if (CONFIG.DRIVE_PARENT_FOLDER) {
-    return DriveApp.getFolderById(CONFIG.DRIVE_PARENT_FOLDER);
-  }
-  var props = PropertiesService.getScriptProperties();
-  var cachedId = props.getProperty("auto_folder_id");
-  if (cachedId) {
-    return DriveApp.getFolderById(cachedId);
-  }
-  var folder = DriveApp.createFolder("Kayal Events — EOI Submissions");
-  props.setProperty("auto_folder_id", folder.getId());
-  Logger.log("Created folder: " + folder.getId() + " — add to Config.DRIVE_PARENT_FOLDER");
-  return folder;
 }
 
 // ── doGet ─────────────────────────────────────────────────────────────────────
@@ -171,7 +143,6 @@ function doPost(e) {
     var body = JSON.parse(e.postData.contents);
     var action = body.action || "";
 
-    if (action === "createUploadSession") return handleCreateUploadSession(body);
     if (action === "submit") return handleSubmit(body);
 
     return jsonErr("Unknown action.");
@@ -180,80 +151,10 @@ function doPost(e) {
   }
 }
 
-// ── Upload session ────────────────────────────────────────────────────────────
-
-function handleCreateUploadSession(body) {
-  if (isPastDeadline()) return jsonErr("Applications are closed.");
-
-  var filename = body.filename;
-  var contentType = body.contentType;
-  var fileSize = body.fileSize;
-  var groupName = body.groupName;
-
-  if (!filename || !contentType || !fileSize || !groupName) {
-    return jsonErr("Missing required fields.");
-  }
-
-  if (CONFIG.VIDEO_ALLOWED_MIME.indexOf(contentType) === -1) {
-    return jsonErr("File type not allowed.");
-  }
-
-  if (fileSize > CONFIG.VIDEO_MAX_BYTES) {
-    return jsonErr("File too large.");
-  }
-
-  var submissionId = generateSubmissionId();
-  var masterFolder = getMasterFolder();
-  var subFolder = masterFolder.createFolder(
-    groupName.substring(0, 60) + " — " + submissionId
-  );
-
-  // Initiate Drive resumable upload session
-  var token = ScriptApp.getOAuthToken();
-  var metadata = JSON.stringify({
-    name: filename,
-    mimeType: contentType,
-    parents: [subFolder.getId()],
-  });
-
-  var response = UrlFetchApp.fetch(
-    "https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable",
-    {
-      method: "POST",
-      headers: {
-        Authorization: "Bearer " + token,
-        "Content-Type": "application/json; charset=UTF-8",
-        "X-Upload-Content-Type": contentType,
-        "X-Upload-Content-Length": String(fileSize),
-      },
-      payload: metadata,
-      muteHttpExceptions: true,
-    }
-  );
-
-  if (response.getResponseCode() !== 200) {
-    Logger.log("Drive session init failed: " + response.getContentText());
-    return jsonErr("Could not create upload session. Try again.");
-  }
-
-  var sessionUri = response.getHeaders()["Location"];
-  if (!sessionUri) {
-    return jsonErr("No session URI returned from Drive.");
-  }
-
-  // Store subfolder ID so we can look it up on submit if needed
-  PropertiesService.getScriptProperties().setProperty(
-    "sid_" + submissionId,
-    subFolder.getId()
-  );
-
-  return jsonOk({ sessionUri: sessionUri, submissionId: submissionId });
-}
-
 // ── Full submission ───────────────────────────────────────────────────────────
 
 function handleSubmit(body) {
-  // 1. Generate submissionId if not provided (no video upload path)
+  // 1. Generate submissionId if not provided
   if (!body.submissionId) {
     body.submissionId = generateSubmissionId();
   }
@@ -285,35 +186,9 @@ function handleSubmit(body) {
     return jsonErr("Declaration must be checked.");
   }
 
-  // 4. Get the uploaded Drive file and make it private (optional)
-  // Google Drive file IDs are 25–33 chars; skip empty strings and sentinels.
-  var videoDriveUrl = "";
-  var realVideoId = body.videoFileId && String(body.videoFileId).length > 20
-    ? String(body.videoFileId)
-    : "";
-  if (realVideoId) {
-    try {
-      var videoFile = DriveApp.getFileById(realVideoId);
-      videoFile.setSharing(DriveApp.Access.PRIVATE, DriveApp.Permission.NONE);
-      CONFIG.PANEL_ALLOWLIST.forEach(function (email) {
-        try {
-          videoFile.addViewer(email);
-        } catch (e) {
-          Logger.log("Could not add viewer " + email + ": " + e.message);
-        }
-      });
-      videoDriveUrl = videoFile.getUrl();
-    } catch (e) {
-      return jsonErr("Could not access uploaded video. Please try again.");
-    }
-  }
-
-  // 5. Append Sheet row
+  // 4. Append Sheet row
   var sheet = getSheet();
   var now = new Date().toISOString();
-  var videoLastModifiedStr = body.videoLastModified
-    ? new Date(body.videoLastModified).toISOString()
-    : "";
 
   sheet.appendRow([
     now,
@@ -328,21 +203,16 @@ function handleSubmit(body) {
     body.linkInstagram || "",
     body.linkYoutube || "",
     body.linkOther || "",
-    videoDriveUrl,
-    realVideoId,
-    videoLastModifiedStr,
-    "", // freshness_code (removed)
-    "", // code_issued_at (removed)
     body.declarationChecked ? "YES" : "NO",
-    "Pending", // status
-    "", // reviewer_notes
-    "", // reviewed_by
-    "", // reviewed_at
+    "Pending",
+    "",
+    "",
+    "",
   ]);
 
-  // 6. Emails
+  // 5. Emails
   try {
-    sendPanelAlert(body, videoDriveUrl);
+    sendPanelAlert(body);
     sendApplicantConfirmation(
       body.contactEmail,
       body.contactName,
@@ -350,33 +220,15 @@ function handleSubmit(body) {
       body.submissionId
     );
   } catch (e) {
-    // Email failure should not fail the submission
     Logger.log("Email error: " + e.message);
   }
 
   return jsonOk({ submissionId: body.submissionId, success: true });
 }
 
-// ── Freshness code verification ───────────────────────────────────────────────
-
-function verifyFreshnessCode(code, issuedAt, token) {
-  if (!code || !issuedAt || !token) {
-    return { ok: false, reason: "missing" };
-  }
-  var expected = hmacHex(code + "|" + issuedAt);
-  if (expected !== token) {
-    return { ok: false, reason: "invalid_token" };
-  }
-  var ageMinutes = (Date.now() - new Date(issuedAt).getTime()) / 60000;
-  if (ageMinutes > CONFIG.CODE_TTL_MINUTES) {
-    return { ok: false, reason: "expired" };
-  }
-  return { ok: true };
-}
-
 // ── Emails ────────────────────────────────────────────────────────────────────
 
-function sendPanelAlert(body, videoDriveUrl) {
+function sendPanelAlert(body) {
   var adminUrl = ScriptApp.getService().getUrl() + "?page=admin&token=" + CONFIG.ADMIN_TOKEN;
   var subject =
     "[EOI] " + body.groupName + " — " + body.numPerformers + " performers";
@@ -419,10 +271,6 @@ function sendPanelAlert(body, videoDriveUrl) {
         body.linkOther +
         "</a></p>"
       : "",
-    "<hr>",
-    videoDriveUrl
-      ? '<p><strong>Video:</strong> <a href="' + videoDriveUrl + '">Open in Drive</a></p>'
-      : "<p><strong>Video:</strong> Not uploaded — see performance links above.</p>",
     "<hr>",
     '<p><a href="' + adminUrl + '">Open admin dashboard</a></p>',
   ].join("\n");
@@ -530,7 +378,7 @@ function updateSubmission(submissionId, status, reviewerNotes, token) {
   var rowIndex = -1;
   for (var i = 0; i < ids.length; i++) {
     if (ids[i][0] === submissionId) {
-      rowIndex = i + 2; // 1-indexed, +1 for header
+      rowIndex = i + 2;
       break;
     }
   }
