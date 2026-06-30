@@ -4,8 +4,6 @@ const APPS_SCRIPT_URL = process.env.EOI_APPS_SCRIPT_URL ?? "";
 const VIDEO_MAX_MB = 50;
 const ALLOWED_MIME = ["video/mp4", "video/quicktime", "video/webm"];
 
-export const runtime = "edge";
-
 export async function POST(req: NextRequest) {
   if (!APPS_SCRIPT_URL) {
     return NextResponse.json({ error: "EOI not configured." }, { status: 503 });

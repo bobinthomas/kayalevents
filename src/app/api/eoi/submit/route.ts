@@ -3,8 +3,6 @@ import { NextRequest, NextResponse } from "next/server";
 const APPS_SCRIPT_URL = process.env.EOI_APPS_SCRIPT_URL ?? "";
 const TURNSTILE_SECRET = process.env.TURNSTILE_SECRET ?? "";
 
-export const runtime = "edge";
-
 async function verifyTurnstile(token: string, ip: string): Promise<boolean> {
   if (!TURNSTILE_SECRET) return true; // skip in dev if no secret configured
 

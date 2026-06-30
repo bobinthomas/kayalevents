@@ -2,8 +2,6 @@ import { NextResponse } from "next/server";
 
 const APPS_SCRIPT_URL = process.env.EOI_APPS_SCRIPT_URL ?? "";
 
-export const runtime = "edge";
-
 export async function GET() {
   if (!APPS_SCRIPT_URL) {
     return NextResponse.json({ error: "EOI not configured." }, { status: 503 });
