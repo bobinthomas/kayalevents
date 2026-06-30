@@ -1,7 +1,7 @@
 "use client";
 
 import Script from "next/script";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 declare global {
   interface Window {
@@ -25,7 +25,15 @@ const VIDEO_MAX_SECONDS = 30;
 const VIDEO_MAX_MB = 50;
 const ALLOWED_MIME = ["video/mp4", "video/quicktime", "video/webm"];
 
+type FreshnessCode = {
+  code: string;
+  issuedAt: string;
+  token: string;
+  deadline: string;
+};
+
 type Phase =
+  | "closed"
   | "form"
   | "uploading"
   | "submitting"
@@ -113,6 +121,7 @@ async function uploadChunked(
 
 export function EOIForm() {
   const [phase, setPhase] = useState<Phase>("form");
+  const [freshnessCode, setFreshnessCode] = useState<FreshnessCode | null>(null);
   const [uploadPct, setUploadPct] = useState(0);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [submissionId, setSubmissionId] = useState<string | null>(null);
@@ -125,6 +134,21 @@ export function EOIForm() {
   const [declared, setDeclared] = useState(false);
   const turnstileRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    fetch("/api/eoi/issue-code")
+      .then((r) => r.json())
+      .then((data: FreshnessCode) => {
+        if (Date.now() > new Date(data.deadline).getTime()) {
+          setPhase("closed");
+          return;
+        }
+        setFreshnessCode(data);
+      })
+      .catch(() => {
+        setErrorMsg("Could not load the application form. Please refresh and try again.");
+      });
+  }, []);
 
   function handleTurnstileLoad() {
     if (turnstileRef.current && window.turnstile && TURNSTILE_SITE_KEY) {
@@ -248,6 +272,9 @@ export function EOIForm() {
           videoLastModified: videoFile?.lastModified ?? null,
           turnstileToken: turnstileToken ?? "",
           declarationChecked: declared,
+          freshnessCode: freshnessCode?.code ?? "",
+          issuedAt: freshnessCode?.issuedAt ?? "",
+          codeToken: freshnessCode?.token ?? "",
         }),
       });
 
@@ -267,6 +294,19 @@ export function EOIForm() {
   }
 
   // ─── States ────────────────────────────────────────────────────────────────
+
+  if (phase === "closed") {
+    return (
+      <div className="rounded-2xl border border-border bg-surface-raised p-8 text-center">
+        <p className="eyebrow">Applications closed</p>
+        <p className="mt-3 font-display text-2xl text-sand">Submissions are now closed.</p>
+        <p className="mt-2 text-sand-muted">
+          The deadline was 8 July 2026, 5 pm AEST. Thank you to everyone who applied — the
+          panel will be in touch with selected groups.
+        </p>
+      </div>
+    );
+  }
 
   if (phase === "success") {
     return (
@@ -576,7 +616,7 @@ export function EOIForm() {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
           <button
             type="submit"
-            disabled={isBusy || !!videoError || !declared}
+            disabled={isBusy || !!videoError || !declared || !freshnessCode}
             className="gradient-border coral-glow rounded-full bg-coral px-8 py-4 text-sm font-semibold tracking-wide text-sand transition-all hover:scale-[1.02] hover:bg-coral-bright disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
           >
             {phase === "uploading"
