@@ -122,6 +122,7 @@ export function EOIForm() {
   const [videoError, setVideoError] = useState<string | null>(null);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [turnstileReady, setTurnstileReady] = useState(false);
+  const [declared, setDeclared] = useState(false);
   const turnstileRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -527,6 +528,39 @@ export function EOIForm() {
           </div>
         )}
 
+        {/* ── Declaration ── */}
+        <section className="rounded-xl border border-border bg-surface/40 p-5">
+          <h2 className="eyebrow mb-4">Declaration</h2>
+          <ul className="mb-5 space-y-2 text-sm text-sand-muted">
+            {[
+              "EOI submissions will be reviewed by our selection panel.",
+              "Selected groups will be contacted directly by the organizers.",
+              "The panel's decision will be final.",
+              "Terms and conditions will apply to all selected groups.",
+              "Submission of an EOI does not guarantee selection for the event.",
+              "No enquiries will be accepted via Instagram, Facebook, phone calls, or text messages.",
+              "Only email correspondence will be considered.",
+            ].map((point) => (
+              <li key={point} className="flex gap-2.5">
+                <span className="mt-0.5 text-lagoon" aria-hidden="true">›</span>
+                <span>{point}</span>
+              </li>
+            ))}
+          </ul>
+          <label className="flex cursor-pointer items-start gap-3">
+            <input
+              type="checkbox"
+              checked={declared}
+              onChange={(e) => setDeclared(e.target.checked)}
+              disabled={isBusy}
+              className="mt-0.5 h-4 w-4 shrink-0 accent-lagoon disabled:opacity-50"
+            />
+            <span className="text-sm text-sand">
+              I have read and understood all of the above, and I agree to these terms.
+            </span>
+          </label>
+        </section>
+
         {/* ── Error ── */}
         {errorMsg && (
           <p
@@ -541,7 +575,7 @@ export function EOIForm() {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
           <button
             type="submit"
-            disabled={isBusy || !!videoError}
+            disabled={isBusy || !!videoError || !declared}
             className="gradient-border coral-glow rounded-full bg-coral px-8 py-4 text-sm font-semibold tracking-wide text-sand transition-all hover:scale-[1.02] hover:bg-coral-bright disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
           >
             {phase === "uploading"
