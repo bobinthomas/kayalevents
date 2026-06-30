@@ -286,10 +286,14 @@ function handleSubmit(body) {
   }
 
   // 4. Get the uploaded Drive file and make it private (optional)
+  // Google Drive file IDs are 25–33 chars; skip empty strings and sentinels.
   var videoDriveUrl = "";
-  if (body.videoFileId) {
+  var realVideoId = body.videoFileId && String(body.videoFileId).length > 20
+    ? String(body.videoFileId)
+    : "";
+  if (realVideoId) {
     try {
-      var videoFile = DriveApp.getFileById(body.videoFileId);
+      var videoFile = DriveApp.getFileById(realVideoId);
       videoFile.setSharing(DriveApp.Access.PRIVATE, DriveApp.Permission.NONE);
       CONFIG.PANEL_ALLOWLIST.forEach(function (email) {
         try {
@@ -325,7 +329,7 @@ function handleSubmit(body) {
     body.linkYoutube || "",
     body.linkOther || "",
     videoDriveUrl,
-    body.videoFileId || "",
+    realVideoId,
     videoLastModifiedStr,
     "", // freshness_code (removed)
     "", // code_issued_at (removed)
