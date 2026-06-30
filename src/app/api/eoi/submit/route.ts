@@ -107,7 +107,15 @@ export async function POST(req: NextRequest) {
         "Content-Type": "application/json",
         Accept: "application/json",
       },
-      body: JSON.stringify({ action: "submit", ...body }),
+      body: JSON.stringify({
+        action: "submit",
+        ...body,
+        // Only pass videoFileId if it looks like a real Drive ID (25+ chars).
+        // Omitting it causes the Apps Script to skip DriveApp.getFileById entirely.
+        videoFileId: body.videoFileId && body.videoFileId.length > 20
+          ? body.videoFileId
+          : undefined,
+      }),
     });
 
     const data = (await res.json()) as { error?: string; submissionId?: string };
