@@ -247,6 +247,7 @@ export function EOIForm() {
           videoFileId,
           videoLastModified: videoFile?.lastModified ?? null,
           turnstileToken: turnstileToken ?? "",
+          declarationChecked: declared,
         }),
       });
 
