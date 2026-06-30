@@ -30,7 +30,6 @@ export async function POST(req: NextRequest) {
 
   let body: {
     turnstileToken?: string;
-    submissionId?: string;
     groupName?: string;
     profileAbout?: string;
     achievements?: string;
@@ -105,7 +104,6 @@ export async function POST(req: NextRequest) {
       },
       body: JSON.stringify({
         action: "submit",
-        submissionId: body.submissionId,
         groupName: body.groupName,
         profileAbout: body.profileAbout,
         achievements: body.achievements,

@@ -119,7 +119,6 @@ export function EOIForm() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          submissionId: crypto.randomUUID(),
           groupName: get("groupName"),
           profileAbout: get("profileAbout"),
           achievements: get("achievements"),
