@@ -145,6 +145,12 @@ function doPost(e) {
 
     if (action === "submit") return handleSubmit(body);
 
+    // Admin HTTP endpoints (token validated inside each handler via requirePanel)
+    if (action === "adminGetSubmissions") return jsonOk(getSubmissions(body.token));
+    if (action === "adminUpdateSubmission")
+      return jsonOk(updateSubmission(body.submissionId, body.status, body.reviewerNotes, body.token));
+    if (action === "adminGetReviewerEmail") return jsonOk({ email: getReviewerEmail(body.token) });
+
     return jsonErr("Unknown action.");
   } catch (err) {
     return jsonErr(err.message);
