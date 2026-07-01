@@ -26,18 +26,36 @@ function isValidEmail(v: string) {
 }
 
 function isValidPhone(v: string) {
-  // Allow digits, spaces, dashes, parens, leading +. Must have at least 8 digits.
   const digits = v.replace(/\D/g, "");
   return /^[+\d][\d\s\-().]+$/.test(v.trim()) && digits.length >= 8;
 }
 
 function isValidUrl(v: string) {
-  if (!v) return true; // optional fields
+  if (!v) return true;
   try {
     const url = new URL(v.trim());
     return url.protocol === "http:" || url.protocol === "https:";
   } catch {
     return false;
+  }
+}
+
+function validateField(name: string, value: string): string {
+  switch (name) {
+    case "contactEmail":
+      return value && !isValidEmail(value) ? "Please enter a valid email address." : "";
+    case "contactPhone":
+      return value && !isValidPhone(value)
+        ? "Please enter a valid phone number (e.g. 0412 345 678 or +61 412 345 678)."
+        : "";
+    case "linkInstagram":
+    case "linkYoutube":
+    case "linkOther":
+      return value && !isValidUrl(value)
+        ? "Must be a valid URL starting with https:// or http://."
+        : "";
+    default:
+      return "";
   }
 }
 
@@ -53,6 +71,9 @@ type Phase = "closed" | "form" | "submitting" | "success" | "error";
 const inputCls =
   "w-full rounded-xl border border-border bg-marine-black px-4 py-3 text-sm text-sand placeholder:text-sand-muted/50 transition-colors focus:border-lagoon focus:outline-none focus:ring-2 focus:ring-lagoon/50 focus:ring-offset-1 focus:ring-offset-marine-black disabled:opacity-50";
 
+const inputErrCls =
+  "w-full rounded-xl border border-red-500/60 bg-marine-black px-4 py-3 text-sm text-sand placeholder:text-sand-muted/50 transition-colors focus:border-red-400 focus:outline-none focus:ring-2 focus:ring-red-400/40 focus:ring-offset-1 focus:ring-offset-marine-black disabled:opacity-50";
+
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return <h2 className="eyebrow mb-5">{children}</h2>;
 }
@@ -60,10 +81,12 @@ function SectionHeading({ children }: { children: React.ReactNode }) {
 function Field({
   label,
   hint,
+  error,
   children,
 }: {
   label: string;
   hint?: string;
+  error?: string;
   children: React.ReactNode;
 }) {
   return (
@@ -72,7 +95,8 @@ function Field({
         {label}
         {hint && <span className="ml-1 text-sand-muted/60">{hint}</span>}
       </span>
-      <div className="gradient-border rounded-xl">{children}</div>
+      <div className={error ? "rounded-xl" : "gradient-border rounded-xl"}>{children}</div>
+      {error && <p className="mt-1.5 text-xs text-red-400">{error}</p>}
     </label>
   );
 }
@@ -81,6 +105,7 @@ export function EOIForm() {
   const [phase, setPhase] = useState<Phase>("form");
   const [freshnessCode, setFreshnessCode] = useState<FreshnessCode | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [submissionId, setSubmissionId] = useState<string | null>(null);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [turnstileReady, setTurnstileReady] = useState(false);
@@ -114,6 +139,16 @@ export function EOIForm() {
     }
   }
 
+  function handleBlur(e: React.FocusEvent<HTMLInputElement>) {
+    const { name, value } = e.target;
+    const error = validateField(name, value);
+    setFieldErrors((prev) => ({ ...prev, [name]: error }));
+  }
+
+  function cls(name: string) {
+    return fieldErrors[name] ? inputErrCls : inputCls;
+  }
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
@@ -121,31 +156,21 @@ export function EOIForm() {
     const fd = new FormData(form);
     const get = (k: string) => (fd.get(k) as string | null) ?? "";
 
-    if (!isValidEmail(get("contactEmail"))) {
-      setErrorMsg("Please enter a valid email address.");
-      return;
+    // Run all field validations up-front (catches un-blurred fields)
+    const blurFields = ["contactEmail", "contactPhone", "linkInstagram", "linkYoutube", "linkOther"];
+    const errors: Record<string, string> = {};
+    for (const name of blurFields) {
+      const err = validateField(name, get(name));
+      if (err) errors[name] = err;
     }
-
-    if (!isValidPhone(get("contactPhone"))) {
-      setErrorMsg("Please enter a valid phone number (e.g. 0412 345 678 or +61 412 345 678).");
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors((prev) => ({ ...prev, ...errors }));
       return;
     }
 
     if (!get("linkInstagram") && !get("linkYoutube") && !get("linkOther")) {
       setErrorMsg("Provide at least one performance link — Instagram, YouTube, or other.");
       return;
-    }
-
-    const linkFields: [string, string][] = [
-      ["linkInstagram", "Instagram link"],
-      ["linkYoutube", "YouTube link"],
-      ["linkOther", "Other link"],
-    ];
-    for (const [field, label] of linkFields) {
-      if (get(field) && !isValidUrl(get(field))) {
-        setErrorMsg(`${label} must be a valid URL starting with https:// or http://.`);
-        return;
-      }
     }
 
     if (TURNSTILE_SITE_KEY && !turnstileToken) {
@@ -221,10 +246,7 @@ export function EOIForm() {
         <p className="mt-4 text-sm text-sand-muted">
           The panel will contact shortlisted groups by email after the deadline. If you have a
           question, email{" "}
-          <a
-            href="mailto:kayaleventsofficial@gmail.com"
-            className="text-lagoon underline"
-          >
+          <a href="mailto:kayaleventsofficial@gmail.com" className="text-lagoon underline">
             kayaleventsofficial@gmail.com
           </a>{" "}
           and include your reference number.
@@ -324,23 +346,25 @@ export function EOIForm() {
               />
             </Field>
 
-            <Field label="Email *">
+            <Field label="Email *" error={fieldErrors.contactEmail}>
               <input
                 type="email"
                 name="contactEmail"
                 required
                 disabled={isBusy}
-                className={inputCls}
+                onBlur={handleBlur}
+                className={cls("contactEmail")}
               />
             </Field>
 
-            <Field label="Phone *">
+            <Field label="Phone *" error={fieldErrors.contactPhone}>
               <input
                 type="tel"
                 name="contactPhone"
                 required
                 disabled={isBusy}
-                className={inputCls}
+                onBlur={handleBlur}
+                className={cls("contactPhone")}
               />
             </Field>
           </div>
@@ -358,33 +382,36 @@ export function EOIForm() {
             </p>
           </div>
           <div className="space-y-5">
-            <Field label="Instagram">
+            <Field label="Instagram" error={fieldErrors.linkInstagram}>
               <input
                 type="url"
                 name="linkInstagram"
                 disabled={isBusy}
                 placeholder="https://instagram.com/yourgroup"
-                className={inputCls}
+                onBlur={handleBlur}
+                className={cls("linkInstagram")}
               />
             </Field>
 
-            <Field label="YouTube">
+            <Field label="YouTube" error={fieldErrors.linkYoutube}>
               <input
                 type="url"
                 name="linkYoutube"
                 disabled={isBusy}
                 placeholder="https://youtube.com/@yourgroup"
-                className={inputCls}
+                onBlur={handleBlur}
+                className={cls("linkYoutube")}
               />
             </Field>
 
-            <Field label="Other" hint="(optional)">
+            <Field label="Other" hint="(optional)" error={fieldErrors.linkOther}>
               <input
                 type="url"
                 name="linkOther"
                 disabled={isBusy}
                 placeholder="Facebook, website, TikTok, Google Drive link…"
-                className={inputCls}
+                onBlur={handleBlur}
+                className={cls("linkOther")}
               />
             </Field>
           </div>
