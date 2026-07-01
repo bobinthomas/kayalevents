@@ -4,7 +4,7 @@ import Link from "next/link";
 export default function StandaloneLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col bg-marine-black">
-      <header className="shrink-0 border-b border-border px-5 py-4 md:px-8">
+      <header className="shrink-0 border-b border-border px-5 py-4 md:px-8 flex justify-center">
         <Link href="/" aria-label="Kayal Events — home">
           <Image
             src="/kayal-events-logo-white.svg"

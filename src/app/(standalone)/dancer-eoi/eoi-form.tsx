@@ -21,6 +21,26 @@ declare global {
 
 const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
 
+function isValidEmail(v: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim());
+}
+
+function isValidPhone(v: string) {
+  // Allow digits, spaces, dashes, parens, leading +. Must have at least 8 digits.
+  const digits = v.replace(/\D/g, "");
+  return /^[+\d][\d\s\-().]+$/.test(v.trim()) && digits.length >= 8;
+}
+
+function isValidUrl(v: string) {
+  if (!v) return true; // optional fields
+  try {
+    const url = new URL(v.trim());
+    return url.protocol === "http:" || url.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
 type FreshnessCode = {
   code: string;
   issuedAt: string;
@@ -101,9 +121,31 @@ export function EOIForm() {
     const fd = new FormData(form);
     const get = (k: string) => (fd.get(k) as string | null) ?? "";
 
+    if (!isValidEmail(get("contactEmail"))) {
+      setErrorMsg("Please enter a valid email address.");
+      return;
+    }
+
+    if (!isValidPhone(get("contactPhone"))) {
+      setErrorMsg("Please enter a valid phone number (e.g. 0412 345 678 or +61 412 345 678).");
+      return;
+    }
+
     if (!get("linkInstagram") && !get("linkYoutube") && !get("linkOther")) {
       setErrorMsg("Provide at least one performance link — Instagram, YouTube, or other.");
       return;
+    }
+
+    const linkFields: [string, string][] = [
+      ["linkInstagram", "Instagram link"],
+      ["linkYoutube", "YouTube link"],
+      ["linkOther", "Other link"],
+    ];
+    for (const [field, label] of linkFields) {
+      if (get(field) && !isValidUrl(get(field))) {
+        setErrorMsg(`${label} must be a valid URL starting with https:// or http://.`);
+        return;
+      }
     }
 
     if (TURNSTILE_SITE_KEY && !turnstileToken) {
