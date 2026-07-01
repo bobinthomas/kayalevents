@@ -37,6 +37,7 @@ export async function POST(req: NextRequest) {
     contactName?: string;
     contactEmail?: string;
     contactPhone?: string;
+    location?: string;
     linkInstagram?: string;
     linkYoutube?: string;
     linkOther?: string;
@@ -111,6 +112,7 @@ export async function POST(req: NextRequest) {
         contactName: body.contactName,
         contactEmail: body.contactEmail,
         contactPhone: body.contactPhone,
+        location: body.location ?? "",
         linkInstagram: body.linkInstagram ?? "",
         linkYoutube: body.linkYoutube ?? "",
         linkOther: body.linkOther ?? "",

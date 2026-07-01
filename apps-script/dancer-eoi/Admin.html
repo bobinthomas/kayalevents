@@ -539,7 +539,8 @@
         '<div class="detail-value">',
         esc(row.contact_name) + '<br>' +
         '<a href="mailto:' + esc(row.contact_email) + '">' + esc(row.contact_email) + '</a><br>' +
-        '<a href="tel:' + esc(row.contact_phone) + '">' + esc(row.contact_phone) + '</a>',
+        '<a href="tel:' + esc(row.contact_phone) + '">' + esc(row.contact_phone) + '</a>' +
+        (row.location ? '<br>' + esc(row.location) : ''),
         '</div>',
 
         // Performance links
@@ -640,7 +641,7 @@
 
       var headers = [
         'submission_id','submitted_at','group_name','num_performers',
-        'contact_name','contact_email','contact_phone',
+        'contact_name','contact_email','contact_phone','location',
         'link_instagram','link_youtube','link_other',
         'status','reviewer_notes','reviewed_by','reviewed_at'
       ];

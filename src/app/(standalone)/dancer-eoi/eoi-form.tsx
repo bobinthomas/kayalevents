@@ -193,6 +193,7 @@ export function EOIForm() {
           contactName: get("contactName"),
           contactEmail: get("contactEmail"),
           contactPhone: get("contactPhone"),
+          location: get("location"),
           linkInstagram: get("linkInstagram"),
           linkYoutube: get("linkYoutube"),
           linkOther: get("linkOther"),
@@ -365,6 +366,17 @@ export function EOIForm() {
                 disabled={isBusy}
                 onBlur={handleBlur}
                 className={cls("contactPhone")}
+              />
+            </Field>
+
+            <Field label="Location *" hint="(city / state)">
+              <input
+                type="text"
+                name="location"
+                required
+                disabled={isBusy}
+                placeholder="e.g. Melbourne, VIC"
+                className={inputCls}
               />
             </Field>
           </div>

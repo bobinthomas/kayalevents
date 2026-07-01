@@ -69,6 +69,7 @@ var SHEET_HEADERS = [
   "contact_name",
   "contact_email",
   "contact_phone",
+  "location",
   "link_instagram",
   "link_youtube",
   "link_other",
@@ -177,6 +178,7 @@ function handleSubmit(body) {
     "contactName",
     "contactEmail",
     "contactPhone",
+    "location",
   ];
   for (var i = 0; i < required.length; i++) {
     if (!body[required[i]]) {
@@ -206,6 +208,7 @@ function handleSubmit(body) {
     body.contactName,
     body.contactEmail,
     body.contactPhone,
+    body.location || "",
     body.linkInstagram || "",
     body.linkYoutube || "",
     body.linkOther || "",
@@ -256,6 +259,7 @@ function sendPanelAlert(body) {
       " | " +
       escHtml(body.contactPhone) +
       "</p>",
+    body.location ? "<p><strong>Location:</strong> " + escHtml(body.location) + "</p>" : "",
     body.linkInstagram
       ? '<p><strong>Instagram:</strong> <a href="' +
         body.linkInstagram +
