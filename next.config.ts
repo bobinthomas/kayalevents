@@ -44,6 +44,12 @@ const nextConfig: NextConfig = {
       { source: "/contact-us", destination: "/contact", statusCode: 301 },
     ];
   },
+  async rewrites() {
+    return [
+      // Serve /dancer-eoi at the root — same response, no redirect
+      { source: "/", destination: "/dancer-eoi" },
+    ];
+  },
 };
 
 export default nextConfig;
