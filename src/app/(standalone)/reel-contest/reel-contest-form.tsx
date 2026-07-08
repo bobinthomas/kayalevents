@@ -342,7 +342,7 @@ export function ReelContestForm() {
         <p className="eyebrow">Entries closed</p>
         <p className="mt-3 font-display text-2xl text-sand">Submissions are now closed.</p>
         <p className="mt-2 text-sand-muted">
-          The deadline was 31 July 2026, 11:59 pm AEST. Winners will be announced from
+          The deadline was 18 July 2026, 11:59 pm AEST. Winners will be announced from
           3 August 2026 on our official Instagram and Facebook pages.
         </p>
       </div>
@@ -656,7 +656,7 @@ export function ReelContestForm() {
           >
             {phase === "submitting" ? `Uploading… ${uploadProgress}%` : "Submit Entry"}
           </button>
-          <p className="text-xs text-sand-muted">Entries close: 31 July 2026, 11:59 pm AEST</p>
+          <p className="text-xs text-sand-muted">Entries close: 18 July 2026, 11:59 pm AEST</p>
         </div>
 
         <p className="text-xs text-sand-muted">

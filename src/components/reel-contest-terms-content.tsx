@@ -2,14 +2,6 @@
 // the standalone /reel-contest-terms page and inside the entry form's terms
 // modal. Keep these in sync with public/legal/reel-contest-terms.txt.
 
-function Placeholder({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="rounded bg-coral/15 px-1.5 py-0.5 font-mono text-[0.85em] text-coral">
-      {children}
-    </span>
-  );
-}
-
 function Section({
   n,
   title,
@@ -32,237 +24,167 @@ function Section({
 export function ReelContestTermsContent() {
   return (
     <div className="space-y-10">
-      <Section n={1} title="The Promotion">
+      <p className="text-sand-muted">
+        The Kayal Events Reel Contest is a skill-based competition conducted
+        by Kayal Events. Winners will be selected solely on the basis of
+        merit and judging criteria.
+      </p>
+
+      <div className="hairline" />
+
+      <Section n={1} title="Eligibility">
+        <p>Participation is open to Australian residents aged 18 years and over.</p>
         <p>
-          The Promotion is a game of skill, judged against published
-          criteria (see clause 5). It is not a game of chance, lottery or
-          raffle, and no element of the Promotion is determined by chance.
-          Accordingly, no trade promotion lottery permit is required in any
-          Australian state or territory.
-        </p>
-        <p>
-          Promoter: Kayal Events (<Placeholder>ABN [TODO]</Placeholder>),
-          Australia (&ldquo;Kayal&rdquo;, &ldquo;we&rdquo;, &ldquo;us&rdquo;).
-          Contact:{" "}
-          <a
-            href="mailto:kayaleventsofficial@gmail.com"
-            className="text-lagoon underline"
-          >
-            kayaleventsofficial@gmail.com
-          </a>
-          .
+          By entering the Contest, participants confirm that their
+          submission is original, that they own or control the rights
+          necessary to submit the content, and that their entry complies
+          with these Terms and Conditions.
         </p>
       </Section>
 
       <div className="hairline" />
 
-      <Section n={2} title="Eligibility">
+      <Section n={2} title="Contest Period">
+        <p>
+          The Contest opens on 10 July 2026 and closes at 11:59 PM AEST on
+          18 July 2026.
+        </p>
+        <p>
+          Entries received after the closing date, or entries that are
+          incomplete, corrupted, inaccessible, or otherwise non-compliant,
+          may be deemed invalid at the sole discretion of Kayal Events.
+        </p>
+      </Section>
+
+      <div className="hairline" />
+
+      <Section n={3} title="How to Enter">
+        <p>Entry is free of charge.</p>
+        <p>
+          Participants must submit their reel through the official entry
+          form available on the Kayal Events website. Entrants may choose to
+          create content inspired by either:
+        </p>
         <ul className="list-disc space-y-2 pl-5">
+          <li>Team Mohanlal</li>
+          <li>Team Chithra</li>
+        </ul>
+        <p>Videos must:</p>
+        <ul className="list-disc space-y-2 pl-5">
+          <li>Be no longer than 90 seconds in duration;</li>
           <li>
-            Entrants must be Australian residents and at least 18 years of
-            age at the time of entry. The Promotion is not open to entrants
-            under 18, with or without guardian consent.
+            Be submitted as a direct file upload or via a Google Drive link
+            with public viewing access;
           </li>
           <li>
-            Employees (and their immediate families) of Kayal Events and any
-            agencies directly associated with the judging or administration
-            of this Promotion are not eligible to enter.
-          </li>
-          <li>
-            By entering, you confirm the submitted reel is your own original
-            performance (or that of the group you represent) and that you
-            have the right to submit it.
+            Be the original work of the entrant or submitted with
+            appropriate authority.
           </li>
         </ul>
+        <p>Multiple entries are not permitted.</p>
       </Section>
 
       <div className="hairline" />
 
-      <Section n={3} title="Entry period">
-        <ul className="list-disc space-y-2 pl-5">
-          <li>Entries open: 12:00am AEST, 10 July 2026.</li>
-          <li>Entries close: 11:59pm AEST, 31 July 2026.</li>
-          <li>
-            Winners announced: on or from 3 August 2026, via Kayal
-            Events&apos; official Instagram and Facebook pages and by direct
-            email/phone contact to winning entrants.
-          </li>
-          <li>
-            Late, incomplete, corrupted or otherwise unplayable entries will
-            not be considered.
-          </li>
-        </ul>
-      </Section>
-
-      <div className="hairline" />
-
-      <Section n={4} title="How to enter">
+      <Section n={4} title="Judging">
         <p>
-          Entry is free. Entrants choose one of two themes and submit a
-          video directly through the entry form at{" "}
-          <span className="text-sand">kayalevents.com.au/reel-contest</span>{" "}
-          — no public posting to Instagram or any other platform is required
-          to enter:
+          All eligible entries will be reviewed by a judging panel appointed
+          by Kayal Events.
         </p>
+        <p>Entries will be assessed based on:</p>
         <ul className="list-disc space-y-2 pl-5">
-          <li>
-            <span className="text-sand">Team Mohanlal</span> — dialogues,
-            iconic scenes, or dance to his songs.
-          </li>
-          <li>
-            <span className="text-sand">Team Chithra</span> — melodies,
-            lip-syncs, or creative videos to K.S. Chithra songs.
-          </li>
+          <li>Creativity</li>
+          <li>Performance and presentation quality</li>
+          <li>Entertainment value</li>
+          <li>Relevance to the selected theme</li>
         </ul>
         <p>
-          Videos must be your own upload — either a file submitted directly
-          through the entry form (maximum 10MB) or, for larger files, a
-          Google Drive link you control, shared with &ldquo;Anyone with the
-          link can view&rdquo; access so Kayal can retrieve it. Videos must
-          be no longer than 90 seconds. There is no limit on the number of
-          entries a person may submit, and you may enter both themes.
-        </p>
-        <p>
-          Entrants are solely responsible for the audio/music used in their
-          own account or upload — see clause 8 (Music &amp; copyright).
+          The decisions of the judging panel are final and no correspondence
+          regarding judging outcomes will be entered into.
         </p>
       </Section>
 
       <div className="hairline" />
 
-      <Section n={5} title="Judging criteria and process">
+      <Section n={5} title="Prizes">
         <p>
-          All eligible entries will be scored by a panel of three judges
-          appointed by Kayal Events, against the following published,
-          weighted criteria (each scored out of 10):
+          The top five selected entries will be professionally edited and
+          featured on Kayal Events&apos; official marketing and social media
+          channels.
         </p>
+        <p>
+          The top five winning entries, whether submitted by an individual
+          or a group, will each receive one admission ticket to Mohanlal
+          Live in Australia, to be held in Sydney on 8 August 2026. Ticket
+          category and seating allocation will be determined by Kayal Events
+          and are subject to availability.
+        </p>
+        <p>Prizes are:</p>
         <ul className="list-disc space-y-2 pl-5">
-          <li>Creativity — 40%</li>
-          <li>Execution / effort (performance and video/audio quality) — 30%</li>
-          <li>Entertainment value / rewatchability — 20%</li>
-          <li>Theme fit — 10%</li>
+          <li>Non-transferable;</li>
+          <li>Cannot be exchanged for cash or alternative products;</li>
+          <li>Must not be sold, transferred, or resold.</li>
         </ul>
         <p>
-          Each judge&apos;s scores are weighted and averaged across the
-          panel; the five entries with the highest average score are the
-          winners. Judges score entries independently from the submitted
-          file or Drive link only — public engagement (likes, views, shares)
-          plays no part in judging, as entries are not required to be
-          posted publicly. The judging panel&apos;s decision is final and
-          binding, and no correspondence will be entered into regarding
-          individual scores.
+          Entrants residing outside New South Wales may additionally
+          receive a travel contribution voucher valued at AUD $100. This
+          voucher is intended solely as a contribution towards travel
+          expenses and does not represent reimbursement of actual travel
+          costs. Additional terms relating to voucher redemption may apply.
         </p>
       </Section>
 
       <div className="hairline" />
 
-      <Section n={6} title="Prizes">
+      <Section n={6} title="Use of Submitted Content">
         <p>
-          The five winning entries will be professionally edited by Kayal
-          Events and featured on Kayal Events&apos; official channels. Each
-          of the five winning entrants will receive:
+          By submitting an entry, participants grant Kayal Events a
+          non-exclusive, worldwide, royalty-free, perpetual licence to edit,
+          reproduce, publish, distribute, promote, and otherwise use the
+          submitted content in connection with the Contest, future
+          promotional activities, and related marketing campaigns. Ownership
+          of the original content remains with the participant.
         </p>
+      </Section>
+
+      <div className="hairline" />
+
+      <Section n={7} title="Copyright and Third-Party Content">
+        <p>
+          Participants are solely responsible for ensuring they have
+          obtained all necessary rights, permissions, and licences for any
+          music, audio, dialogue, images, or other third-party content
+          included in their submission. Kayal Events accepts no
+          responsibility or liability for copyright infringement claims,
+          takedown notices, or disputes arising from entrant-submitted
+          content.
+        </p>
+      </Section>
+
+      <div className="hairline" />
+
+      <Section n={8} title="Privacy">
+        <p>
+          Personal information collected during the entry process, including
+          names, contact details, state of residence, and submitted content,
+          will be used solely for the administration of the Contest, winner
+          notifications, prize fulfilment, and related promotional
+          activities. Kayal Events will not sell personal information and
+          will only disclose information to service providers or
+          representatives where reasonably necessary for the operation of
+          the Contest.
+        </p>
+      </Section>
+
+      <div className="hairline" />
+
+      <Section n={9} title="Disqualification">
+        <p>Kayal Events reserves the right to reject or disqualify any entry that:</p>
         <ul className="list-disc space-y-2 pl-5">
-          <li>
-            One (1) <Placeholder>ticket tier TBC</Placeholder> ticket to
-            Mohanlal Live in Australia, Sydney (8 August 2026, Norwest
-            Convention Centre). The ticket is non-transferable, has no cash
-            alternative, and cannot be resold.
-          </li>
-          <li>
-            If the winning entrant&apos;s declared state of residence is not
-            New South Wales: a $100 AUD voucher as a contribution toward the
-            cost of travel to Sydney to attend the show. This voucher is a
-            contribution only, not a full or partial airfare, has no cash
-            alternative, and is valid for redemption{" "}
-            <Placeholder>validity window TBC</Placeholder>.
-          </li>
-        </ul>
-        <p>
-          Prizes are not transferable to a third party and cannot be
-          exchanged, varied or redeemed for cash, except as required by law.
-          Total prize pool: 5 tickets plus up to 5 travel vouchers ($500 AUD
-          maximum).
-        </p>
-      </Section>
-
-      <div className="hairline" />
-
-      <Section n={7} title="Licence to use your entry">
-        <p>
-          By submitting an entry, you grant Kayal Events a non-exclusive,
-          royalty-free, worldwide licence to edit, adapt, reproduce,
-          publish, repost and otherwise feature your submitted video
-          (including your name and the team you entered under) across Kayal
-          Events&apos; own marketing channels, in connection with this
-          Promotion and Mohanlal Live in Australia, including after the
-          Promotion ends. You retain ownership of your original footage;
-          Kayal will credit you where practical when featuring an edited
-          version.
-        </p>
-      </Section>
-
-      <div className="hairline" />
-
-      <Section n={8} title="Music and copyright">
-        <p>
-          Any music, dialogue or other third-party content used in your
-          submitted video is used at your own risk and on your own account.
-          Kayal Events is not responsible for any copyright claim, takedown,
-          or platform action arising from an entrant&apos;s use of
-          third-party audio in their own submission. Where Kayal Events
-          professionally edits a winning entry for its own channels, Kayal
-          will handle music licensing for that edited version appropriately
-          for its own posting.
-        </p>
-      </Section>
-
-      <div className="hairline" />
-
-      <Section n={9} title="Privacy">
-        <p>
-          Kayal Events collects the personal information you provide on the
-          entry form (name, email, phone, state of residence, and your
-          submitted video or Drive link) to administer this Promotion —
-          including judging, contacting winners, and coordinating
-          prize/travel-voucher fulfilment. We do not sell your personal
-          information. It may be shared with the judging panel and with
-          service providers strictly for the purposes of running the
-          Promotion (e.g. Google Sheets/Drive for entry storage).
-          Non-winning entrants&apos; personal details are not retained
-          beyond what is reasonably necessary to administer the Promotion
-          and respond to any queries about it. Entrants may request access
-          to, correction of, or deletion of their information at any time by
-          emailing{" "}
-          <a
-            href="mailto:kayaleventsofficial@gmail.com"
-            className="text-lagoon underline"
-          >
-            kayaleventsofficial@gmail.com
-          </a>
-          .
-        </p>
-      </Section>
-
-      <div className="hairline" />
-
-      <Section n={10} title="General">
-        <ul className="list-disc space-y-2 pl-5">
-          <li>
-            Kayal Events reserves the right to disqualify any entry that
-            breaches these terms, is offensive, defamatory, unlawful, or
-            infringes a third party&apos;s rights.
-          </li>
-          <li>
-            Kayal Events may vary, suspend or cancel the Promotion where
-            circumstances beyond its reasonable control require it, subject
-            to applicable law.
-          </li>
-          <li>
-            These terms are governed by the laws of New South Wales,
-            Australia, and entrants submit to the exclusive jurisdiction of
-            its courts.
-          </li>
+          <li>Breaches these Terms and Conditions;</li>
+          <li>Contains offensive, unlawful, defamatory, or inappropriate content;</li>
+          <li>Infringes the rights of any third party;</li>
+          <li>Provides false or misleading information.</li>
         </ul>
       </Section>
     </div>
