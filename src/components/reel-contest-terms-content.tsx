@@ -71,7 +71,7 @@ export function ReelContestTermsContent() {
         </ul>
         <p>Videos must:</p>
         <ul className="list-disc space-y-2 pl-5">
-          <li>Be no longer than 90 seconds in duration;</li>
+          <li>Be no longer than 60 seconds in duration;</li>
           <li>
             Be submitted as a direct file upload or via a Google Drive link
             with public viewing access;
@@ -108,7 +108,7 @@ export function ReelContestTermsContent() {
 
       <Section n={5} title="Prizes">
         <p>
-          The top five selected entries will be professionally edited and
+          All the selected entries will be professionally edited and
           featured on Kayal Events&apos; official marketing and social media
           channels.
         </p>
@@ -127,10 +127,8 @@ export function ReelContestTermsContent() {
         </ul>
         <p>
           Entrants residing outside New South Wales may additionally
-          receive a travel contribution voucher valued at AUD $100. This
-          voucher is intended solely as a contribution towards travel
-          expenses and does not represent reimbursement of actual travel
-          costs. Additional terms relating to voucher redemption may apply.
+          receive a travel contribution voucher valued at AUD $100.
+          Additional terms relating to voucher redemption may apply.
         </p>
       </Section>
 
