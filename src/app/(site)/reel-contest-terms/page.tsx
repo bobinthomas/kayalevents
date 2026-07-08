@@ -18,7 +18,7 @@ export default function ReelContestTermsPage() {
           Reel Contest — Terms &amp; Conditions
         </h1>
         <p className="mt-4 text-sand-muted">
-          Last updated 6 July 2026. This document governs entry into the
+          Last updated 8 July 2026. This document governs entry into the
           #KayalReelFest reel contest (the &ldquo;Promotion&rdquo;) run by Kayal
           Events ahead of Mohanlal Live in Australia — Sydney. By submitting an
           entry you agree to be bound by these terms.

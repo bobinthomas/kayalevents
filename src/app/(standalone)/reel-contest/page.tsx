@@ -4,7 +4,7 @@ import { ReelContestForm } from "./reel-contest-form";
 export const metadata: Metadata = {
   title: "#KayalReelFest — Reel Contest | Kayal Events",
   description:
-    "Team Mohanlal vs Team Chithra. Submit your reel ahead of Mohanlal Live in Australia — Sydney. Entries close 31 July 2026.",
+    "Team Mohanlal vs Team Chithra. Submit your reel ahead of Mohanlal Live in Australia — Sydney. Entries close 18 July 2026.",
   robots: { index: false, follow: false },
 };
 
@@ -22,7 +22,7 @@ export default function ReelContestPage() {
         </span>{" "}
         No need to post publicly — upload your video directly below.
         Top 5 reels get professionally edited, featured on our page, and win
-        a free show ticket. Entries close&nbsp;31&nbsp;July&nbsp;2026,&nbsp;11:59&nbsp;pm&nbsp;AEST.
+        a free show ticket. Entries close&nbsp;18&nbsp;July&nbsp;2026,&nbsp;11:59&nbsp;pm&nbsp;AEST.
       </p>
 
       <div className="hairline my-10" />

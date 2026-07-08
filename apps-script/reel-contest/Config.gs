@@ -38,11 +38,11 @@ const CONFIG = {
     // "judge3@example.com",
   ],
 
-  // Entry window: 10 Jul 2026 00:00 AEST — 31 Jul 2026 23:59 AEST (UTC+10 — no DST in July).
+  // Entry window: 10 Jul 2026 00:00 AEST — 18 Jul 2026 23:59 AEST (UTC+10 — no DST in July).
   // Stored as UTC so Date parsing is unambiguous everywhere.
   ENTRY_OPEN_UTC: "2026-07-09T14:00:00Z",
-  ENTRY_CLOSE_UTC: "2026-07-31T13:59:00Z",
-  ENTRY_CLOSE_DISPLAY: "31 July 2026, 11:59 pm AEST",
+  ENTRY_CLOSE_UTC: "2026-07-18T13:59:00Z",
+  ENTRY_CLOSE_DISPLAY: "18 July 2026, 11:59 pm AEST",
   WINNER_ANNOUNCE_DISPLAY: "from 3 August 2026",
 
   CODE_PREFIX: "RC",
