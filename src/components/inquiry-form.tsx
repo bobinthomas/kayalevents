@@ -6,7 +6,7 @@ import { track } from "@/lib/analytics";
 type Status = "idle" | "loading" | "success" | "error";
 
 const inputClass =
-  "w-full rounded-xl border border-border bg-marine-black px-4 py-3 text-sm text-sand placeholder:text-sand-muted/50 transition-colors focus:border-lagoon focus:outline-none";
+  "w-full rounded-xl border border-border bg-marine-black px-4 py-3 text-sm text-sand placeholder:text-sand-muted/50 transition-colors focus:border-lagoon focus:outline-none focus:ring-2 focus:ring-lagoon/50 focus:ring-offset-1 focus:ring-offset-marine-black";
 
 export function InquiryForm() {
   const [status, setStatus] = useState<Status>("idle");
@@ -33,7 +33,7 @@ export function InquiryForm() {
 
   if (status === "success") {
     return (
-      <div className="rounded-2xl border border-lagoon/30 bg-lagoon/8 p-8 text-center">
+      <div className="gradient-border rounded-2xl border border-lagoon/30 bg-lagoon/8 p-8 text-center">
         <p className="font-display text-2xl text-lagoon">Inquiry received.</p>
         <p className="mt-2 text-sand-muted">
           We&apos;ll come back to you within one business day — usually sooner.
@@ -57,45 +57,57 @@ export function InquiryForm() {
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="block">
           <span className="mb-1.5 block text-sm text-sand-muted">Name *</span>
-          <input type="text" name="name" required className={inputClass} />
+          <div className="gradient-border rounded-xl">
+            <input type="text" name="name" required className={inputClass} />
+          </div>
         </label>
         <label className="block">
           <span className="mb-1.5 block text-sm text-sand-muted">Email *</span>
-          <input type="email" name="email" required className={inputClass} />
+          <div className="gradient-border rounded-xl">
+            <input type="email" name="email" required className={inputClass} />
+          </div>
         </label>
         <label className="block">
           <span className="mb-1.5 block text-sm text-sand-muted">Phone</span>
-          <input type="tel" name="phone" className={inputClass} />
+          <div className="gradient-border rounded-xl">
+            <input type="tel" name="phone" className={inputClass} />
+          </div>
         </label>
         <label className="block">
           <span className="mb-1.5 block text-sm text-sand-muted">Event type *</span>
-          <select name="eventType" required defaultValue="" className={inputClass}>
-            <option value="" disabled>
-              Select…
-            </option>
-            <option value="concert">Concert / live show</option>
-            <option value="corporate">Corporate event</option>
-            <option value="private">Private event / wedding</option>
-            <option value="community">Community / festival</option>
-            <option value="other">Other</option>
-          </select>
+          <div className="gradient-border rounded-xl">
+            <select name="eventType" required defaultValue="" className={inputClass}>
+              <option value="" disabled>
+                Select…
+              </option>
+              <option value="concert">Concert / live show</option>
+              <option value="corporate">Corporate event</option>
+              <option value="private">Private event / wedding</option>
+              <option value="community">Community / festival</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
         </label>
         <label className="block">
           <span className="mb-1.5 block text-sm text-sand-muted">Preferred date</span>
-          <input type="date" name="preferredDate" className={inputClass} />
+          <div className="gradient-border rounded-xl">
+            <input type="date" name="preferredDate" className={inputClass} />
+          </div>
         </label>
         <label className="block">
           <span className="mb-1.5 block text-sm text-sand-muted">City</span>
-          <select name="city" defaultValue="" className={inputClass}>
-            <option value="">Select…</option>
-            {["Melbourne", "Sydney", "Brisbane", "Perth", "Adelaide", "Other"].map(
-              (c) => (
-                <option key={c} value={c.toLowerCase()}>
-                  {c}
-                </option>
-              )
-            )}
-          </select>
+          <div className="gradient-border rounded-xl">
+            <select name="city" defaultValue="" className={inputClass}>
+              <option value="">Select…</option>
+              {["Melbourne", "Sydney", "Brisbane", "Perth", "Adelaide", "Other"].map(
+                (c) => (
+                  <option key={c} value={c.toLowerCase()}>
+                    {c}
+                  </option>
+                )
+              )}
+            </select>
+          </div>
         </label>
       </div>
 
@@ -103,27 +115,31 @@ export function InquiryForm() {
         <span className="mb-1.5 block text-sm text-sand-muted">
           Budget range (optional)
         </span>
-        <select name="budget" defaultValue="" className={inputClass}>
-          <option value="">Prefer not to say</option>
-          <option value="under-10k">Under $10k</option>
-          <option value="10k-25k">$10k – $25k</option>
-          <option value="25k-50k">$25k – $50k</option>
-          <option value="50k-100k">$50k – $100k</option>
-          <option value="100k-plus">$100k+</option>
-        </select>
+        <div className="gradient-border rounded-xl">
+          <select name="budget" defaultValue="" className={inputClass}>
+            <option value="">Prefer not to say</option>
+            <option value="under-10k">Under $10k</option>
+            <option value="10k-25k">$10k – $25k</option>
+            <option value="25k-50k">$25k – $50k</option>
+            <option value="50k-100k">$50k – $100k</option>
+            <option value="100k-plus">$100k+</option>
+          </select>
+        </div>
       </label>
 
       <label className="block">
         <span className="mb-1.5 block text-sm text-sand-muted">
           Tell us about your event *
         </span>
-        <textarea name="message" required rows={5} className={inputClass} />
+        <div className="gradient-border rounded-xl">
+          <textarea name="message" required rows={5} className={inputClass} />
+        </div>
       </label>
 
       <button
         type="submit"
         disabled={status === "loading"}
-        className="coral-glow w-full rounded-full bg-coral px-8 py-3.5 text-sm font-semibold tracking-wide text-sand transition-all hover:scale-[1.02] hover:bg-coral-bright disabled:opacity-60 sm:w-auto"
+        className="gradient-border coral-glow w-full rounded-full bg-coral px-8 py-3.5 text-sm font-semibold tracking-wide text-sand transition-all hover:scale-[1.02] hover:bg-coral-bright disabled:opacity-60 sm:w-auto"
       >
         {status === "loading" ? "Sending…" : "Send Inquiry"}
       </button>

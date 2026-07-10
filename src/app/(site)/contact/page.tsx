@@ -34,7 +34,7 @@ export default async function ContactPage() {
         </Reveal>
 
         <Reveal delay={100}>
-          <div className="space-y-6 rounded-2xl border border-ink-border bg-ink-raised p-7 text-sm">
+          <div className="gradient-border space-y-6 rounded-2xl border border-ink-border bg-ink-raised p-7 text-sm">
             <div>
               <p className="eyebrow">Prefer to talk?</p>
               <a

@@ -38,7 +38,7 @@ export default async function EventsPage() {
           ))}
         </div>
       ) : (
-        <div className="mt-12 rounded-2xl border border-ink-border bg-ink-raised p-10 text-center">
+        <div className="gradient-border mt-12 rounded-2xl border border-ink-border bg-ink-raised p-10 text-center">
           <p className="headline text-2xl">The next announcement is coming.</p>
           <p className="mt-2 text-ivory-muted">
             Join Kayal Insider below to hear it first.

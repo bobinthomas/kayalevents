@@ -26,7 +26,7 @@ export function EventCard({ event }: { event: KayalEvent }) {
     <div className={`h-full${shouldReduce ? "" : " transition-transform duration-300 ease-out hover:-translate-y-2"}`}>
       <Link
         href={`/events/${event.slug}`}
-        className="group block h-full overflow-hidden rounded-2xl border border-border bg-surface transition-colors duration-300 hover:border-lagoon/40"
+        className="gradient-border group block h-full overflow-hidden rounded-2xl border border-border bg-surface transition-colors duration-300 hover:border-lagoon/40"
       >
         {/* Poster with Ken Burns */}
         <div className="relative overflow-hidden">
@@ -34,6 +34,7 @@ export function EventCard({ event }: { event: KayalEvent }) {
             src={event.heroImage ?? event.posterImage}
             alt={event.title}
             className="relative aspect-[4/3]"
+            sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 384px"
           />
           {/* Gradient */}
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-surface/80 via-transparent to-transparent" />
@@ -47,7 +48,7 @@ export function EventCard({ event }: { event: KayalEvent }) {
 
         {/* Body */}
         <div className="flex flex-col gap-3 p-5">
-          <h3 className="text-lg font-semibold leading-snug text-sand group-hover:text-lagoon transition-colors duration-200">
+          <h3 className="font-display text-xl leading-snug text-sand group-hover:text-lagoon transition-colors duration-200">
             {event.title}
           </h3>
 

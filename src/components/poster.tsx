@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { resolveMediaUrl } from "@/lib/media-url";
 
 /**
  * Renders the event/case-study image when available, otherwise a cinematic
@@ -28,14 +29,16 @@ export function Poster({
   // default to `relative` so next/image fill works in cards.
   const position = className.includes("absolute") ? "" : "relative";
 
-  if (src) {
+  const resolved = resolveMediaUrl(src);
+
+  if (resolved) {
     return (
       <div className={`${position} overflow-hidden ${className}`}>
         <Image
-          src={src}
+          src={resolved}
           alt={alt}
           fill
-          sizes={sizes ?? "100vw"}
+          sizes={sizes ?? "(max-width: 768px) 100vw, 50vw"}
           priority={priority}
           className={`object-cover ${kenBurns ? "ken-burns" : ""}`}
         />

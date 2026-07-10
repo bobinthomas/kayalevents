@@ -11,10 +11,17 @@ import type {
 
 export { getKeystaticReader }
 
-/** Opt out of static caching in dev so ReaderRefresh picks up content/ edits. */
+/** Opt out of static rendering: the Keystatic GitHub reader (used whenever
+ * KEYSTATIC_GITHUB_TOKEN is set, which is runtime-only on Workers) issues
+ * `cache: 'no-store'` fetches. A route prerendered as static at build time
+ * (when the token is absent) crashes at runtime once the token activates
+ * that reader, so every content-backed route must be dynamic consistently.
+ * Silently skips when called outside request context (e.g. generateStaticParams). */
 async function ensureFreshInDev() {
-  if (process.env.NODE_ENV === 'development') {
+  try {
     await connection()
+  } catch {
+    // Not in request context — safe to skip (generateStaticParams, build-time calls)
   }
 }
 
@@ -102,8 +109,11 @@ export async function getEvent(slug: string): Promise<KayalEvent | null> {
   await ensureFreshInDev()
   const reader: any = getKeystaticReader()
   try {
-    const entry = await reader?.collections.events.read(slug)
-    if (entry) return mapEvent(slug, entry)
+    // Use .all() instead of .read(slug) — the WASM deserializer in .read() fails
+    // on fields.image() entries that store plain string paths rather than structured objects.
+    const entries = await reader?.collections.events.all()
+    const found = entries?.find(({ slug: s }: any) => s === slug)
+    if (found) return mapEvent(slug, found.entry)
   } catch (err) {
     console.error('[content] getEvent failed:', err)
   }
@@ -135,8 +145,9 @@ export async function getCaseStudy(slug: string): Promise<CaseStudy | null> {
   await ensureFreshInDev()
   const reader: any = getKeystaticReader()
   try {
-    const entry = await reader?.collections.caseStudies.read(slug)
-    if (entry) return mapCaseStudy(slug, entry)
+    const entries = await reader?.collections.caseStudies.all()
+    const found = entries?.find(({ slug: s }: any) => s === slug)
+    if (found) return mapCaseStudy(slug, found.entry)
   } catch (err) {
     console.error('[content] getCaseStudy failed:', err)
   }

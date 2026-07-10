@@ -1,6 +1,7 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "main": ".open-next/worker.js",
+  // Production (main branch) — kayalevents.bobinthomas.workers.dev → kayalevents.com.au at cutover
   "name": "kayalevents",
   "compatibility_date": "2026-06-13",
   "compatibility_flags": ["nodejs_compat"],
@@ -8,9 +9,28 @@
   "observability": { "enabled": true },
   "vars": {
     "NEXT_PUBLIC_KEYSTATIC_GITHUB_CLIENT_ID": "Ov23likSh8xSq5c6hudN"
+  },
+  // Staging (dev branch) — separate Worker + separate GitHub OAuth App (OAuth apps allow only ONE callback URL).
+  // Create a second OAuth app with callback:
+  //   https://kayalevents-dev.bobinthomas.workers.dev/api/keystatic/github/oauth/callback
+  // Then set NEXT_PUBLIC_KEYSTATIC_GITHUB_CLIENT_ID below and run npm run setup:staging-secrets
+  "env": {
+    "staging": {
+      "name": "kayalevents-dev",
+      "vars": {
+        "NEXT_PUBLIC_KEYSTATIC_GITHUB_CLIENT_ID": "Ov23liexJotSlY5iTU3z",
+        "KEYSTATIC_GITHUB_REF": "dev"
+      }
+    }
   }
-  // Set these as Wrangler secrets (never commit values):
-  //   KEYSTATIC_GITHUB_CLIENT_SECRET
-  //   KEYSTATIC_SECRET
-  //   KEYSTATIC_GITHUB_TOKEN   (read-only PAT for site content reader)
+  // Production OAuth app callback (keep on your existing app — do not change for staging):
+  //   https://kayalevents.bobinthomas.workers.dev/api/keystatic/github/oauth/callback
+  // Secrets (set per environment — production vs staging):
+  //   wrangler secret put KEYSTATIC_GITHUB_CLIENT_SECRET
+  //   wrangler secret put KEYSTATIC_SECRET
+  //   wrangler secret put KEYSTATIC_GITHUB_TOKEN
+  // Staging copies:
+  //   wrangler secret put KEYSTATIC_GITHUB_CLIENT_SECRET --env staging
+  //   wrangler secret put KEYSTATIC_SECRET --env staging
+  //   wrangler secret put KEYSTATIC_GITHUB_TOKEN --env staging
 }

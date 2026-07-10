@@ -7,7 +7,7 @@
   "whatsapp": "61450250111",
   "instagram": "https://www.instagram.com/kayalevents",
   "baseUrl": "https://kayalevents.com.au",
-  "heroImage": "/images/048A0885.jpg",
+  "heroImage": "/api/media/images/048A0885.jpg",
   "fallbackHeroHeadline": "Australia home of South Indian live entertainment",
   "fallbackHeroSubcopy": "Concerts, national tours, corporate galas and festivals - produced end to end.",
   "fallbackHeroCtaLabel": "Explore Events",

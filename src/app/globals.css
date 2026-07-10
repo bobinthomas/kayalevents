@@ -16,11 +16,11 @@
 
   /* Text */
   --sand: #FBF7EF;
-  --sand-muted: #6b9ab0;
+  --sand-muted: #8ab5cc;
 
   /* Lagoon accent palette */
-  --lagoon-green: #23A455;
-  --lagoon-bright: #2dba62;
+  --lagoon-green: #2dba62;
+  --lagoon-bright: #3fcf72;
   --ocean-blue: #1AA3DC;
   --deep-marine: #0B6FB0;
   --coral: #E8443B;
@@ -77,6 +77,7 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 body {
@@ -85,11 +86,19 @@ body {
   font-family: var(--font-body), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
 ::selection {
   background: var(--lagoon-green);
   color: var(--marine-black);
+}
+
+/* Set by the boot script in app/layout.tsx before paint; cleared by
+ * LoadingScreen once the intro finishes (or skips itself). Keeps real
+ * content invisible so it never flashes behind/before the intro. */
+html.intro-pending body > :not(.kayal-intro) {
+  visibility: hidden;
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -124,6 +133,23 @@ body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+/* Animated gradient sweep for the hero carousel heading */
+.heading-gradient {
+  background: linear-gradient(
+    90deg,
+    var(--sand) 0%,
+    var(--lagoon-bright) 25%,
+    var(--ocean-blue) 50%,
+    var(--sand) 75%,
+    var(--lagoon-bright) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: heading-gradient-shift 8s linear infinite;
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -186,6 +212,7 @@ body {
    ───────────────────────────────────────────────────────────── */
 
 .coral-glow {
+  cursor: pointer;
   box-shadow:
     0 4px 24px color-mix(in srgb, var(--coral) 40%, transparent),
     0 1px 3px rgba(0, 0, 0, 0.3);
@@ -229,6 +256,68 @@ body {
 }
 
 /* ─────────────────────────────────────────────────────────────
+   GRADIENT BORDER (animated conic sweep on hover)
+   ───────────────────────────────────────────────────────────── */
+
+@property --border-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+/* Animated gradient ring, overlaid via a masked ::before so it never
+   disturbs the element's own background/border — works on filled
+   buttons, outline buttons, cards and input wrappers alike. */
+.gradient-border {
+  position: relative;
+  isolation: isolate;
+}
+
+.gradient-border::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: 5;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(
+    from var(--border-angle, 0deg),
+    transparent 0%,
+    var(--lagoon-green) 18%,
+    var(--ocean-blue) 36%,
+    transparent 54%
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.gradient-border:hover::before,
+.gradient-border:focus-within::before,
+.gradient-border:focus-visible::before {
+  opacity: 1;
+  animation: border-rotate 2.5s linear infinite;
+}
+
+@keyframes border-rotate {
+  to {
+    --border-angle: 360deg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gradient-border:hover::before,
+  .gradient-border:focus-within::before,
+  .gradient-border:focus-visible::before {
+    animation: none;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
    KEYFRAMES
    ───────────────────────────────────────────────────────────── */
 
@@ -245,17 +334,6 @@ body {
 @keyframes ken-burns {
   0%   { transform: scale(1) translate(0, 0); }
   100% { transform: scale(1.09) translate(-1.5%, -0.8%); }
-}
-
-@keyframes light-ripple {
-  0%, 100% {
-    transform: scale(1) rotate(0deg);
-    opacity: 0.18;
-  }
-  50% {
-    transform: scale(1.2) rotate(180deg);
-    opacity: 0.08;
-  }
 }
 
 @keyframes float-up {
@@ -283,6 +361,10 @@ body {
   to   { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes heading-gradient-shift {
+  to { background-position: 200% center; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .kayal-anim { animation: none !important; opacity: 1 !important; transform: none !important; }
 }
@@ -299,7 +381,7 @@ body {
 
 /* Ken Burns on poster images (applied via className on <img>) */
 .ken-burns {
-  animation: ken-burns 28s ease-in-out infinite alternate;
+  animation: ken-burns 28s linear infinite alternate;
   transform-origin: center center;
 }
 
@@ -338,7 +420,6 @@ body {
       color-mix(in srgb, var(--ocean-blue) 14%, transparent),
       transparent 65%
     );
-  animation: light-ripple 14s ease-in-out infinite;
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -373,8 +454,8 @@ body {
   .ken-burns,
   .status-pulse,
   .dot-pulse,
-  .hero-ripple,
-  .shimmer {
+  .shimmer,
+  .heading-gradient {
     animation: none !important;
   }
 

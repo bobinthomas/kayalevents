@@ -16,6 +16,7 @@ import {
   formatShowTime,
   priceRange,
 } from "@/lib/format";
+import { resolveMediaUrl } from "@/lib/media-url";
 import type { KayalEvent, SiteSettings } from "@/lib/types";
 
 export const revalidate = 60;
@@ -36,6 +37,7 @@ export async function generateMetadata({
   const description = `${event.title} — ${eventDateRange(event)} in ${eventCities(
     event
   )}. Official tickets from Kayal Events.`;
+  const image = resolveMediaUrl(event.posterImage ?? event.heroImage);
   return {
     title: event.title,
     description,
@@ -43,9 +45,7 @@ export async function generateMetadata({
     openGraph: {
       title: event.title,
       description,
-      ...(event.posterImage || event.heroImage
-        ? { images: [{ url: (event.posterImage ?? event.heroImage)! }] }
-        : {}),
+      ...(image ? { images: [{ url: image }] } : {}),
     },
   };
 }
@@ -74,8 +74,15 @@ function eventJsonLd(event: KayalEvent, settings: SiteSettings) {
         addressCountry: "AU",
       },
     },
-    ...(event.posterImage || event.heroImage
-      ? { image: [event.posterImage ?? event.heroImage] }
+    ...(resolveMediaUrl(event.posterImage ?? event.heroImage)
+      ? {
+          image: [
+            new URL(
+              resolveMediaUrl(event.posterImage ?? event.heroImage)!,
+              settings.baseUrl,
+            ).href,
+          ],
+        }
       : {}),
     description: event.description,
     performer: event.artists.map((name) => ({ "@type": "Person", name })),
@@ -131,18 +138,18 @@ export default async function EventPage({
       />
 
       {/* ── HERO ─────────────────────────────────────────────── */}
-      <section className="relative" aria-label={`${event.title} hero`}>
+      <section className="relative -mt-16 md:-mt-20" aria-label={`${event.title} hero`}>
         <Poster
           src={event.heroImage ?? event.posterImage}
           alt={`${event.title} — hero image`}
           className="absolute inset-0"
           priority
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-marine-black via-marine-black/50 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-marine-black from-0% via-marine-black/85 via-45% to-transparent to-100%" />
         {/* Lagoon ambient ripple */}
         <div className="hero-ripple pointer-events-none absolute inset-0" aria-hidden="true" />
 
-        <div className="relative mx-auto flex min-h-[70vh] max-w-6xl flex-col justify-end px-5 pb-14 pt-28 md:px-8 md:pb-20">
+        <div className="relative mx-auto flex min-h-[70vh] max-w-6xl flex-col items-start justify-end px-5 pb-14 pt-28 md:px-8 md:pb-20">
           <StatusBadge status={event.status} />
           <h1 className="headline mt-4 max-w-3xl text-5xl md:text-7xl">
             {event.title}
@@ -175,14 +182,14 @@ export default async function EventPage({
             {isSoldOut ? (
               <a
                 href="#waitlist"
-                className="inline-flex items-center justify-center rounded-full border border-lagoon/40 bg-lagoon/10 px-7 py-3.5 text-sm font-semibold text-lagoon transition-all hover:bg-lagoon/20"
+                className="gradient-border inline-flex items-center justify-center rounded-full border border-lagoon/40 bg-lagoon/10 px-7 py-3.5 text-sm font-semibold text-lagoon transition-all hover:bg-lagoon/20"
               >
                 Join Waitlist
               </a>
             ) : isPast ? (
               <Link
                 href="/portfolio"
-                className="inline-flex items-center justify-center rounded-full border border-border px-7 py-3.5 text-sm font-semibold text-sand-muted transition hover:border-lagoon hover:text-lagoon"
+                className="gradient-border inline-flex items-center justify-center rounded-full border border-border px-7 py-3.5 text-sm font-semibold text-sand-muted transition hover:border-lagoon hover:text-lagoon"
               >
                 View Gallery
               </Link>
@@ -191,7 +198,7 @@ export default async function EventPage({
             ) : (
               <a
                 href="#tickets"
-                className="coral-glow inline-flex items-center justify-center rounded-full bg-coral px-7 py-3.5 text-sm font-semibold tracking-wide text-sand transition-all hover:scale-[1.03] hover:bg-coral-bright"
+                className="gradient-border coral-glow inline-flex items-center justify-center rounded-full bg-coral px-7 py-3.5 text-sm font-semibold tracking-wide text-sand transition-all hover:scale-[1.03] hover:bg-coral-bright"
               >
                 Buy Tickets
               </a>
@@ -212,7 +219,7 @@ export default async function EventPage({
           <div className="mt-8 space-y-4">
             {event.shows.map((show, i) => (
               <Reveal key={`${show.city}-${show.start}`} delay={i * 60}>
-                <div className="flex flex-col gap-4 rounded-2xl border border-border bg-surface p-6 transition-colors hover:border-lagoon/30 sm:flex-row sm:items-center sm:justify-between">
+                <div className="gradient-border flex flex-col gap-4 rounded-2xl border border-border bg-surface p-6 transition-colors hover:border-lagoon/30 sm:flex-row sm:items-center sm:justify-between">
                   <div>
                     <p className="headline text-2xl text-sand">{show.city}</p>
                     <p className="mt-1 text-sm text-sand-muted">{show.venue}</p>
@@ -223,7 +230,7 @@ export default async function EventPage({
                   {isPast ? null : show.soldOut || isSoldOut ? (
                     <a
                       href="#waitlist"
-                      className="inline-flex shrink-0 items-center justify-center rounded-full border border-border px-7 py-3 text-sm font-semibold text-sand-muted transition hover:border-lagoon hover:text-lagoon"
+                      className="gradient-border inline-flex shrink-0 items-center justify-center rounded-full border border-border px-7 py-3 text-sm font-semibold text-sand-muted transition hover:border-lagoon hover:text-lagoon"
                     >
                       Sold Out — Join Waitlist
                     </a>
@@ -245,7 +252,7 @@ export default async function EventPage({
           {/* Ticket tier pricing table */}
           {event.ticketTiers.length > 0 && !isPast && (
             <Reveal className="mt-8">
-              <div className="overflow-hidden rounded-2xl border border-border">
+              <div className="gradient-border overflow-hidden rounded-2xl border border-border">
                 <table className="w-full text-sm">
                   <caption className="sr-only">Ticket tiers and prices</caption>
                   <thead>
@@ -297,7 +304,7 @@ export default async function EventPage({
             </p>
           </Reveal>
           <Reveal delay={100}>
-            <div className="space-y-6 rounded-2xl border border-border bg-surface p-6 text-sm">
+            <div className="gradient-border space-y-6 rounded-2xl border border-border bg-surface p-6 text-sm">
               {event.ageRestriction && (
                 <div>
                   <p className="eyebrow">Age &amp; entry</p>
@@ -348,11 +355,18 @@ export default async function EventPage({
               <div className="mt-8 space-y-3">
                 {event.faqs.map((faq, i) => (
                   <Reveal key={faq.question} delay={i * 50}>
-                    <details className="group rounded-xl border border-border bg-surface transition-colors hover:border-lagoon/30">
-                      <summary className="cursor-pointer list-none px-6 py-4 font-medium text-sand transition hover:text-lagoon [&::-webkit-details-marker]:hidden">
+                    <details className="gradient-border group rounded-xl border border-border bg-surface transition-colors hover:border-lagoon/30">
+                      <summary className="flex cursor-pointer list-none items-center justify-between px-6 py-4 font-medium text-sand transition hover:text-lagoon [&::-webkit-details-marker]:hidden">
                         {faq.question}
+                        <svg
+                          className="ml-4 h-4 w-4 shrink-0 text-sand-muted transition-transform duration-300 group-open:rotate-180"
+                          viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                          aria-hidden="true"
+                        >
+                          <path d="M4 6l4 4 4-4" />
+                        </svg>
                       </summary>
-                      <p className="px-6 pb-5 text-sm leading-relaxed text-sand-muted">
+                      <p className="px-6 pb-5 text-sm leading-relaxed text-sand-muted [details[open]_&]:animate-[kayal-fade-in_0.3s_cubic-bezier(0.22,1,0.36,1)]">
                         {faq.answer}
                       </p>
                     </details>

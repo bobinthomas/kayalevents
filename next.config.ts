@@ -2,6 +2,8 @@ import type { NextConfig } from "next";
 import path from "path";
 
 const nextConfig: NextConfig = {
+  // Keystatic rewrites localhost → 127.0.0.1 for API calls; allow both in dev.
+  allowedDevOrigins: ["127.0.0.1", "localhost"],
   // Next.js 16 WASM-mode crashes during its internal TypeScript runner on win32/x64.
   // Types are verified separately via `tsc --noEmit --skipLibCheck` (zero errors).
   typescript: { ignoreBuildErrors: true },
@@ -9,8 +11,14 @@ const nextConfig: NextConfig = {
   turbopack: { root: process.cwd() },
   // Force webpack to transpile these ESM packages for consistent CJS bundling
   transpilePackages: ["framer-motion", "motion", "motion-dom", "motion-utils"],
+  // OpenNext's /_next/image proxy on Cloudflare Workers serves relative URLs
+  // only via the static-assets binding, which can't reach our dynamic
+  // /api/media/images route (images come from GitHub/disk at request time,
+  // not the build-time asset manifest) — every request 404s there. There's
+  // also no Cloudflare Images binding configured, so optimization was a
+  // no-op passthrough anyway. Skip the proxy and serve images directly.
   images: {
-    formats: ["image/avif", "image/webp"],
+    unoptimized: true,
     remotePatterns: [
       // Sanity image CDN
       { protocol: "https", hostname: "cdn.sanity.io" },
@@ -35,6 +43,12 @@ const nextConfig: NextConfig = {
       { source: "/upcoming-events", destination: "/events", statusCode: 301 },
       { source: "/contact-us", destination: "/contact", statusCode: 301 },
     ];
+  },
+  async rewrites() {
+    // Serve the EOI form at the root — now safe since (site)/page.tsx is removed.
+    // Config rewrites are understood by both the server and the client router,
+    // fixing the hydration mismatch that middleware-only rewrites cause.
+    return [{ source: "/", destination: "/dancer-eoi" }];
   },
 };
 

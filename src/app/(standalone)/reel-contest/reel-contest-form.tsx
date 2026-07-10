@@ -457,12 +457,12 @@ export function ReelContestForm() {
             {[
               {
                 value: "Mohanlal",
-                title: "Team Mohanlal",
+                title: "Team Lalettan",
                 desc: "Dialogues, iconic scenes, dance to his songs.",
               },
               {
                 value: "Chithra",
-                title: "Team Chithra",
+                title: "Team ChithraChechi",
                 desc: "Melodies, lip-syncs, creative videos to K.S. Chithra songs.",
               },
             ].map((t) => (
@@ -494,7 +494,7 @@ export function ReelContestForm() {
           <div className="mb-5">
             <h2 className="eyebrow">Your reel · നിങ്ങളുടെ റീൽ</h2>
             <p className="mt-1 text-sm text-sand-muted">
-              Up to 90 seconds, portrait preferred, MP4 or MOV. Under 10MB, upload it
+              Up to 60 seconds, portrait preferred, MP4 or MOV. Under 10MB, upload it
               directly — larger files, share a Google Drive link instead (set sharing to
               &ldquo;Anyone with the link can view&rdquo;).
             </p>

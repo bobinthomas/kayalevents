@@ -54,7 +54,7 @@ export default async function AboutPage() {
         </Reveal>
 
         <Reveal delay={100}>
-          <div className="space-y-6 rounded-2xl border border-ink-border bg-ink-raised p-7">
+          <div className="gradient-border space-y-6 rounded-2xl border border-ink-border bg-ink-raised p-7">
             <div>
               <p className="eyebrow">At a glance</p>
               <dl className="mt-4 space-y-4">
@@ -97,7 +97,7 @@ export default async function AboutPage() {
         <h2 className="headline text-3xl md:text-4xl">See the work</h2>
         <Link
           href="/portfolio"
-          className="mt-6 inline-flex items-center justify-center rounded-full bg-gold px-8 py-3.5 text-sm font-semibold text-ink transition hover:bg-gold-bright"
+          className="gradient-border mt-6 inline-flex items-center justify-center rounded-full bg-gold px-8 py-3.5 text-sm font-semibold text-ink transition hover:bg-gold-bright"
         >
           View Portfolio
         </Link>

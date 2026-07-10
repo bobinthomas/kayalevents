@@ -1,45 +1,76 @@
 "use client";
 
 import { useEffect } from "react";
-import Lenis from "lenis";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
 
 /**
- * Wraps the site in Lenis smooth scroll and wires it to GSAP ScrollTrigger
- * so scroll-triggered animations stay in sync with the smooth scroll offset.
- * Destroyed on unmount; respects prefers-reduced-motion at the OS level.
+ * Initializes Lenis smooth scroll after hydration. Returns nothing — keeps
+ * the layout tree flat so this can be code-split without blocking SSR.
+ * Respects prefers-reduced-motion; uses native rAF (no GSAP dependency).
  */
-export function SmoothScroll({ children }: { children: React.ReactNode }) {
+export function SmoothScrollInit() {
   useEffect(() => {
+    // Belt-and-suspenders against the browser restoring the previous scroll
+    // position on a fresh load (the boot script in app/layout.tsx already
+    // does this as early as possible, but some browsers re-apply scroll
+    // restoration again after layout settles — e.g. once images/fonts load
+    // and the page's real height is known — which can override an earlier
+    // reset). Re-asserting here (mount) and on `load` covers both cases.
+    // Skipped when the URL has a real #hash, since that's an intentional
+    // in-page anchor link.
+    const resetScroll = () => {
+      if (!location.hash) window.scrollTo(0, 0);
+    };
+    resetScroll();
+    window.addEventListener("load", resetScroll, { once: true });
+
     const prefersReducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
     ).matches;
 
-    if (prefersReducedMotion) return;
+    if (prefersReducedMotion) {
+      return () => window.removeEventListener("load", resetScroll);
+    }
 
-    const lenis = new Lenis({
-      lerp: 0.08,
-      smoothWheel: true,
-      syncTouch: false,
+    let lenis: import("lenis").default | null = null;
+    let rafId = 0;
+    let cancelled = false;
+    let removeMotionListener: (() => void) | undefined;
+
+    void import("lenis").then(({ default: Lenis }) => {
+      if (cancelled) return;
+
+      lenis = new Lenis({
+        lerp: 0.11,
+        smoothWheel: true,
+        syncTouch: false,
+      });
+
+      const raf = (time: number) => {
+        lenis?.raf(time);
+        rafId = requestAnimationFrame(raf);
+      };
+      rafId = requestAnimationFrame(raf);
+
+      const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+      const onMotionChange = () => {
+        if (mq.matches) {
+          cancelAnimationFrame(rafId);
+          lenis?.destroy();
+          lenis = null;
+        }
+      };
+      mq.addEventListener("change", onMotionChange);
+      removeMotionListener = () => mq.removeEventListener("change", onMotionChange);
     });
 
-    // Keep a stable reference to the ticker callback so we can remove it later
-    const tickerCallback = (time: number) => {
-      lenis.raf(time * 1000);
-    };
-
-    // Sync Lenis RAF with GSAP ticker so ScrollTrigger positions are correct
-    gsap.ticker.add(tickerCallback);
-    gsap.ticker.lagSmoothing(0);
-
     return () => {
-      gsap.ticker.remove(tickerCallback);
-      lenis.destroy();
+      window.removeEventListener("load", resetScroll);
+      cancelled = true;
+      removeMotionListener?.();
+      cancelAnimationFrame(rafId);
+      lenis?.destroy();
     };
   }, []);
 
-  return <>{children}</>;
+  return null;
 }

@@ -1,0 +1,16 @@
+{
+  "title": "Marque 2025",
+  "artists": [
+    "Job Kurian"
+  ],
+  "tagline": "Test",
+  "description": "Test",
+  "status": "past",
+  "heroImage": "/api/media/images/Marque 2025/heroImage.jpg",
+  "posterImage": "/api/media/images/Marque 2025/posterImage.jpg",
+  "shows": [],
+  "ticketTiers": [],
+  "entryConditions": [],
+  "faqs": [],
+  "featured": false
+}

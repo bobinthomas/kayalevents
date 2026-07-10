@@ -5,6 +5,7 @@ import { Countdown } from "@/components/countdown";
 import { Poster } from "@/components/poster";
 import { StatusBadge } from "@/components/status-badge";
 import { track } from "@/lib/analytics";
+import { resolveMediaUrl } from "@/lib/media-url";
 import type { HeroSlide } from "@/lib/types";
 
 const INTERVAL_MS = 7000;
@@ -83,6 +84,13 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
   const showVideo = Boolean(slide.heroVideo) && !shouldReduce;
   const isTicketCta = slide.isTicketUrl;
 
+  const shouldLoadSlideImage = (index: number) => {
+    if (count <= 2) return true;
+    const prev = (current - 1 + count) % count;
+    const next = (current + 1) % count;
+    return index === current || index === prev || index === next;
+  };
+
   return (
     <section
       className="relative -mt-16 overflow-hidden md:-mt-20"
@@ -108,7 +116,17 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
           }`}
           aria-hidden="true"
         >
-          <Poster src={s.heroImage} alt="" className="absolute inset-0" priority={i === 0} />
+          {shouldLoadSlideImage(i) ? (
+            <Poster
+              src={s.heroImage}
+              alt=""
+              className="absolute inset-0"
+              sizes="100vw"
+              priority={i === 0}
+            />
+          ) : (
+            <div className="poster-placeholder absolute inset-0" aria-hidden="true" />
+          )}
         </div>
       ))}
 
@@ -118,7 +136,7 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
           key={`video-${slide.id}`}
           className="absolute inset-0 h-full w-full object-cover"
           src={slide.heroVideo}
-          poster={slide.heroImage}
+          poster={resolveMediaUrl(slide.heroImage)}
           autoPlay
           muted
           loop
@@ -137,16 +155,18 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
       <div className="hero-ripple pointer-events-none absolute inset-0" aria-hidden="true" />
 
       {/* Slide content */}
-      <div className="relative mx-auto flex min-h-dvh max-w-6xl flex-col justify-end px-5 pb-20 pt-36 md:px-8 md:pb-28">
+      <div className="relative mx-auto flex min-h-dvh max-w-6xl flex-col justify-end px-5 pb-10 pt-36 md:px-8 md:pb-14">
           <div
             key={`content-${slide.id}`}
             role="group"
             aria-roledescription="slide"
             aria-label={`${current + 1} of ${count}: ${slide.heroHeadline}`}
+            className={shouldReduce ? undefined : "kayal-anim"}
+            style={shouldReduce ? undefined : { animation: "kayal-fade-in 0.5s cubic-bezier(0.22,1,0.36,1) both" }}
           >
             {slide.status && <StatusBadge status={slide.status} />}
 
-            <h1 className="headline mt-5 max-w-4xl text-5xl text-sand md:text-8xl">
+            <h1 className="headline heading-gradient mt-5 max-w-4xl text-[2.7rem] md:text-[5.4rem]">
               {slide.heroHeadline}
             </h1>
 
@@ -175,89 +195,68 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
                 }}
                 className={
                   isTicketCta
-                    ? "coral-glow inline-flex items-center justify-center rounded-full bg-coral px-8 py-3.5 text-sm font-semibold tracking-wide text-sand transition-all duration-200 hover:scale-[1.03] hover:bg-coral-bright"
-                    : "inline-flex items-center justify-center rounded-full border border-lagoon/40 bg-lagoon/10 px-8 py-3.5 text-sm font-semibold text-lagoon transition-all duration-200 hover:bg-lagoon/20"
+                    ? "gradient-border coral-glow inline-flex items-center justify-center rounded-full bg-coral px-8 py-3.5 text-sm font-semibold tracking-wide text-sand transition-all duration-200 hover:scale-[1.03] hover:bg-coral-bright"
+                    : "gradient-border inline-flex items-center justify-center rounded-full border border-lagoon/40 bg-lagoon/10 px-8 py-3.5 text-sm font-semibold text-lagoon transition-all duration-200 hover:bg-lagoon/20"
                 }
               >
                 {slide.heroCtaLabel}
+                {isTicketCta && <span className="sr-only"> (opens in new tab)</span>}
               </a>
               {slide.eventSlug && (
                 <a
                   href={`/events/${slide.eventSlug}`}
-                  className="inline-flex items-center justify-center rounded-full border border-sand/20 px-8 py-3.5 text-sm font-semibold text-sand transition-all duration-200 hover:border-lagoon hover:text-lagoon"
+                  className="gradient-border inline-flex items-center justify-center rounded-full border border-sand/20 px-8 py-3.5 text-sm font-semibold text-sand transition-all duration-200 hover:border-lagoon hover:text-lagoon"
                 >
                   Event details →
                 </a>
               )}
             </div>
-
-            {/* Slide indicators + pause control */}
-            {count > 1 && (
-              <div className="mt-10 flex items-center gap-3">
-                {!shouldReduce && (
-                  <button
-                    onClick={() => setPaused((p) => !p)}
-                    aria-label={paused ? "Resume slideshow" : "Pause slideshow"}
-                    className="flex h-7 w-7 items-center justify-center rounded-full border border-sand/20 text-sand/60 transition hover:border-lagoon hover:text-lagoon"
-                  >
-                    {paused ? (
-                      // Play icon
-                      <svg width="9" height="11" viewBox="0 0 9 11" fill="currentColor" aria-hidden="true">
-                        <path d="M0 0L9 5.5L0 11V0Z" />
-                      </svg>
-                    ) : (
-                      // Pause icon
-                      <svg width="8" height="10" viewBox="0 0 8 10" fill="currentColor" aria-hidden="true">
-                        <rect x="0" y="0" width="3" height="10" rx="1" />
-                        <rect x="5" y="0" width="3" height="10" rx="1" />
-                      </svg>
-                    )}
-                  </button>
-                )}
-                <div role="tablist" aria-label="Go to slide" className="flex items-center gap-2">
-                  {slides.map((s, i) => (
-                    <button
-                      key={s.id}
-                      role="tab"
-                      aria-selected={i === current}
-                      aria-label={`Slide ${i + 1}: ${s.heroHeadline}`}
-                      onClick={() => goTo(i)}
-                      className={`h-1.5 rounded-full transition-all duration-300 ${
-                        i === current
-                          ? "w-6 bg-lagoon"
-                          : "w-1.5 bg-sand/25 hover:bg-sand/50"
-                      }`}
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
       </div>
 
-      {/* Prev / Next buttons (desktop only; mobile uses swipe) */}
+      {/* Pause control + slide dots — right edge, vertically centered */}
       {count > 1 && (
-        <>
+        <div className="absolute right-3 top-1/2 z-10 flex -translate-y-1/2 flex-col items-center gap-4 md:right-6">
           <button
-            onClick={prev}
-            aria-label="Previous slide"
-            className="absolute left-3 top-1/2 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-sand/20 bg-marine-black/40 text-sand backdrop-blur-sm transition hover:border-lagoon hover:text-lagoon md:flex"
+            onClick={() => setPaused((p) => !p)}
+            aria-label={paused ? "Resume slideshow" : "Pause slideshow"}
+            className="gradient-border flex h-7 w-7 items-center justify-center rounded-full border border-sand/20 text-sand/60 transition hover:border-lagoon hover:text-lagoon"
           >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M10 3L5 8L10 13" />
-            </svg>
+            {paused ? (
+              // Play icon
+              <svg width="9" height="11" viewBox="0 0 9 11" fill="currentColor" aria-hidden="true">
+                <path d="M0 0L9 5.5L0 11V0Z" />
+              </svg>
+            ) : (
+              // Pause icon
+              <svg width="8" height="10" viewBox="0 0 8 10" fill="currentColor" aria-hidden="true">
+                <rect x="0" y="0" width="3" height="10" rx="1" />
+                <rect x="5" y="0" width="3" height="10" rx="1" />
+              </svg>
+            )}
           </button>
-          <button
-            onClick={next}
-            aria-label="Next slide"
-            className="absolute right-3 top-1/2 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-sand/20 bg-marine-black/40 text-sand backdrop-blur-sm transition hover:border-lagoon hover:text-lagoon md:flex"
-          >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M6 3L11 8L6 13" />
-            </svg>
-          </button>
-        </>
+          <div role="tablist" aria-label="Go to slide" aria-orientation="vertical" className="flex flex-col items-center gap-2">
+            {slides.map((s, i) => (
+              <button
+                key={s.id}
+                role="tab"
+                aria-selected={i === current}
+                aria-label={`Slide ${i + 1}: ${s.heroHeadline}`}
+                onClick={() => goTo(i)}
+                className="flex items-center justify-center p-2"
+                style={shouldReduce ? undefined : { animationDelay: `${i * 40}ms` }}
+              >
+                <span className={`w-1.5 rounded-full transition-all duration-300 ${
+                  i === current
+                    ? "h-6 bg-lagoon"
+                    : "h-1.5 bg-sand/25 hover:bg-sand/50"
+                }`} />
+              </button>
+            ))}
+          </div>
+        </div>
       )}
+
     </section>
   );
 }

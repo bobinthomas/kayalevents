@@ -29,7 +29,7 @@ export function Footer({ settings }: { settings: SiteSettings }) {
                 href={settings.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-full border border-border px-4 py-2 text-sm text-sand-muted transition-colors hover:border-lagoon/40 hover:text-lagoon"
+                className="gradient-border rounded-full border border-border px-4 py-2 text-sm text-sand-muted transition-colors hover:border-lagoon/40 hover:text-lagoon"
               >
                 Instagram
               </a>
@@ -38,7 +38,7 @@ export function Footer({ settings }: { settings: SiteSettings }) {
               href={`https://wa.me/${settings.whatsapp}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full border border-lagoon/40 bg-lagoon/8 px-4 py-2 text-sm font-semibold text-lagoon transition-colors hover:bg-lagoon/15"
+              className="gradient-border inline-flex items-center gap-2 rounded-full border border-lagoon/40 bg-lagoon/8 px-4 py-2 text-sm font-semibold text-lagoon transition-colors hover:bg-lagoon/15"
             >
               <span className="dot-pulse inline-block h-1.5 w-1.5 rounded-full bg-lagoon" aria-hidden="true" />
               WhatsApp Us
@@ -59,8 +59,8 @@ export function Footer({ settings }: { settings: SiteSettings }) {
           <nav aria-label="Footer navigation" className="space-y-3">
             <p className="eyebrow">Explore</p>
             {[
-              ["Upcoming Events", "/events"],
-              ["Portfolio", "/portfolio"],
+              ["Current Events", "/events"],
+              ["Previous Events", "/portfolio"],
               ["Services", "/services"],
               ["About", "/about"],
               ["Contact", "/contact"],
