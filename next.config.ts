@@ -44,12 +44,6 @@ const nextConfig: NextConfig = {
       { source: "/contact-us", destination: "/contact", statusCode: 301 },
     ];
   },
-  async rewrites() {
-    // Serve the EOI form at the root — now safe since (site)/page.tsx is removed.
-    // Config rewrites are understood by both the server and the client router,
-    // fixing the hydration mismatch that middleware-only rewrites cause.
-    return [{ source: "/", destination: "/dancer-eoi" }];
-  },
 };
 
 export default nextConfig;
