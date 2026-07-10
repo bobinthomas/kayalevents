@@ -328,6 +328,26 @@
     @keyframes spin { to { transform: rotate(360deg); } }
 
     .empty-msg { color: var(--muted); padding: 40px 20px; text-align: center; }
+
+    /* ── Mobile ── */
+    @media (max-width: 600px) {
+      /* Hide Performers (col 2) and Submitted (col 5) */
+      thead th:nth-child(2), tbody td:nth-child(2),
+      thead th:nth-child(5), tbody td:nth-child(5) { display: none; }
+
+      .contact-email { display: none; }
+
+      .controls { flex-direction: column; }
+      input[type=search] { min-width: unset; width: 100%; }
+      select { width: 100%; }
+
+      .reviewer-email { display: none; }
+      .topbar { gap: 8px; padding: 10px 14px; }
+      .topbar-right { gap: 8px; }
+      .table-wrap { padding: 0 12px 20px; }
+      .counts-bar { padding: 10px 14px; gap: 14px; }
+      .controls { padding: 10px 14px; }
+    }
   </style>
 </head>
 <body>
@@ -495,7 +515,7 @@
           '<td>' + esc(row.num_performers) + '</td>',
           '<td>' +
             '<div>' + esc(row.contact_name) + '</div>' +
-            '<div style="font-size:11px;color:var(--muted)">' + esc(row.contact_email) + '</div>' +
+            '<div class="contact-email" style="font-size:11px;color:var(--muted)">' + esc(row.contact_email) + '</div>' +
           '</td>',
           '<td><span class="status-badge status-' + row.status + '">' + row.status + '</span></td>',
           '<td class="ts">' + formatTs(row.submitted_at) + '</td>',
