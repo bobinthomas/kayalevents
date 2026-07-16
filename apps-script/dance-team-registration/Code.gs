@@ -469,30 +469,61 @@ function buildPassQrSvg(registrationId) {
   return qr.createSvgTag({ cellSize: 4, margin: 4, scalable: true });
 }
 
+var ICON_CALENDAR_SVG =
+  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+  '<rect x="3" y="5" width="18" height="16" rx="2"></rect>' +
+  '<line x1="16" y1="3" x2="16" y2="7"></line>' +
+  '<line x1="8" y1="3" x2="8" y2="7"></line>' +
+  '<line x1="3" y1="10" x2="21" y2="10"></line>' +
+  '</svg>';
+
+var ICON_PIN_SVG =
+  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+  '<path d="M12 22s7-7.5 7-12a7 7 0 1 0-14 0c0 4.5 7 12 7 12z"></path>' +
+  '<circle cx="12" cy="10" r="2.5"></circle>' +
+  '</svg>';
+
 function renderBadgeHtml(row) {
   var photoUri = getImageDataUri(row.close_up_photo_url);
   var qrSvg = buildPassQrSvg(row.registration_id);
-  var fullName = row.dancer_first_name + " " + row.dancer_last_name;
+  var fullName = row.dancer_first_name + ' ' + row.dancer_last_name;
 
   return [
-    '<div class="badge">',
-    '  <div class="badge-header">',
-    '    <div class="badge-org">' + escHtml(CONFIG.ORG_NAME) + '</div>',
-    '    <div class="badge-role">PERFORMER</div>',
-    '  </div>',
-    '  <div class="badge-body">',
+    '<div class="ticket">',
+    '  <div class="ticket-logo">' + KAYAL_LOGO_SVG + '</div>',
+    '  <div class="ticket-event-title">' + escHtml(CONFIG.EVENT_TITLE) + '</div>',
+    '  <div class="ticket-event-subtitle">' + escHtml(CONFIG.EVENT_SUBTITLE) + '</div>',
     photoUri
-      ? '    <img class="badge-photo" src="' + photoUri + '" alt="">'
-      : '    <div class="badge-photo badge-photo-placeholder"></div>',
-    '    <div class="badge-info">',
-    '      <div class="badge-name">' + escHtml(fullName) + '</div>',
-    '      <div class="badge-event">' + escHtml(CONFIG.EVENT_NAME) + '</div>',
-    '      <div class="badge-meta">' + escHtml(CONFIG.EVENT_DATE_DISPLAY) + ' &middot; ' + escHtml(CONFIG.EVENT_VENUE) + '</div>',
+      ? '  <img class="ticket-photo" src="' + photoUri + '" alt="">'
+      : '  <div class="ticket-photo ticket-photo-placeholder"></div>',
+    '  <div class="ticket-role-pill">PERFORMER</div>',
+    '  <div class="ticket-name">' + escHtml(fullName) + '</div>',
+    '  <div class="ticket-hr"></div>',
+    '  <div class="ticket-info-row">',
+    '    <span class="ticket-icon">' + ICON_CALENDAR_SVG + '</span>',
+    '    <div>',
+    '      <div class="ticket-info-label">Date</div>',
+    '      <div class="ticket-info-value">' + escHtml(CONFIG.EVENT_DATE_DISPLAY) + '</div>',
     '    </div>',
     '  </div>',
-    '  <div class="badge-footer">',
-    '    <div class="badge-qr">' + qrSvg + '</div>',
-    '    <div class="badge-id">' + escHtml(row.registration_id) + '</div>',
+    '  <div class="ticket-info-row">',
+    '    <span class="ticket-icon">' + ICON_PIN_SVG + '</span>',
+    '    <div>',
+    '      <div class="ticket-info-label">Venue</div>',
+    '      <div class="ticket-info-value">' + escHtml(CONFIG.EVENT_VENUE) + '</div>',
+    '    </div>',
+    '  </div>',
+    '  <div class="ticket-perforation"></div>',
+    '  <div class="ticket-footer">',
+    '    <div class="ticket-footer-left">',
+    '      <div class="ticket-info-label">Gate Access ID</div>',
+    '      <div class="ticket-id">' + escHtml(row.registration_id) + '</div>',
+    '      <div class="ticket-disclaimer">Present this credential at performer check-in desk. Non-transferable.</div>',
+    '    </div>',
+    '    <div class="ticket-qr">',
+    '      ' + qrSvg,
+    '      <div class="ticket-qr-id">' + escHtml(row.registration_id) + '</div>',
+    '    </div>',
     '  </div>',
     '</div>',
   ].join('\n');
@@ -502,32 +533,46 @@ var BADGE_STYLE = [
   '<style>',
   '  @page { margin: 8mm; }',
   '  * { box-sizing: border-box; }',
-  '  body { margin: 0; font-family: Arial, Helvetica, sans-serif; background: #ccc; }',
+  '  body { margin: 0; font-family: Arial, Helvetica, sans-serif; background: #d8d8d8; }',
   '  .toolbar { padding: 12px; text-align: center; }',
   '  .toolbar button { font-size: 14px; padding: 8px 20px; cursor: pointer; }',
-  '  .sheet { display: flex; flex-wrap: wrap; gap: 4mm; justify-content: center; padding: 4mm; }',
-  '  .badge {',
-  '    width: 85mm; height: 54mm;',
-  '    border: 1px solid #000; border-radius: 3mm;',
-  '    background: #fff; color: #111;',
-  '    padding: 3mm; display: flex; flex-direction: column;',
+  '  .sheet { display: flex; flex-wrap: wrap; gap: 6mm; justify-content: center; padding: 6mm; }',
+  '  .ticket {',
+  '    width: 100mm;',
+  '    border-radius: 6mm;',
+  '    background: #0b0e14; color: #f5f2ea;',
+  '    padding: 6mm; display: flex; flex-direction: column; align-items: center;',
+  '    position: relative;',
   '    page-break-inside: avoid; overflow: hidden;',
   '  }',
-  '  .badge-header { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 0.5mm solid #111; padding-bottom: 1.5mm; }',
-  '  .badge-org { font-weight: 700; font-size: 11pt; letter-spacing: 0.5pt; }',
-  '  .badge-role { font-size: 8pt; font-weight: 700; letter-spacing: 1pt; color: #b3311f; }',
-  '  .badge-body { display: flex; gap: 3mm; flex: 1; margin-top: 2mm; min-height: 0; }',
-  '  .badge-photo { width: 20mm; height: 25mm; object-fit: cover; border: 0.4mm solid #999; flex-shrink: 0; }',
-  '  .badge-photo-placeholder { background: #eee; }',
-  '  .badge-info { min-width: 0; display: flex; flex-direction: column; justify-content: center; }',
-  '  .badge-name { font-size: 12pt; font-weight: 700; line-height: 1.2; }',
-  '  .badge-event { font-size: 7.5pt; margin-top: 1.5mm; line-height: 1.25; }',
-  '  .badge-meta { font-size: 7pt; color: #444; margin-top: 1mm; }',
-  '  .badge-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 2mm; }',
-  '  .badge-qr { width: 16mm; height: 16mm; }',
-  '  .badge-qr svg { width: 100%; height: 100%; }',
-  '  .badge-id { font-family: monospace; font-size: 8pt; color: #444; }',
-  '  @media print { .toolbar { display: none; } .sheet { padding: 0; gap: 0; } body { background: #fff; } }',
+  '  .ticket-logo { width: 32mm; flex-shrink: 0; }',
+  '  .ticket-logo svg { width: 100%; height: auto; display: block; }',
+  '  .ticket-event-title { margin-top: 2mm; font-size: 11pt; font-weight: 700; text-align: center; }',
+  '  .ticket-event-subtitle { font-size: 8pt; color: #8b93a3; text-align: center; margin-top: 0.5mm; }',
+  '  .ticket-photo, .ticket-photo-placeholder { width: 100%; height: 34mm; object-fit: cover; border-radius: 3mm; margin-top: 3mm; flex-shrink: 0; }',
+  '  .ticket-photo-placeholder { background: #1b2028; }',
+  '  .ticket-role-pill { margin-top: 3mm; border: 0.4mm solid #f2a71b; color: #f2a71b; border-radius: 5mm; padding: 1mm 4mm; font-size: 8pt; font-weight: 700; letter-spacing: 1.5pt; }',
+  '  .ticket-name { margin-top: 2mm; font-size: 16pt; font-weight: 800; text-transform: uppercase; text-align: center; line-height: 1.1; }',
+  '  .ticket-hr { width: 100%; height: 1px; background: rgba(245,242,234,0.15); margin-top: 3mm; }',
+  '  .ticket-info-row { width: 100%; display: flex; align-items: center; gap: 3mm; margin-top: 3mm; }',
+  '  .ticket-icon { width: 4.5mm; height: 4.5mm; color: #f2a71b; flex-shrink: 0; }',
+  '  .ticket-icon svg { width: 100%; height: 100%; }',
+  '  .ticket-info-label { font-size: 6.5pt; text-transform: uppercase; letter-spacing: 0.5pt; color: #8b93a3; }',
+  '  .ticket-info-value { font-size: 9pt; font-weight: 700; margin-top: 0.3mm; }',
+  '  .ticket-perforation { width: 100%; border-top: 1px dashed rgba(245,242,234,0.3); margin-top: 4mm; position: relative; }',
+  '  .ticket-perforation::before, .ticket-perforation::after {',
+  '    content: ""; position: absolute; top: -2.5mm; width: 5mm; height: 5mm; border-radius: 50%; background: #d8d8d8;',
+  '  }',
+  '  .ticket-perforation::before { left: -8.5mm; }',
+  '  .ticket-perforation::after { right: -8.5mm; }',
+  '  .ticket-footer { width: 100%; display: flex; align-items: flex-end; justify-content: space-between; margin-top: 4mm; gap: 3mm; }',
+  '  .ticket-footer-left { min-width: 0; }',
+  '  .ticket-id { font-family: monospace; font-size: 11pt; font-weight: 700; margin-top: 0.5mm; }',
+  '  .ticket-disclaimer { font-size: 6pt; color: #8b93a3; margin-top: 1.5mm; line-height: 1.3; max-width: 55mm; }',
+  '  .ticket-qr { background: #fff; border-radius: 2mm; padding: 1.5mm; flex-shrink: 0; text-align: center; }',
+  '  .ticket-qr svg { width: 20mm; height: 20mm; display: block; }',
+  '  .ticket-qr-id { font-family: monospace; font-size: 5pt; color: #333; margin-top: 0.5mm; }',
+  '  @media print { .toolbar { display: none; } body { background: #fff; } .ticket-perforation::before, .ticket-perforation::after { background: #fff; } }',
   '</style>',
 ].join('\n');
 

@@ -21,7 +21,8 @@ const CONFIG = {
   CAMPAIGN_NAME: "Dance Team Performer Registration",
 
   // Printed on approved performers' backstage passes.
-  EVENT_NAME: "Vaikittu Entha Paripadi - Mohanlal Live in Sydney",
+  EVENT_TITLE: "Vaikittu Entha Paripadi",
+  EVENT_SUBTITLE: "Mohanlal Live in Sydney",
   EVENT_DATE_DISPLAY: "8 August 2026",
   EVENT_VENUE: "Norwest Convention Centre Sydney",
 
