@@ -549,7 +549,7 @@ var BADGE_STYLE = [
   '  .ticket-logo svg { width: 100%; height: auto; display: block; }',
   '  .ticket-event-title { margin-top: 2mm; font-size: 11pt; font-weight: 700; text-align: center; }',
   '  .ticket-event-subtitle { font-size: 8pt; color: #8b93a3; text-align: center; margin-top: 0.5mm; }',
-  '  .ticket-photo, .ticket-photo-placeholder { width: 100%; height: 34mm; object-fit: cover; border-radius: 3mm; margin-top: 3mm; flex-shrink: 0; }',
+  '  .ticket-photo, .ticket-photo-placeholder { width: 34mm; height: 34mm; object-fit: cover; border-radius: 3mm; margin-top: 3mm; flex-shrink: 0; }',
   '  .ticket-photo-placeholder { background: #1b2028; }',
   '  .ticket-role-pill { margin-top: 3mm; border: 0.4mm solid #f2a71b; color: #f2a71b; border-radius: 5mm; padding: 1mm 4mm; font-size: 8pt; font-weight: 700; letter-spacing: 1.5pt; }',
   '  .ticket-name { margin-top: 2mm; font-size: 16pt; font-weight: 800; text-transform: uppercase; text-align: center; line-height: 1.1; }',
