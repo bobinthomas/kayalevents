@@ -340,6 +340,7 @@
     <span class="topbar-title">Dance Team Registrations</span>
     <div class="topbar-right">
       <span class="reviewer-email" id="reviewerEmail">…</span>
+      <button class="btn btn-sm btn-lagoon" onclick="printAllPasses()">Print All Approved</button>
       <button class="btn btn-sm" onclick="exportCSV()">Export CSV</button>
       <button class="btn btn-sm" onclick="loadSubmissions()">Refresh</button>
     </div>
@@ -415,8 +416,19 @@
 
   <script>
     var adminToken = <?!= JSON.stringify(adminToken) ?>;
+    var scriptUrl = <?!= JSON.stringify(scriptUrl) ?>;
     var allRows = [];
     var openRegistrationId = null;
+
+    // ── Passes ───────────────────────────────────────────────────────────────
+
+    function printPass(registrationId) {
+      window.open(scriptUrl + '?page=pass&id=' + encodeURIComponent(registrationId) + '&token=' + encodeURIComponent(adminToken), '_blank');
+    }
+
+    function printAllPasses() {
+      window.open(scriptUrl + '?page=passes&token=' + encodeURIComponent(adminToken), '_blank');
+    }
 
     // ── Init ─────────────────────────────────────────────────────────────────
 
@@ -555,6 +567,10 @@
           ? 'Last updated by ' + esc(row.reviewed_by) + ' at ' + formatTs(row.reviewed_at)
           : 'Not yet reviewed.',
         '</div>',
+
+        row.status === 'Approved'
+          ? '<button class="btn btn-lagoon btn-sm" style="margin-top:10px" onclick="printPass(\'' + row.registration_id + '\')">Print Pass</button>'
+          : '',
 
         // Notes
         '<div class="section-label" style="margin-top:20px">Reviewer notes</div>',

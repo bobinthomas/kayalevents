@@ -154,6 +154,8 @@ function doGet(e) {
   try {
     if (action === "issueCode") return handleIssueCode();
     if (page === "admin") return serveAdminPage(token);
+    if (page === "pass") return servePassPage((e.parameter && e.parameter.id) || "", token);
+    if (page === "passes") return serveAllPassesPage(token);
     return jsonOk({ status: "ok", service: "Kayal Events Dance Team Registration" });
   } catch (err) {
     return jsonErr(err.message);
@@ -400,6 +402,189 @@ function sendStatusUpdateEmail(row, status) {
   });
 }
 
+// ── Backstage pass (phase 2) ────────────────────────────────────────────────────
+
+// Drive file IDs are always a run of 25+ URL-safe characters — safe to pull out
+// of whatever URL shape file.getUrl() returns without depending on that shape.
+function extractDriveFileId(url) {
+  var m = String(url || "").match(/[-\w]{25,}/);
+  return m ? m[0] : "";
+}
+
+// Embeds the photo as a base64 data URI rather than linking to Drive directly —
+// works regardless of the file's sharing settings, since the script reads it as
+// the owner, and keeps no Drive links exposed on the printed pass.
+function getImageDataUri(driveUrl) {
+  var id = extractDriveFileId(driveUrl);
+  if (!id) return "";
+  try {
+    var blob = DriveApp.getFileById(id).getBlob();
+    var base64 = Utilities.base64Encode(blob.getBytes());
+    return "data:" + blob.getContentType() + ";base64," + base64;
+  } catch (e) {
+    return "";
+  }
+}
+
+function getRowByRegistrationId(registrationId) {
+  var sheet = getSheet();
+  var lastRow = sheet.getLastRow();
+  if (lastRow < 2) return null;
+
+  var data = sheet.getRange(2, 1, lastRow - 1, SHEET_HEADERS.length).getValues();
+  for (var i = 0; i < data.length; i++) {
+    var row = {};
+    SHEET_HEADERS.forEach(function (key, j) {
+      row[key] = data[i][j] instanceof Date ? data[i][j].toISOString() : String(data[i][j] || "");
+    });
+    if (row.registration_id === registrationId) return row;
+  }
+  return null;
+}
+
+function getApprovedRows() {
+  var sheet = getSheet();
+  var lastRow = sheet.getLastRow();
+  if (lastRow < 2) return [];
+
+  var data = sheet.getRange(2, 1, lastRow - 1, SHEET_HEADERS.length).getValues();
+  var rows = [];
+  data.forEach(function (values) {
+    var row = {};
+    SHEET_HEADERS.forEach(function (key, j) {
+      row[key] = values[j] instanceof Date ? values[j].toISOString() : String(values[j] || "");
+    });
+    if (row.status === "Approved") rows.push(row);
+  });
+  return rows;
+}
+
+// QR payload is deliberately just the registration ID (prefixed so a stray
+// scan is identifiable) — the future check-in scanner looks this up against
+// the Sheet rather than trusting anything else encoded in the QR itself.
+function buildPassQrSvg(registrationId) {
+  var qr = qrcode(0, "M");
+  qr.addData("KAYAL-PASS:" + registrationId);
+  qr.make();
+  return qr.createSvgTag({ cellSize: 4, margin: 4, scalable: true });
+}
+
+function renderBadgeHtml(row) {
+  var photoUri = getImageDataUri(row.close_up_photo_url);
+  var qrSvg = buildPassQrSvg(row.registration_id);
+  var fullName = row.dancer_first_name + " " + row.dancer_last_name;
+
+  return [
+    '<div class="badge">',
+    '  <div class="badge-header">',
+    '    <div class="badge-org">' + escHtml(CONFIG.ORG_NAME) + '</div>',
+    '    <div class="badge-role">PERFORMER</div>',
+    '  </div>',
+    '  <div class="badge-body">',
+    photoUri
+      ? '    <img class="badge-photo" src="' + photoUri + '" alt="">'
+      : '    <div class="badge-photo badge-photo-placeholder"></div>',
+    '    <div class="badge-info">',
+    '      <div class="badge-name">' + escHtml(fullName) + '</div>',
+    '      <div class="badge-event">' + escHtml(CONFIG.EVENT_NAME) + '</div>',
+    '      <div class="badge-meta">' + escHtml(CONFIG.EVENT_DATE_DISPLAY) + ' &middot; ' + escHtml(CONFIG.EVENT_VENUE) + '</div>',
+    '    </div>',
+    '  </div>',
+    '  <div class="badge-footer">',
+    '    <div class="badge-qr">' + qrSvg + '</div>',
+    '    <div class="badge-id">' + escHtml(row.registration_id) + '</div>',
+    '  </div>',
+    '</div>',
+  ].join('\n');
+}
+
+var BADGE_STYLE = [
+  '<style>',
+  '  @page { margin: 8mm; }',
+  '  * { box-sizing: border-box; }',
+  '  body { margin: 0; font-family: Arial, Helvetica, sans-serif; background: #ccc; }',
+  '  .toolbar { padding: 12px; text-align: center; }',
+  '  .toolbar button { font-size: 14px; padding: 8px 20px; cursor: pointer; }',
+  '  .sheet { display: flex; flex-wrap: wrap; gap: 4mm; justify-content: center; padding: 4mm; }',
+  '  .badge {',
+  '    width: 85mm; height: 54mm;',
+  '    border: 1px solid #000; border-radius: 3mm;',
+  '    background: #fff; color: #111;',
+  '    padding: 3mm; display: flex; flex-direction: column;',
+  '    page-break-inside: avoid; overflow: hidden;',
+  '  }',
+  '  .badge-header { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 0.5mm solid #111; padding-bottom: 1.5mm; }',
+  '  .badge-org { font-weight: 700; font-size: 11pt; letter-spacing: 0.5pt; }',
+  '  .badge-role { font-size: 8pt; font-weight: 700; letter-spacing: 1pt; color: #b3311f; }',
+  '  .badge-body { display: flex; gap: 3mm; flex: 1; margin-top: 2mm; min-height: 0; }',
+  '  .badge-photo { width: 20mm; height: 25mm; object-fit: cover; border: 0.4mm solid #999; flex-shrink: 0; }',
+  '  .badge-photo-placeholder { background: #eee; }',
+  '  .badge-info { min-width: 0; display: flex; flex-direction: column; justify-content: center; }',
+  '  .badge-name { font-size: 12pt; font-weight: 700; line-height: 1.2; }',
+  '  .badge-event { font-size: 7.5pt; margin-top: 1.5mm; line-height: 1.25; }',
+  '  .badge-meta { font-size: 7pt; color: #444; margin-top: 1mm; }',
+  '  .badge-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 2mm; }',
+  '  .badge-qr { width: 16mm; height: 16mm; }',
+  '  .badge-qr svg { width: 100%; height: 100%; }',
+  '  .badge-id { font-family: monospace; font-size: 8pt; color: #444; }',
+  '  @media print { .toolbar { display: none; } .sheet { padding: 0; gap: 0; } body { background: #fff; } }',
+  '</style>',
+].join('\n');
+
+function servePassPage(registrationId, token) {
+  if (!token || token !== CONFIG.ADMIN_TOKEN) {
+    return HtmlService.createHtmlOutput('<p>Access denied.</p>');
+  }
+
+  var row = getRowByRegistrationId(registrationId);
+  if (!row) {
+    return HtmlService.createHtmlOutput('<p>Registration not found.</p>');
+  }
+  if (row.status !== 'Approved') {
+    return HtmlService.createHtmlOutput(
+      '<p>This registration is not yet approved (status: ' + escHtml(row.status) + '). Approve it first.</p>'
+    );
+  }
+
+  var html = [
+    "<!DOCTYPE html><html><head><meta charset='UTF-8'>",
+    BADGE_STYLE,
+    '</head><body>',
+    "<div class='toolbar'><button onclick='window.print()'>Print</button></div>",
+    "<div class='sheet'>",
+    renderBadgeHtml(row),
+    '</div>',
+    '</body></html>',
+  ].join('\n');
+
+  return HtmlService.createHtmlOutput(html).setTitle('Pass — ' + row.dancer_first_name + ' ' + row.dancer_last_name);
+}
+
+function serveAllPassesPage(token) {
+  if (!token || token !== CONFIG.ADMIN_TOKEN) {
+    return HtmlService.createHtmlOutput('<p>Access denied.</p>');
+  }
+
+  var rows = getApprovedRows();
+
+  var badgesHtml = rows.length
+    ? rows.map(renderBadgeHtml).join('\n')
+    : "<p style='padding:20px'>No approved registrations yet.</p>";
+
+  var html = [
+    "<!DOCTYPE html><html><head><meta charset='UTF-8'>",
+    BADGE_STYLE,
+    '</head><body>',
+    "<div class='toolbar'><button onclick='window.print()'>Print all (" + rows.length + ')</button></div>',
+    "<div class='sheet'>",
+    badgesHtml,
+    '</div>',
+    '</body></html>',
+  ].join('\n');
+
+  return HtmlService.createHtmlOutput(html).setTitle('All Approved Passes — Kayal Events');
+}
+
 // ── Admin page ────────────────────────────────────────────────────────────────
 
 function serveAdminPage(token) {
@@ -416,6 +601,7 @@ function serveAdminPage(token) {
 
   var tmpl = HtmlService.createTemplateFromFile("Admin");
   tmpl.adminToken = token;
+  tmpl.scriptUrl = ScriptApp.getService().getUrl();
   return tmpl
     .evaluate()
     .setTitle(CONFIG.CAMPAIGN_NAME + " — Kayal Events")

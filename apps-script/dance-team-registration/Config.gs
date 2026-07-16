@@ -20,6 +20,11 @@ const CONFIG = {
   ORG_NAME: "Kayal Events",
   CAMPAIGN_NAME: "Dance Team Performer Registration",
 
+  // Printed on approved performers' backstage passes.
+  EVENT_NAME: "Vaikittu Entha Paripadi - Mohanlal Live in Sydney",
+  EVENT_DATE_DISPLAY: "8 August 2026",
+  EVENT_VENUE: "Norwest Convention Centre Sydney",
+
   // TODO: The Gmail address that owns the Drive folder and Sheet.
   OWNER_EMAIL: "kayaleventsofficial@gmail.com",
 
