@@ -12,6 +12,8 @@
     "deploy": "KEYSTATIC_STORAGE= NEXT_PUBLIC_KEYSTATIC_STORAGE= opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "deploy:staging": "KEYSTATIC_STORAGE= NEXT_PUBLIC_KEYSTATIC_STORAGE= opennextjs-cloudflare build && opennextjs-cloudflare deploy --env staging",
     "preview:staging": "KEYSTATIC_STORAGE= NEXT_PUBLIC_KEYSTATIC_STORAGE= opennextjs-cloudflare build && opennextjs-cloudflare preview --env staging",
+    "deploy:dancers": "KEYSTATIC_STORAGE= NEXT_PUBLIC_KEYSTATIC_STORAGE= opennextjs-cloudflare build && opennextjs-cloudflare deploy --env dancers",
+    "preview:dancers": "KEYSTATIC_STORAGE= NEXT_PUBLIC_KEYSTATIC_STORAGE= opennextjs-cloudflare build && opennextjs-cloudflare preview --env dancers",
     "setup:staging-secrets": "node scripts/setup-staging-secrets.mjs",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
     "images:migrate": "node scripts/migrate-media.mjs",

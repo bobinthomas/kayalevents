@@ -94,8 +94,24 @@ in the Cloudflare dashboard.
 |---|---|---|---|
 | `dev` | `npm run deploy:staging` | `kayalevents-dev` | https://kayalevents-dev.bobinthomas.workers.dev |
 | `main` | `npm run deploy` | `kayalevents` | https://kayalevents.bobinthomas.workers.dev |
+| `dancers` | `npm run deploy:dancers` | `kayalevents-dancers` | https://kayalevents-dancers.bobinthomas.workers.dev |
 
 **Workflow:** merge to `dev` → deploy staging → test → merge to `main` → `npm run deploy` for production.
+
+### Dance team registration subdomain (`dancers.kayalevents.com.au`)
+
+Served at the bare root of a dedicated `dancers` branch/Worker, the same way `dev`
+serves the dancer EOI form at its root — see the `dev` branch's `next.config.ts`
+(`rewrites(): "/" → "/dancer-eoi"`) and its removed `src/app/(site)/page.tsx` for
+the working reference. The `dancers` branch applies the identical pattern:
+`(site)/page.tsx` deleted, `next.config.ts` rewrites `/` → `/dance-team-registration`.
+
+1. Merge feature work from `main` into `dancers`.
+2. Set secrets: `wrangler secret put KEYSTATIC_GITHUB_CLIENT_SECRET|KEYSTATIC_SECRET|KEYSTATIC_GITHUB_TOKEN --env dancers`,
+   plus `DANCE_TEAM_APPS_SCRIPT_URL` and (if reused) `TURNSTILE_SECRET`.
+3. `npm run deploy:dancers`.
+4. Attach the `dancers.kayalevents.com.au` custom domain to the `kayalevents-dancers`
+   Worker in the Cloudflare dashboard (Workers & Pages → Settings → Domains & Routes).
 
 ### Staging CMS (separate GitHub OAuth App)
 

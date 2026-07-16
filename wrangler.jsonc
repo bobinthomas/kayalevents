@@ -21,6 +21,17 @@
         "NEXT_PUBLIC_KEYSTATIC_GITHUB_CLIENT_ID": "Ov23liexJotSlY5iTU3z",
         "KEYSTATIC_GITHUB_REF": "dev"
       }
+    },
+    // Dance team performer registration (dancers.kayalevents.com.au) — deployed from
+    // the `dancers` branch, which rewrites "/" to the registration form (mirrors how
+    // the `dev` branch rewrites "/" to /dancer-eoi for eoi.kayalevents.com.au).
+    // Reuses production's Keystatic OAuth app client ID — /keystatic on this Worker
+    // isn't meant to be used, so a mismatched OAuth callback here is not a concern.
+    "dancers": {
+      "name": "kayalevents-dancers",
+      "vars": {
+        "NEXT_PUBLIC_KEYSTATIC_GITHUB_CLIENT_ID": "Ov23likSh8xSq5c6hudN"
+      }
     }
   }
   // Production OAuth app callback (keep on your existing app — do not change for staging):
@@ -33,4 +44,9 @@
   //   wrangler secret put KEYSTATIC_GITHUB_CLIENT_SECRET --env staging
   //   wrangler secret put KEYSTATIC_SECRET --env staging
   //   wrangler secret put KEYSTATIC_GITHUB_TOKEN --env staging
+  // Dancers copies (plus DANCE_TEAM_APPS_SCRIPT_URL and, if reused, TURNSTILE_SECRET):
+  //   wrangler secret put KEYSTATIC_GITHUB_CLIENT_SECRET --env dancers
+  //   wrangler secret put KEYSTATIC_SECRET --env dancers
+  //   wrangler secret put KEYSTATIC_GITHUB_TOKEN --env dancers
+  //   wrangler secret put DANCE_TEAM_APPS_SCRIPT_URL --env dancers
 }
