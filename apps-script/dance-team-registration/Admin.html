@@ -524,6 +524,9 @@
         '<div class="section-label">Contact number</div>',
         '<div class="detail-value"><a href="tel:' + esc(row.contact_number) + '">' + esc(row.contact_number) + '</a></div>',
 
+        '<div class="section-label">Email</div>',
+        '<div class="detail-value"><a href="mailto:' + esc(row.dancer_email) + '">' + esc(row.dancer_email) + '</a></div>',
+
         // Documents
         '<div class="section-label">Documents</div>',
         '<div class="link-list">',
@@ -628,7 +631,7 @@
 
       var headers = [
         'registration_id','submitted_at','dancer_first_name','dancer_last_name',
-        'contact_number','full_length_photo_url','close_up_photo_url','id_proof_url',
+        'contact_number','dancer_email','full_length_photo_url','close_up_photo_url','id_proof_url',
         'tcs_accepted','signature_full_name','signature_date',
         'status','reviewer_notes','reviewed_by','reviewed_at'
       ];

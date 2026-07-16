@@ -51,6 +51,7 @@ export async function POST(req: NextRequest) {
     dancerFirstName?: string;
     dancerLastName?: string;
     contactNumber?: string;
+    dancerEmail?: string;
     fullLengthPhotoBase64?: string;
     fullLengthPhotoMimeType?: string;
     closeUpPhotoBase64?: string;
@@ -87,11 +88,15 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const required = ["dancerFirstName", "dancerLastName", "contactNumber", "signatureFullName", "signatureDate"] as const;
+  const required = ["dancerFirstName", "dancerLastName", "contactNumber", "dancerEmail", "signatureFullName", "signatureDate"] as const;
   for (const field of required) {
     if (!body[field]) {
       return NextResponse.json({ error: `Missing field: ${field}` }, { status: 400 });
     }
+  }
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(body.dancerEmail!)) {
+    return NextResponse.json({ error: "Please enter a valid email address." }, { status: 400 });
   }
 
   if (!body.tcsAccepted) {
@@ -149,6 +154,7 @@ export async function POST(req: NextRequest) {
         dancerFirstName: body.dancerFirstName,
         dancerLastName: body.dancerLastName,
         contactNumber: body.contactNumber,
+        dancerEmail: body.dancerEmail,
         fullLengthPhotoBase64: body.fullLengthPhotoBase64,
         fullLengthPhotoMimeType: body.fullLengthPhotoMimeType,
         closeUpPhotoBase64: body.closeUpPhotoBase64,

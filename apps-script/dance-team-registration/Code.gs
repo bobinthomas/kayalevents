@@ -87,6 +87,7 @@ var SHEET_HEADERS = [
   "dancer_first_name",
   "dancer_last_name",
   "contact_number",
+  "dancer_email",
   "full_length_photo_url",
   "close_up_photo_url",
   "id_proof_url",
@@ -231,9 +232,13 @@ function handleSubmit(body) {
   var freshnessError = verifyFreshnessToken(body);
   if (freshnessError) return jsonErr(freshnessError);
 
-  var required = ["dancerFirstName", "dancerLastName", "contactNumber", "signatureFullName", "signatureDate"];
+  var required = ["dancerFirstName", "dancerLastName", "contactNumber", "dancerEmail", "signatureFullName", "signatureDate"];
   for (var i = 0; i < required.length; i++) {
     if (!body[required[i]]) return jsonErr("Missing field: " + required[i]);
+  }
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(body.dancerEmail)) {
+    return jsonErr("Please enter a valid email address.");
   }
 
   if (!body.tcsAccepted) return jsonErr("Terms & Conditions must be accepted.");
@@ -283,6 +288,7 @@ function handleSubmit(body) {
     body.dancerFirstName,
     body.dancerLastName,
     body.contactNumber,
+    body.dancerEmail,
     savedUrls.fullLengthPhoto,
     savedUrls.closeUpPhoto,
     savedUrls.idProof,
@@ -318,6 +324,7 @@ function sendPanelAlert(body, registrationId, savedUrls) {
     "<p><strong>Submitted:</strong> " + new Date().toLocaleString("en-AU") + "</p>",
     "<hr>",
     "<p><strong>Contact number:</strong> " + escHtml(body.contactNumber) + "</p>",
+    "<p><strong>Email:</strong> " + escHtml(body.dancerEmail) + "</p>",
     "<p><strong>Full-length photo:</strong> <a href=\"" + savedUrls.fullLengthPhoto + "\">view</a></p>",
     "<p><strong>Close-up photo:</strong> <a href=\"" + savedUrls.closeUpPhoto + "\">view</a></p>",
     "<p><strong>ID proof:</strong> <a href=\"" + savedUrls.idProof + "\">view</a></p>",
@@ -347,9 +354,47 @@ function sendRegistrantConfirmation(body, registrationId) {
   ].join("\n");
 
   MailApp.sendEmail({
-    to: CONFIG.OWNER_EMAIL, // registrant email not collected on this form — internal-only confirmation loop
+    to: body.dancerEmail,
     subject: subject,
     htmlBody: html,
+    name: "Kayal Events",
+    replyTo: CONFIG.OWNER_EMAIL,
+  });
+}
+
+function sendStatusUpdateEmail(row, status) {
+  if (!row.dancer_email) return; // rows created before the email field existed
+
+  var subject;
+  var bodyLines;
+
+  if (status === "Approved") {
+    subject = CONFIG.CAMPAIGN_NAME + " — you're accredited!";
+    bodyLines = [
+      "<p>Hi " + escHtml(row.dancer_first_name) + ",</p>",
+      "<p>Good news — your registration (<strong>" + row.registration_id + "</strong>) has been " +
+        "<strong>approved</strong>. You're accredited for backstage and performer-only areas.</p>",
+      "<p>Bring photo ID matching what you submitted when you check in at the venue.</p>",
+      "<p>See you at the event!<br>The Kayal Events team</p>",
+    ];
+  } else if (status === "Rejected") {
+    subject = CONFIG.CAMPAIGN_NAME + " — registration update";
+    bodyLines = [
+      "<p>Hi " + escHtml(row.dancer_first_name) + ",</p>",
+      "<p>Your registration (<strong>" + row.registration_id + "</strong>) was not approved for " +
+        "backstage accreditation this time.</p>",
+      "<p>If you think this is a mistake, email <a href='mailto:" + CONFIG.OWNER_EMAIL + "'>" +
+        CONFIG.OWNER_EMAIL + "</a> and include your reference number.</p>",
+      "<p>The Kayal Events team</p>",
+    ];
+  } else {
+    return; // no email on reset-to-Pending
+  }
+
+  MailApp.sendEmail({
+    to: row.dancer_email,
+    subject: subject,
+    htmlBody: bodyLines.join("\n"),
     name: "Kayal Events",
     replyTo: CONFIG.OWNER_EMAIL,
   });
@@ -431,6 +476,17 @@ function updateSubmission(registrationId, status, reviewerNotes, token) {
   sheet.getRange(rowIndex, notesCol).setValue(reviewerNotes || "");
   sheet.getRange(rowIndex, reviewedByCol).setValue(reviewer);
   sheet.getRange(rowIndex, reviewedAtCol).setValue(now);
+
+  try {
+    var rowValues = sheet.getRange(rowIndex, 1, 1, SHEET_HEADERS.length).getValues()[0];
+    var row = {};
+    SHEET_HEADERS.forEach(function (key, i) {
+      row[key] = rowValues[i] instanceof Date ? rowValues[i].toISOString() : String(rowValues[i] || "");
+    });
+    sendStatusUpdateEmail(row, status);
+  } catch (e) {
+    Logger.log("Status email error: " + e.message);
+  }
 
   return { ok: true };
 }

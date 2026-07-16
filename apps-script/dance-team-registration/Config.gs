@@ -41,13 +41,13 @@ const CONFIG = {
   CODE_PREFIX: "DTR",
   CODE_TTL_MINUTES: 240,
 
-  // TODO: Generate with: openssl rand -hex 32
+  // Generated with: openssl rand -hex 32
   // Keep this secret. Do not share or commit to version control.
-  HMAC_SECRET: "",
+  HMAC_SECRET: "ee11146a21986dd1fa3106420469e2dfca756602a9a97b7d12af975f1bd2d17c",
 
-  // TODO: Generate with: openssl rand -hex 16
+  // Generated with: openssl rand -hex 16
   // Protects the admin panel: visit DEPLOYMENT_URL?page=admin&token=YOUR_TOKEN
-  ADMIN_TOKEN: "",
+  ADMIN_TOKEN: "39fbf6eca09193fdda2f060037a2af94",
 
   PHOTO_MAX_MB: 5,
   PHOTO_MAX_BYTES: 5 * 1024 * 1024,

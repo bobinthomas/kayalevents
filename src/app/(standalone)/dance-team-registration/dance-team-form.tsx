@@ -40,6 +40,10 @@ function isValidPhone(v: string) {
   return /^[+\d][\d\s\-().]+$/.test(v.trim()) && digits.length >= 8;
 }
 
+function isValidEmail(v: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim());
+}
+
 function validateFile(file: File, allowedMime: string[], typeLabel: string): string | null {
   if (!allowedMime.includes(file.type)) {
     return `${typeLabel} must be a JPEG or PNG${allowedMime.includes("application/pdf") ? " image, or a PDF." : " image."}`;
@@ -199,6 +203,8 @@ export function DanceTeamForm() {
         value && !isValidPhone(value)
           ? "Please enter a valid phone number (e.g. 0412 345 678 or +61 412 345 678)."
           : "";
+    if (name === "dancerEmail")
+      error = value && !isValidEmail(value) ? "Please enter a valid email address." : "";
     setFieldErrors((prev) => ({ ...prev, [name]: error }));
   }
 
@@ -231,8 +237,11 @@ export function DanceTeamForm() {
 
     const errors: Record<string, string> = {};
     const contactNumber = get("contactNumber");
+    const dancerEmail = get("dancerEmail");
     if (contactNumber && !isValidPhone(contactNumber))
       errors.contactNumber = "Please enter a valid phone number (e.g. 0412 345 678 or +61 412 345 678).";
+    if (!isValidEmail(dancerEmail))
+      errors.dancerEmail = "Please enter a valid email address.";
 
     if (Object.keys(errors).length > 0) {
       setFieldErrors((prev) => ({ ...prev, ...errors }));
@@ -275,6 +284,7 @@ export function DanceTeamForm() {
           dancerFirstName: get("dancerFirstName"),
           dancerLastName: get("dancerLastName"),
           contactNumber,
+          dancerEmail,
           fullLengthPhotoBase64,
           fullLengthPhotoMimeType: files.fullLengthPhoto.type,
           closeUpPhotoBase64,
@@ -387,6 +397,17 @@ export function DanceTeamForm() {
                 disabled={isBusy}
                 onBlur={handleBlur}
                 className={cls("contactNumber")}
+              />
+            </Field>
+
+            <Field label="Email" hint="(for registration confirmation)" error={fieldErrors.dancerEmail}>
+              <input
+                type="email"
+                name="dancerEmail"
+                required
+                disabled={isBusy}
+                onBlur={handleBlur}
+                className={cls("dancerEmail")}
               />
             </Field>
           </div>
