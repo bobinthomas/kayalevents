@@ -490,7 +490,7 @@ function renderBadgeHtml(row) {
 
   return [
     '<div class="ticket">',
-    '  <div class="ticket-logo">' + KAYAL_LOGO_SVG + '</div>',
+    '  <div class="ticket-logo">' + KAYAL_LOGO_SVG + '<span class="ticket-logo-reg">&reg;</span></div>',
     '  <div class="ticket-event-title">' + escHtml(CONFIG.EVENT_TITLE) + '</div>',
     '  <div class="ticket-event-subtitle">' + escHtml(CONFIG.EVENT_SUBTITLE) + '</div>',
     photoUri
@@ -545,8 +545,9 @@ var BADGE_STYLE = [
   '    position: relative;',
   '    page-break-inside: avoid; overflow: hidden;',
   '  }',
-  '  .ticket-logo { width: 32mm; flex-shrink: 0; }',
+  '  .ticket-logo { width: 32mm; flex-shrink: 0; position: relative; }',
   '  .ticket-logo svg { width: 100%; height: auto; display: block; }',
+  '  .ticket-logo-reg { position: absolute; left: 87%; top: 40%; font-size: 3.5pt; color: #8b93a3; }',
   '  .ticket-event-title { margin-top: 2mm; font-size: 11pt; font-weight: 700; text-align: center; }',
   '  .ticket-event-subtitle { font-size: 8pt; color: #8b93a3; text-align: center; margin-top: 0.5mm; }',
   '  .ticket-photo, .ticket-photo-placeholder { width: 34mm; height: 34mm; object-fit: cover; border-radius: 3mm; margin-top: 3mm; flex-shrink: 0; }',

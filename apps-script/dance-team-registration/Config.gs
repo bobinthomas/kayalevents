@@ -30,8 +30,8 @@ const CONFIG = {
   OWNER_EMAIL: "kayaleventsofficial@gmail.com",
 
   // TODO: Run bootstrapResources() and paste IDs here. Leave blank to auto-create.
-  SHEET_ID: "",
-  DRIVE_PARENT_FOLDER: "",
+  SHEET_ID: "1lobeDAKUp40lSJP0fhvWx91ymXKAKw-kj6jAtc16Esk",
+  DRIVE_PARENT_FOLDER: "1U-QVS9NyDNK1Z7c6WNJ6-MTDg-Er5psR",
 
   // TODO: Google email addresses for the admin panel. Owner is always included.
   PANEL_ALLOWLIST: [
