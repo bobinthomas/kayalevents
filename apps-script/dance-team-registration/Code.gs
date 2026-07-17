@@ -81,6 +81,12 @@ function bootstrapResources() {
 
 // ── Sheet ─────────────────────────────────────────────────────────────────────
 
+// entry_ticket_url is appended at the END, not grouped with the other
+// document columns — this sheet already has live production rows, and
+// adding a new column at the end is purely additive (old rows just have
+// no value there); inserting it mid-schema would misalign every column
+// after it for every row appended from here on unless the live sheet's
+// header row were manually edited to match.
 var SHEET_HEADERS = [
   "submitted_at",
   "registration_id",
@@ -91,7 +97,6 @@ var SHEET_HEADERS = [
   "full_length_photo_url",
   "close_up_photo_url",
   "id_proof_url",
-  "entry_ticket_url",
   "tcs_accepted",
   "signature_full_name",
   "signature_date",
@@ -99,6 +104,7 @@ var SHEET_HEADERS = [
   "reviewer_notes",
   "reviewed_by",
   "reviewed_at",
+  "entry_ticket_url",
 ];
 
 function getSheet() {
@@ -297,7 +303,6 @@ function handleSubmit(body) {
     savedUrls.fullLengthPhoto,
     savedUrls.closeUpPhoto,
     savedUrls.idProof,
-    savedUrls.entryTicket,
     "YES",
     body.signatureFullName,
     body.signatureDate,
@@ -305,6 +310,7 @@ function handleSubmit(body) {
     "",
     "",
     "",
+    savedUrls.entryTicket,
   ]);
 
   try {
