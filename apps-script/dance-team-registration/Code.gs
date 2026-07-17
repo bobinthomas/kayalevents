@@ -91,6 +91,7 @@ var SHEET_HEADERS = [
   "full_length_photo_url",
   "close_up_photo_url",
   "id_proof_url",
+  "entry_ticket_url",
   "tcs_accepted",
   "signature_full_name",
   "signature_date",
@@ -226,6 +227,7 @@ var PHOTO_FIELDS = [
   { key: "fullLengthPhoto", label: "Full-Length Photo", column: "full_length_photo_url", mime: "PHOTO_ALLOWED_MIME", maxMb: "PHOTO_MAX_MB" },
   { key: "closeUpPhoto", label: "Close-Up Photo", column: "close_up_photo_url", mime: "PHOTO_ALLOWED_MIME", maxMb: "PHOTO_MAX_MB" },
   { key: "idProof", label: "ID Proof", column: "id_proof_url", mime: "ID_ALLOWED_MIME", maxMb: "PHOTO_MAX_MB" },
+  { key: "entryTicket", label: "Entry Ticket", column: "entry_ticket_url", mime: "ID_ALLOWED_MIME", maxMb: "PHOTO_MAX_MB" },
 ];
 
 function handleSubmit(body) {
@@ -256,7 +258,8 @@ function handleSubmit(body) {
       return jsonErr("Missing file: " + field.label);
     }
     if (CONFIG[field.mime].indexOf(body[mimeKey]) === -1) {
-      return jsonErr(field.label + " must be a JPEG or PNG" + (field.key === "idProof" ? " image, or a PDF." : " image."));
+      var allowsPdf = CONFIG[field.mime].indexOf("application/pdf") !== -1;
+      return jsonErr(field.label + " must be a JPEG or PNG" + (allowsPdf ? " image, or a PDF." : " image."));
     }
 
     var bytes = Utilities.base64Decode(body[base64Key]);
@@ -294,6 +297,7 @@ function handleSubmit(body) {
     savedUrls.fullLengthPhoto,
     savedUrls.closeUpPhoto,
     savedUrls.idProof,
+    savedUrls.entryTicket,
     "YES",
     body.signatureFullName,
     body.signatureDate,
@@ -330,6 +334,7 @@ function sendPanelAlert(body, registrationId, savedUrls) {
     "<p><strong>Full-length photo:</strong> <a href=\"" + savedUrls.fullLengthPhoto + "\">view</a></p>",
     "<p><strong>Close-up photo:</strong> <a href=\"" + savedUrls.closeUpPhoto + "\">view</a></p>",
     "<p><strong>ID proof:</strong> <a href=\"" + savedUrls.idProof + "\">view</a></p>",
+    "<p><strong>Entry ticket:</strong> <a href=\"" + savedUrls.entryTicket + "\">view</a></p>",
     "<hr>",
     "<p><a href=\"" + adminUrl + "\">Open admin dashboard</a></p>",
   ].join("\n");

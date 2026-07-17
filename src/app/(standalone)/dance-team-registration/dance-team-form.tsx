@@ -140,7 +140,7 @@ function Field({
   );
 }
 
-type PhotoKey = "fullLengthPhoto" | "closeUpPhoto" | "idProof";
+type PhotoKey = "fullLengthPhoto" | "closeUpPhoto" | "idProof" | "entryTicket";
 
 export function DanceTeamForm() {
   const [phase, setPhase] = useState<Phase>("form");
@@ -159,11 +159,13 @@ export function DanceTeamForm() {
     fullLengthPhoto: null,
     closeUpPhoto: null,
     idProof: null,
+    entryTicket: null,
   });
   const [fileErrors, setFileErrors] = useState<Record<PhotoKey, string | null>>({
     fullLengthPhoto: null,
     closeUpPhoto: null,
     idProof: null,
+    entryTicket: null,
   });
 
   const today = new Date().toISOString().slice(0, 10);
@@ -195,16 +197,25 @@ export function DanceTeamForm() {
     }
   }
 
+  const REQUIRED_FIELDS = [
+    "dancerFirstName",
+    "dancerLastName",
+    "contactNumber",
+    "dancerEmail",
+    "signatureFullName",
+    "signatureDate",
+  ];
+
   function handleBlur(e: React.FocusEvent<HTMLInputElement>) {
     const { name, value } = e.target;
     let error = "";
-    if (name === "contactNumber")
-      error =
-        value && !isValidPhone(value)
-          ? "Please enter a valid phone number (e.g. 0412 345 678 or +61 412 345 678)."
-          : "";
-    if (name === "dancerEmail")
-      error = value && !isValidEmail(value) ? "Please enter a valid email address." : "";
+    if (!value.trim() && REQUIRED_FIELDS.includes(name)) {
+      error = "Required.";
+    } else if (name === "contactNumber" && !isValidPhone(value)) {
+      error = "Please enter a valid phone number (e.g. 0412 345 678 or +61 412 345 678).";
+    } else if (name === "dancerEmail" && !isValidEmail(value)) {
+      error = "Please enter a valid email address.";
+    }
     setFieldErrors((prev) => ({ ...prev, [name]: error }));
   }
 
@@ -236,20 +247,33 @@ export function DanceTeamForm() {
     const get = (k: string) => (fd.get(k) as string | null) ?? "";
 
     const errors: Record<string, string> = {};
+    const dancerFirstName = get("dancerFirstName");
+    const dancerLastName = get("dancerLastName");
     const contactNumber = get("contactNumber");
     const dancerEmail = get("dancerEmail");
-    if (contactNumber && !isValidPhone(contactNumber))
+    const signatureFullName = get("signatureFullName");
+    const signatureDate = get("signatureDate");
+
+    if (!dancerFirstName.trim()) errors.dancerFirstName = "Required.";
+    if (!dancerLastName.trim()) errors.dancerLastName = "Required.";
+    if (!contactNumber.trim()) errors.contactNumber = "Required.";
+    else if (!isValidPhone(contactNumber))
       errors.contactNumber = "Please enter a valid phone number (e.g. 0412 345 678 or +61 412 345 678).";
-    if (!isValidEmail(dancerEmail))
+    if (!dancerEmail.trim()) errors.dancerEmail = "Required.";
+    else if (!isValidEmail(dancerEmail))
       errors.dancerEmail = "Please enter a valid email address.";
+    if (!signatureFullName.trim()) errors.signatureFullName = "Required.";
+    if (!signatureDate.trim()) errors.signatureDate = "Required.";
 
     if (Object.keys(errors).length > 0) {
       setFieldErrors((prev) => ({ ...prev, ...errors }));
       return;
     }
 
-    if (!files.fullLengthPhoto || !files.closeUpPhoto || !files.idProof) {
-      setErrorMsg("Please upload all 3 required files: full-length photo, close-up photo, and ID proof.");
+    if (!files.fullLengthPhoto || !files.closeUpPhoto || !files.idProof || !files.entryTicket) {
+      setErrorMsg(
+        "Please upload all 4 required files: full-length photo, close-up photo, ID proof, and entry ticket."
+      );
       return;
     }
 
@@ -273,11 +297,13 @@ export function DanceTeamForm() {
     setUploadProgress(0);
 
     try {
-      const [fullLengthPhotoBase64, closeUpPhotoBase64, idProofBase64] = await Promise.all([
-        fileToBase64(files.fullLengthPhoto),
-        fileToBase64(files.closeUpPhoto),
-        fileToBase64(files.idProof),
-      ]);
+      const [fullLengthPhotoBase64, closeUpPhotoBase64, idProofBase64, entryTicketBase64] =
+        await Promise.all([
+          fileToBase64(files.fullLengthPhoto),
+          fileToBase64(files.closeUpPhoto),
+          fileToBase64(files.idProof),
+          fileToBase64(files.entryTicket),
+        ]);
 
       const result = await submitViaXhr(
         {
@@ -291,6 +317,8 @@ export function DanceTeamForm() {
           closeUpPhotoMimeType: files.closeUpPhoto.type,
           idProofBase64,
           idProofMimeType: files.idProof.type,
+          entryTicketBase64,
+          entryTicketMimeType: files.entryTicket.type,
           tcsAccepted: tcsRead,
           signatureFullName: get("signatureFullName"),
           signatureDate: get("signatureDate"),
@@ -369,23 +397,25 @@ export function DanceTeamForm() {
         <section>
           <SectionHeading>Dancer details</SectionHeading>
           <div className="grid gap-5 sm:grid-cols-2">
-            <Field label="Dancer first name">
+            <Field label="Dancer first name" error={fieldErrors.dancerFirstName}>
               <input
                 type="text"
                 name="dancerFirstName"
                 required
                 disabled={isBusy}
-                className={inputCls}
+                onBlur={handleBlur}
+                className={cls("dancerFirstName")}
               />
             </Field>
 
-            <Field label="Dancer last name">
+            <Field label="Dancer last name" error={fieldErrors.dancerLastName}>
               <input
                 type="text"
                 name="dancerLastName"
                 required
                 disabled={isBusy}
-                className={inputCls}
+                onBlur={handleBlur}
+                className={cls("dancerLastName")}
               />
             </Field>
 
@@ -457,6 +487,17 @@ export function DanceTeamForm() {
                 className={`${fileErrors.idProof ? inputErrCls : inputCls} file:mr-3 file:rounded-lg file:border-0 file:bg-lagoon/20 file:px-3 file:py-1.5 file:text-sand`}
               />
             </Field>
+
+            <Field label="Entry ticket" hint="(JPEG, PNG, or PDF)" error={fileErrors.entryTicket ?? undefined}>
+              <input
+                type="file"
+                name="entryTicketFile"
+                accept="image/jpeg,image/png,application/pdf"
+                onChange={handleFileChange("entryTicket", "Entry Ticket", ID_ACCEPT_MIME)}
+                disabled={isBusy}
+                className={`${fileErrors.entryTicket ? inputErrCls : inputCls} file:mr-3 file:rounded-lg file:border-0 file:bg-lagoon/20 file:px-3 file:py-1.5 file:text-sand`}
+              />
+            </Field>
           </div>
         </section>
 
@@ -506,24 +547,26 @@ export function DanceTeamForm() {
         <section className="rounded-xl border border-border bg-surface/40 p-5">
           <h2 className="eyebrow mb-4">Digital acceptance</h2>
           <div className="grid gap-5 sm:grid-cols-2">
-            <Field label="Full name">
+            <Field label="Full name" error={fieldErrors.signatureFullName}>
               <input
                 type="text"
                 name="signatureFullName"
                 required
                 disabled={isBusy}
-                className={inputCls}
+                onBlur={handleBlur}
+                className={cls("signatureFullName")}
               />
             </Field>
 
-            <Field label="Date">
+            <Field label="Date" error={fieldErrors.signatureDate}>
               <input
                 type="date"
                 name="signatureDate"
                 defaultValue={today}
                 required
                 disabled={isBusy}
-                className={inputCls}
+                onBlur={handleBlur}
+                className={cls("signatureDate")}
               />
             </Field>
           </div>

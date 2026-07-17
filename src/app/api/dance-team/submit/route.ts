@@ -27,8 +27,8 @@ async function verifyTurnstile(token: string, ip: string): Promise<boolean> {
 }
 
 type FileField = {
-  base64Key: "fullLengthPhotoBase64" | "closeUpPhotoBase64" | "idProofBase64";
-  mimeKey: "fullLengthPhotoMimeType" | "closeUpPhotoMimeType" | "idProofMimeType";
+  base64Key: "fullLengthPhotoBase64" | "closeUpPhotoBase64" | "idProofBase64" | "entryTicketBase64";
+  mimeKey: "fullLengthPhotoMimeType" | "closeUpPhotoMimeType" | "idProofMimeType" | "entryTicketMimeType";
   label: string;
   allowedMime: string[];
 };
@@ -37,6 +37,7 @@ const FILE_FIELDS: FileField[] = [
   { base64Key: "fullLengthPhotoBase64", mimeKey: "fullLengthPhotoMimeType", label: "Full-Length Photo", allowedMime: PHOTO_ALLOWED_MIME },
   { base64Key: "closeUpPhotoBase64", mimeKey: "closeUpPhotoMimeType", label: "Close-Up Photo", allowedMime: PHOTO_ALLOWED_MIME },
   { base64Key: "idProofBase64", mimeKey: "idProofMimeType", label: "ID Proof", allowedMime: ID_ALLOWED_MIME },
+  { base64Key: "entryTicketBase64", mimeKey: "entryTicketMimeType", label: "Entry Ticket", allowedMime: ID_ALLOWED_MIME },
 ];
 
 export async function POST(req: NextRequest) {
@@ -58,6 +59,8 @@ export async function POST(req: NextRequest) {
     closeUpPhotoMimeType?: string;
     idProofBase64?: string;
     idProofMimeType?: string;
+    entryTicketBase64?: string;
+    entryTicketMimeType?: string;
     tcsAccepted?: boolean;
     signatureFullName?: string;
     signatureDate?: string;
@@ -161,6 +164,8 @@ export async function POST(req: NextRequest) {
         closeUpPhotoMimeType: body.closeUpPhotoMimeType,
         idProofBase64: body.idProofBase64,
         idProofMimeType: body.idProofMimeType,
+        entryTicketBase64: body.entryTicketBase64,
+        entryTicketMimeType: body.entryTicketMimeType,
         tcsAccepted: body.tcsAccepted,
         signatureFullName: body.signatureFullName,
         signatureDate: body.signatureDate,
