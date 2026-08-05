@@ -1,3 +1,17 @@
+diff --git a/node_modules/@keystatic/core/dist/index-e205248e.js b/node_modules/@keystatic/core/dist/index-e205248e.js
+index ef3b5b9..bb5e2b9 100644
+--- a/node_modules/@keystatic/core/dist/index-e205248e.js
++++ b/node_modules/@keystatic/core/dist/index-e205248e.js
+@@ -2542,6 +2542,9 @@ function GitHubAppShellProvider(props) {
+       if ((x_2 === null || x_2 === void 0 || (_x_2$target = x_2.target) === null || _x_2$target === void 0 ? void 0 : _x_2$target.__typename) !== 'Commit') {
+         return [];
+       }
++      if (x_2.name !== (repo === null || repo === void 0 || repo.defaultBranchRef === null || repo.defaultBranchRef === void 0 ? void 0 : repo.defaultBranchRef.name)) {
++        return [];
++      }
+       return [[x_2.name, {
+         id: x_2.id,
+         commitSha: x_2.target.oid,
 diff --git a/node_modules/@keystatic/core/dist/keystatic-core-api-generic.js b/node_modules/@keystatic/core/dist/keystatic-core-api-generic.js
 index aabdb1a..826b58f 100644
 --- a/node_modules/@keystatic/core/dist/keystatic-core-api-generic.js

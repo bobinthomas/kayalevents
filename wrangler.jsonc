@@ -18,8 +18,11 @@
     "staging": {
       "name": "kayalevents-dev",
       "vars": {
-        "NEXT_PUBLIC_KEYSTATIC_GITHUB_CLIENT_ID": "Ov23liexJotSlY5iTU3z",
-        "KEYSTATIC_GITHUB_REF": "dev"
+        // No KEYSTATIC_GITHUB_REF override: the CMS always saves to the repo's
+        // default branch (main, locked in src/app/keystatic), so staging reads
+        // main live too — otherwise every CMS edit needs a manual main->dev
+        // merge before it shows up here.
+        "NEXT_PUBLIC_KEYSTATIC_GITHUB_CLIENT_ID": "Ov23liexJotSlY5iTU3z"
       }
     },
     // Dance team performer registration (dancers.kayalevents.com.au) — deployed from
