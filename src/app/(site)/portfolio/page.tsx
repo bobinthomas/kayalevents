@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { EventCard } from "@/components/event-card";
 import { Poster } from "@/components/poster";
 import { Reveal } from "@/components/reveal";
-import { getCaseStudies } from "@/lib/content";
+import { getCaseStudies, getPastEvents } from "@/lib/content";
 
 export const revalidate = 60;
 
@@ -14,7 +15,10 @@ export const metadata: Metadata = {
 };
 
 export default async function PortfolioPage() {
-  const studies = await getCaseStudies();
+  const [studies, pastEvents] = await Promise.all([
+    getCaseStudies(),
+    getPastEvents(),
+  ]);
 
   return (
     <div className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-24">
@@ -65,6 +69,24 @@ export default async function PortfolioPage() {
           </Reveal>
         ))}
       </div>
+
+      {pastEvents.length > 0 && (
+        <section className="mt-24">
+          <Reveal>
+            <p className="eyebrow">The archive</p>
+            <h2 className="headline mt-3 text-3xl md:text-4xl">
+              More past events
+            </h2>
+          </Reveal>
+          <div className="mt-10 grid gap-8 md:grid-cols-2">
+            {pastEvents.map((event, i) => (
+              <Reveal key={event.slug} delay={i * 60}>
+                <EventCard event={event} />
+              </Reveal>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }
