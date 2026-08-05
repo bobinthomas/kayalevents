@@ -47,6 +47,7 @@ function mapEvent(slug: string, e: any): KayalEvent {
     ticketTiers: e.ticketTiers ?? [],
     ageRestriction: e.ageRestriction || undefined,
     entryConditions: e.entryConditions ?? [],
+    termsAndConditions: e.termsAndConditions || undefined,
     faqs: e.faqs ?? [],
     featured: e.featured ?? false,
     heroHeadline: e.heroHeadline || undefined,

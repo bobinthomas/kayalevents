@@ -78,6 +78,12 @@ export default config({
           fields.text({ label: 'Condition' }),
           { label: 'Entry Conditions', itemLabel: (props) => props.value }
         ),
+        termsAndConditions: fields.text({
+          label: 'Terms & Conditions',
+          multiline: true,
+          validation: { isRequired: false },
+          description: 'Shown in its own section on the event page, below the FAQ.',
+        }),
         faqs: fields.array(
           fields.object({
             question: fields.text({ label: 'Question' }),
