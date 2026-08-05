@@ -40,10 +40,17 @@
   //   wrangler secret put KEYSTATIC_GITHUB_CLIENT_SECRET
   //   wrangler secret put KEYSTATIC_SECRET
   //   wrangler secret put KEYSTATIC_GITHUB_TOKEN
+  // /keystatic username/password sign-in (alternative to GitHub OAuth):
+  //   wrangler secret put ADMIN_USERNAME
+  //   wrangler secret put ADMIN_PASSWORD
+  //   wrangler secret put KEYSTATIC_BOT_TOKEN     # fine-grained PAT, Contents: Read and write
   // Staging copies:
   //   wrangler secret put KEYSTATIC_GITHUB_CLIENT_SECRET --env staging
   //   wrangler secret put KEYSTATIC_SECRET --env staging
   //   wrangler secret put KEYSTATIC_GITHUB_TOKEN --env staging
+  //   wrangler secret put ADMIN_USERNAME --env staging
+  //   wrangler secret put ADMIN_PASSWORD --env staging
+  //   wrangler secret put KEYSTATIC_BOT_TOKEN --env staging
   // Dancers copies (plus DANCE_TEAM_APPS_SCRIPT_URL and, if reused, TURNSTILE_SECRET):
   //   wrangler secret put KEYSTATIC_GITHUB_CLIENT_SECRET --env dancers
   //   wrangler secret put KEYSTATIC_SECRET --env dancers

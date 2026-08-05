@@ -1,6 +1,14 @@
-'use client'
+import { cookies } from 'next/headers'
+import { AdminLoginForm } from '@/components/admin-login-form'
+import KeystaticApp from './keystatic-app'
 
-import { makePage } from '@keystatic/next/ui/app'
-import config from '../../../../keystatic.config'
+export default async function KeystaticPage() {
+  const cookieStore = await cookies()
+  const hasSession = Boolean(cookieStore.get('keystatic-gh-access-token')?.value)
 
-export default makePage(config)
+  if (!hasSession) {
+    return <AdminLoginForm />
+  }
+
+  return <KeystaticApp />
+}
