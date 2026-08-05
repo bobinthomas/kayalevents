@@ -33,6 +33,7 @@ export interface KayalEvent {
   ticketTiers: TicketTier[];
   ageRestriction?: string;
   entryConditions?: string[];
+  termsAndConditions?: string;
   faqs: FaqItem[];
   featured?: boolean;
   // Hero carousel — CMS-editable per event

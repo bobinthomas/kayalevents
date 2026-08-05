@@ -377,6 +377,24 @@ export default async function EventPage({
           </>
         )}
 
+        {/* ── TERMS & CONDITIONS ───────────────────────────────── */}
+        {event.termsAndConditions && (
+          <>
+            <div className="hairline" />
+            <section className="py-14 md:py-20">
+              <Reveal>
+                <p className="eyebrow">Fine print</p>
+                <h2 className="headline mt-3 text-3xl md:text-4xl">
+                  Terms &amp; Conditions
+                </h2>
+                <p className="mt-6 max-w-3xl whitespace-pre-line text-sm leading-relaxed text-sand-muted">
+                  {event.termsAndConditions}
+                </p>
+              </Reveal>
+            </section>
+          </>
+        )}
+
         {/* ── WAITLIST / INSIDER ───────────────────────────────── */}
         <div className="hairline" />
         <section id="waitlist" className="scroll-mt-24 py-14 md:py-20">

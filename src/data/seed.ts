@@ -64,6 +64,8 @@ export const events: KayalEvent[] = [
       "Tickets are non-refundable except as required by Australian Consumer Law.",
       "Professional cameras and recording equipment are not permitted.",
     ],
+    termsAndConditions:
+      "Tickets are sold subject to venue terms of entry and Kayal Events' conditions of sale.\nTicket prices include GST. Booking fees may apply at checkout.\nManagement reserves the right to refuse entry or remove any patron behaving in a manner deemed unsafe or disruptive.\nRunning order, artists and program are subject to change without notice.\nBy attending, you consent to being photographed or filmed for promotional use.",
     faqs: [
       {
         question: "Will there be a meet and greet?",
@@ -116,6 +118,8 @@ export const events: KayalEvent[] = [
       "Doors open at 5:30pm. Sadhya service for VIP ticket holders from 6:00pm.",
       "Traditional dress encouraged.",
     ],
+    termsAndConditions:
+      "Tickets are sold subject to venue terms of entry and Kayal Events' conditions of sale.\nTicket prices include GST. Booking fees may apply at checkout.\nManagement reserves the right to refuse entry or remove any patron behaving in a manner deemed unsafe or disruptive.\nRunning order, artists and program are subject to change without notice.\nBy attending, you consent to being photographed or filmed for promotional use.",
     faqs: [
       {
         question: "Is food included with my ticket?",
