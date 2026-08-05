@@ -131,7 +131,9 @@ export async function getCaseStudies(): Promise<CaseStudy[]> {
   const reader: any = getKeystaticReader()
   try {
     const entries = await reader?.collections.caseStudies.all()
-    if (entries?.length) {
+    // entries is undefined only when the reader itself is unavailable — a real,
+    // empty collection ([]) is a valid state and must not fall back to seed data.
+    if (entries) {
       return entries
         .map(({ slug, entry }: any) => mapCaseStudy(slug, entry))
         .sort((a: any, b: any) => b.year.localeCompare(a.year))
@@ -147,8 +149,10 @@ export async function getCaseStudy(slug: string): Promise<CaseStudy | null> {
   const reader: any = getKeystaticReader()
   try {
     const entries = await reader?.collections.caseStudies.all()
-    const found = entries?.find(({ slug: s }: any) => s === slug)
-    if (found) return mapCaseStudy(slug, found.entry)
+    if (entries) {
+      const found = entries.find(({ slug: s }: any) => s === slug)
+      return found ? mapCaseStudy(slug, found.entry) : null
+    }
   } catch (err) {
     console.error('[content] getCaseStudy failed:', err)
   }

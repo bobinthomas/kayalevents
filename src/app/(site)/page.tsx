@@ -5,12 +5,13 @@ import { HeroCarousel } from "@/components/hero-carousel";
 import { Reveal } from "@/components/reveal";
 import { StatCounter } from "@/components/stat-counter";
 import {
-  getCaseStudies,
+  getPastEvents,
   getSiteSettings,
   getTestimonials,
   getUpcomingEvents,
 } from "@/lib/content";
 import type { HeroSlide, KayalEvent, SiteSettings } from "@/lib/types";
+import { eventCities, eventDateRange } from "@/lib/format";
 
 export const revalidate = 60;
 
@@ -86,9 +87,9 @@ function buildHeroSlides(
 }
 
 export default async function HomePage() {
-  const [upcoming, studies, testimonials, settings] = await Promise.all([
+  const [upcoming, pastEvents, testimonials, settings] = await Promise.all([
     getUpcomingEvents(),
-    getCaseStudies(),
+    getPastEvents(),
     getTestimonials(),
     getSiteSettings(),
   ]);
@@ -107,7 +108,7 @@ export default async function HomePage() {
       <HeroCarousel slides={heroSlides} />
 
       {/* ── STATS BAR ────────────────────────────────────────── */}
-      {(upcoming.length > 0 || studies.length > 0) && (
+      {(upcoming.length > 0 || pastEvents.length > 0) && (
         <section
           className="relative overflow-hidden border-b border-border/40 bg-surface py-10"
           aria-label="At a glance"
@@ -127,14 +128,14 @@ export default async function HomePage() {
                   label: "Cities on tour",
                 },
                 {
-                  value: studies.length,
+                  value: pastEvents.length,
                   suffix: "+",
                   label: "Productions delivered",
                 },
                 {
                   value:
                     upcoming.flatMap((e) => e.artists).length +
-                    studies.length * 2,
+                    pastEvents.flatMap((e) => e.artists).length,
                   suffix: "+",
                   label: "Artists brought to AU",
                 },
@@ -204,46 +205,48 @@ export default async function HomePage() {
         <div className="hairline" />
 
         {/* ── PORTFOLIO TEASER ──────────────────────────────────── */}
-        <section className="py-20 md:py-28">
-          <Reveal className="flex items-end justify-between gap-6">
-            <div>
-              <p className="eyebrow">Our work</p>
-              <h2 className="headline mt-3 text-3xl md:text-4xl">
-                Productions, not functions
-              </h2>
+        {pastEvents.length > 0 && (
+          <section className="py-20 md:py-28">
+            <Reveal className="flex items-end justify-between gap-6">
+              <div>
+                <p className="eyebrow">Our work</p>
+                <h2 className="headline mt-3 text-3xl md:text-4xl">
+                  Productions, not functions
+                </h2>
+              </div>
+              <Link
+                href="/portfolio"
+                className="shrink-0 text-sm font-semibold text-lagoon transition hover:text-lagoon-bright"
+              >
+                All past events →
+              </Link>
+            </Reveal>
+            <div className="mt-10 grid gap-6 md:grid-cols-3">
+              {pastEvents.slice(0, 3).map((event, i) => (
+                <Reveal key={event.slug} delay={i * 120}>
+                  <Link
+                    href={`/events/${event.slug}`}
+                    className="gradient-border group block overflow-hidden rounded-2xl border border-border bg-surface transition-all duration-500 hover:border-lagoon/40 hover:shadow-[0_8px_40px_rgba(0,0,0,0.4)]"
+                  >
+                    <div
+                      className="poster-placeholder aspect-[4/3] transition-transform duration-500 group-hover:scale-[1.04]"
+                      aria-hidden="true"
+                    />
+                    <div className="p-6">
+                      <p className="eyebrow">{eventDateRange(event)}</p>
+                      <h3 className="headline mt-2 text-2xl text-sand transition-colors duration-200 group-hover:text-lagoon-bright">
+                        {event.title}
+                      </h3>
+                      <p className="mt-2 line-clamp-2 text-sm text-sand-muted">
+                        {eventCities(event)}
+                      </p>
+                    </div>
+                  </Link>
+                </Reveal>
+              ))}
             </div>
-            <Link
-              href="/portfolio"
-              className="shrink-0 text-sm font-semibold text-lagoon transition hover:text-lagoon-bright"
-            >
-              All case studies →
-            </Link>
-          </Reveal>
-          <div className="mt-10 grid gap-6 md:grid-cols-3">
-            {studies.slice(0, 3).map((study, i) => (
-              <Reveal key={study.slug} delay={i * 120}>
-                <Link
-                  href={`/portfolio/${study.slug}`}
-                  className="gradient-border group block overflow-hidden rounded-2xl border border-border bg-surface transition-all duration-500 hover:border-lagoon/40 hover:shadow-[0_8px_40px_rgba(0,0,0,0.4)]"
-                >
-                  <div
-                    className="poster-placeholder aspect-[4/3] transition-transform duration-500 group-hover:scale-[1.04]"
-                    aria-hidden="true"
-                  />
-                  <div className="p-6">
-                    <p className="eyebrow">{study.year}</p>
-                    <h3 className="headline mt-2 text-2xl text-sand transition-colors duration-200 group-hover:text-lagoon-bright">
-                      {study.title}
-                    </h3>
-                    <p className="mt-2 line-clamp-2 text-sm text-sand-muted">
-                      {study.summary}
-                    </p>
-                  </div>
-                </Link>
-              </Reveal>
-            ))}
-          </div>
-        </section>
+          </section>
+        )}
 
         <div className="hairline" />
 
