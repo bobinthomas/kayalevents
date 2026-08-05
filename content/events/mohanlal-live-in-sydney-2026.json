@@ -17,28 +17,64 @@
   "shows": [
     {
       "city": "Sydney",
-      "venue": "Norwest Convention Centre",
-      "start": "2026-08-08",
+      "venue": "Norwest Convention Centre, 1-5 Solent Cct, Norwest NSW 2153, Australia",
+      "start": "2026-08-08T17:00:00+10:00",
       "ticketUrl": "https://www.justeasybook.com/events/mohanlal-live-sydney",
       "soldOut": false
     }
   ],
   "ticketTiers": [
     {
-      "name": "Platinum",
+      "name": "ELITE",
+      "price": "$1250"
+    },
+    {
+      "name": "EXECUTIVE",
+      "price": "$999"
+    },
+    {
+      "name": "VVIP",
+      "price": "$749"
+    },
+    {
+      "name": "ROYAL",
+      "price": "$549"
+    },
+    {
+      "name": "VIP",
+      "price": "$449"
+    },
+    {
+      "name": "PREMIUM",
+      "price": "$349"
+    },
+    {
+      "name": "PLATINUM 11",
+      "price": "$299"
+    },
+    {
+      "name": "PLATINUM 12",
+      "price": "$299"
+    },
+    {
+      "name": "PLATINUM 13",
+      "price": "$299"
+    },
+    {
+      "name": "DIAMOND 7",
+      "price": "$125"
+    },
+    {
+      "name": "DIAMOND 8",
       "price": "$249"
     },
     {
-      "name": "Gold",
+      "name": "GOLD",
+      "price": "$199"
+    },
+    {
+      "name": "SILVER",
       "price": "$149"
-    },
-    {
-      "name": "Silver",
-      "price": "$99"
-    },
-    {
-      "name": "General Admission",
-      "price": "$69"
     }
   ],
   "ageRestriction": "All ages. Under 15s must be accompanied by an adult.",
@@ -65,6 +101,6 @@
   "heroHeadline": "Mohanlal Live in Australia 2026",
   "heroSubcopy": "The Complete Actor. One unforgettable night.",
   "heroCtaLabel": "Buy Tickets",
-  "heroCtaUrl": "https://www.justeasybook.com/events/mohanlal-live-sydney",
+  "heroCtaUrl": "https://www.justeasybook.com/events/mohanlal-live-sydney#/checkout",
   "heroOrder": 1
 }
