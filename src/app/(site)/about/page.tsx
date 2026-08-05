@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Reveal } from "@/components/reveal";
-import { getCaseStudies, getSiteSettings } from "@/lib/content";
+import { getPastEvents, getSiteSettings } from "@/lib/content";
 
 export const revalidate = 60;
 
@@ -13,9 +13,9 @@ export const metadata: Metadata = {
 };
 
 export default async function AboutPage() {
-  const [settings, studies] = await Promise.all([
+  const [settings, pastEvents] = await Promise.all([
     getSiteSettings(),
-    getCaseStudies(),
+    getPastEvents(),
   ]);
 
   return (
@@ -62,7 +62,7 @@ export default async function AboutPage() {
                   ["Cities", "5 + national tours"],
                   ["Largest production", "2,400 attendance"],
                   ["Tour record", "4 cities in 10 days"],
-                  ["Case studies", `${studies.length} and counting`],
+                  ["Past events", `${pastEvents.length} and counting`],
                 ].map(([label, value]) => (
                   <div key={label}>
                     <dt className="text-xs uppercase tracking-[0.18em] text-ivory-muted">
