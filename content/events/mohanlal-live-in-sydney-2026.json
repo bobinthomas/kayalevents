@@ -17,9 +17,9 @@
   "shows": [
     {
       "city": "Sydney",
-      "venue": "Norwest Convention Centre. Norwest Convention Centre. 1-5 Solent Cct, Norwest NSW 2153, Australia",
-      "start": "2026-08-08 5:00 PM",
-      "ticketUrl": "www.justeasybook.com/events/mohanlal-live-sydney",
+      "venue": "Norwest Convention Centre, 1-5 Solent Cct, Norwest NSW 2153, Australia",
+      "start": "2026-08-08T17:00:00+10:00",
+      "ticketUrl": "https://www.justeasybook.com/events/mohanlal-live-sydney",
       "soldOut": false
     }
   ],
@@ -29,7 +29,7 @@
       "price": "$1250"
     },
     {
-      "name": "EXCECUTIVE",
+      "name": "EXECUTIVE",
       "price": "$999"
     },
     {
