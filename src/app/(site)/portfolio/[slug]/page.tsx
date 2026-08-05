@@ -6,7 +6,14 @@ import { Reveal } from "@/components/reveal";
 import { getCaseStudies, getCaseStudy } from "@/lib/content";
 import { resolveMediaUrl } from "@/lib/media-url";
 
-export const revalidate = 60;
+// Force dynamic rendering rather than relying on generateStaticParams + ISR
+// fallback: when the case studies collection is empty, generateStaticParams
+// returns zero paths and the OpenNext Cloudflare build can't reconcile that
+// with the connection()-forced dynamic render inside getCaseStudy() at
+// request time, crashing with "Page changed from static to dynamic at
+// runtime". Every request is a live GitHub API read anyway (no real ISR
+// caching is configured), so there's no optimization lost here.
+export const dynamic = "force-dynamic";
 
 export async function generateStaticParams() {
   const studies = await getCaseStudies();
