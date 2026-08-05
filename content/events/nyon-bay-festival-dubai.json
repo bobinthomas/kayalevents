@@ -1,0 +1,32 @@
+{
+  "slug": "nyon-bay-festival-dubai",
+  "title": "Nyon Bay Festival",
+  "artists": [
+    "Thaikkudam Bridge",
+    "Arivu",
+    "Paal Dabba",
+    "Hrishi",
+    "Gabri",
+    "MC Couper",
+    "Six Eight",
+    "Shanka Tribe",
+    "JM Five"
+  ],
+  "tagline": "New Year's Eve at Dubai Islands ft. Thaikkudam Bridge & Arivu",
+  "description": "A New Year's Eve waterfront festival at Dubai Islands, running from 7pm to 3am. Kayal Events partnered with Vibe Events and Wonderwall to bring Thaikkudam Bridge, Arivu and a lineup of independent artists to the Sea Point Hotel for a night that closed out 2025.",
+  "status": "past",
+  "heroImage": "/api/media/images/nyon-bay-festival-dubai/heroImage.jpg",
+  "posterImage": "/api/media/images/nyon-bay-festival-dubai/posterImage.jpg",
+  "shows": [
+    {
+      "city": "Dubai",
+      "venue": "Sea Point Hotel, Dubai Islands, Deira",
+      "start": "2025-12-31T19:00:00+04:00",
+      "soldOut": false
+    }
+  ],
+  "ticketTiers": [],
+  "entryConditions": [],
+  "faqs": [],
+  "featured": false
+}

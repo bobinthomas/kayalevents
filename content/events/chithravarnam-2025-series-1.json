@@ -1,0 +1,32 @@
+{
+  "slug": "chithravarnam-2025-series-1",
+  "title": "Chithravarnam 2025 Series 1",
+  "artists": [],
+  "tagline": "Three cities, three consecutive weekends",
+  "description": "The opening series of Chithravarnam 2025 toured Melbourne, Sydney and Brisbane on consecutive weekends, launching the year's flagship Malayalam music program across three cities.",
+  "status": "past",
+  "shows": [
+    {
+      "city": "Melbourne",
+      "venue": "Hillsong",
+      "start": "2025-03-14",
+      "soldOut": false
+    },
+    {
+      "city": "Sydney",
+      "venue": "Hillsong",
+      "start": "2025-03-15",
+      "soldOut": false
+    },
+    {
+      "city": "Brisbane",
+      "venue": "Hillsong",
+      "start": "2025-03-22",
+      "soldOut": false
+    }
+  ],
+  "ticketTiers": [],
+  "entryConditions": [],
+  "faqs": [],
+  "featured": false
+}

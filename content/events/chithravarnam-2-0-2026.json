@@ -1,0 +1,32 @@
+{
+  "slug": "chithravarnam-2-0-2026",
+  "title": "Chithravarnam 2.0",
+  "artists": [],
+  "tagline": "A trans-Tasman tour across Wellington, Auckland and Adelaide",
+  "description": "Chithravarnam returned for its most ambitious edition yet, taking the stage across Wellington and Auckland before closing out in Adelaide - a three-city tour blending classical and contemporary Malayalam music for the diaspora across New Zealand and Australia.",
+  "status": "past",
+  "shows": [
+    {
+      "city": "Wellington",
+      "venue": "Wellington Indian Cultural Centre",
+      "start": "2026-05-02",
+      "soldOut": false
+    },
+    {
+      "city": "Auckland",
+      "venue": "Kiri Te Kanawa Theatre, Aotea Centre",
+      "start": "2026-05-03",
+      "soldOut": false
+    },
+    {
+      "city": "Adelaide",
+      "venue": "Futures Church",
+      "start": "2026-05-09",
+      "soldOut": false
+    }
+  ],
+  "ticketTiers": [],
+  "entryConditions": [],
+  "faqs": [],
+  "featured": false
+}
