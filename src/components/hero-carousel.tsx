@@ -200,8 +200,8 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
         )}
       </div>
 
-      {/* Slide content — below the media block on mobile, overlaid on it from md up */}
-      <div className="relative mx-auto flex max-w-6xl flex-col px-5 pb-10 pt-8 md:min-h-dvh md:justify-end md:px-8 md:pb-14 md:pt-36">
+      {/* Slide content — pulled up to overlap the bottom of the media block on mobile (~30% of its height), overlaid on it from md up */}
+      <div className="relative z-10 mx-auto -mt-[120px] flex max-w-6xl flex-col px-5 pb-10 pt-8 md:mt-0 md:min-h-dvh md:justify-end md:px-8 md:pb-14 md:pt-36">
           <div
             key={`content-${slide.id}`}
             role="group"
