@@ -25,20 +25,56 @@
   ],
   "ticketTiers": [
     {
-      "name": "Platinum",
+      "name": "ELITE",
+      "price": "$1250"
+    },
+    {
+      "name": "EXCECUTIVE",
+      "price": "$999"
+    },
+    {
+      "name": "VVIP",
+      "price": "$749"
+    },
+    {
+      "name": "ROYAL",
+      "price": "$549"
+    },
+    {
+      "name": "VIP",
+      "price": "$449"
+    },
+    {
+      "name": "PREMIUM",
+      "price": "$349"
+    },
+    {
+      "name": "PLATINUM 11",
+      "price": "$299"
+    },
+    {
+      "name": "PLATINUM 12",
+      "price": "$299"
+    },
+    {
+      "name": "PLATINUM 13",
+      "price": "$299"
+    },
+    {
+      "name": "DIAMOND 7",
+      "price": "$125"
+    },
+    {
+      "name": "DIAMOND 8",
       "price": "$249"
     },
     {
-      "name": "Gold",
+      "name": "GOLD",
+      "price": "$199"
+    },
+    {
+      "name": "SILVER",
       "price": "$149"
-    },
-    {
-      "name": "Silver",
-      "price": "$99"
-    },
-    {
-      "name": "General Admission",
-      "price": "$69"
     }
   ],
   "ageRestriction": "All ages. Under 15s must be accompanied by an adult.",
