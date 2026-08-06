@@ -2,7 +2,8 @@
   "title": "Onam Vibes",
   "artists": [
     "Siddharth Menon",
-    "Zeba Tommy"
+    "Zeba Tommy",
+    "Anna Prasad"
   ],
   "tagline": "ft. Siddharth Menon & Zeba Tommy - a festival night of music",
   "description": "Kerala harvest festival meets a full live band. Siddharth Menon and Zeba Tommy headline a night of Malayalam favourites, folk fusion and festival energy - sadhya flavours, pookalam colours, and a dance floor that does not stop. Kayal Events signature Onam celebration returns, bigger than ever.",
@@ -11,27 +12,12 @@
   "posterImage": "/api/media/images/onam-vibes-2026/posterImage.jpg",
   "shows": [
     {
-      "city": "Melbourne",
-      "venue": "Plenary, Melbourne Convention Centre",
-      "start": "2026-08-15T18:30:00+10:00",
+      "start": "2026-08-15 to  2026-08-30",
       "ticketUrl": "#",
       "soldOut": false
     }
   ],
-  "ticketTiers": [
-    {
-      "name": "VIP (incl. sadhya)",
-      "price": "$129"
-    },
-    {
-      "name": "Premium",
-      "price": "$89"
-    },
-    {
-      "name": "General Admission",
-      "price": "$59"
-    }
-  ],
+  "ticketTiers": [],
   "ageRestriction": "All ages welcome - a family festival night.",
   "entryConditions": [
     "Traditional dress encouraged."
