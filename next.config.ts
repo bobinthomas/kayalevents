@@ -44,6 +44,24 @@ const nextConfig: NextConfig = {
       { source: "/contact-us", destination: "/contact", statusCode: 301 },
     ];
   },
+  async headers() {
+    // Set at the app level so these don't depend on Cloudflare zone config
+    // surviving the DNS cutover from the old GoDaddy-proxied domain.
+    return [
+      {
+        source: "/(.*)",
+        headers: [
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "X-Frame-Options", value: "DENY" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          {
+            key: "Strict-Transport-Security",
+            value: "max-age=63072000; includeSubDomains; preload",
+          },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;

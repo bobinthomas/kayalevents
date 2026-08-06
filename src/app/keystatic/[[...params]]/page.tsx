@@ -1,8 +1,13 @@
+import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import KeystaticApp from './keystatic-app'
 
 /** Only "main" holds real content — lock out Keystatic's branch switcher so saves can't silently land elsewhere. */
 const ALLOWED_BRANCH = 'main'
+
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+}
 
 export default async function KeystaticPage({
   params,
