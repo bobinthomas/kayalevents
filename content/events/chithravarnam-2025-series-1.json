@@ -1,10 +1,11 @@
 {
-  "slug": "chithravarnam-2025-series-1",
   "title": "Chithravarnam 2025 Series 1",
   "artists": [],
   "tagline": "Three cities, three consecutive weekends",
   "description": "The opening series of Chithravarnam 2025 toured Melbourne, Sydney and Brisbane on consecutive weekends, launching the year's flagship Malayalam music program across three cities.",
   "status": "past",
+  "heroImage": "/api/media/images/chithravarnam-2025-series-1/heroImage.jpg",
+  "posterImage": "/api/media/images/chithravarnam-2025-series-1/posterImage.jpg",
   "shows": [
     {
       "city": "Melbourne",
