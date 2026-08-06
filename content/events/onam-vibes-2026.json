@@ -1,5 +1,4 @@
 {
-  "slug": "onam-vibes-2026",
   "title": "Onam Vibes",
   "artists": [
     "Siddharth Menon",
@@ -14,8 +13,8 @@
     {
       "city": "Melbourne",
       "venue": "Plenary, Melbourne Convention Centre",
-      "start": "2026-08-29T18:30:00+10:00",
-      "ticketUrl": "https://www.trybooking.com/",
+      "start": "2026-08-15T18:30:00+10:00",
+      "ticketUrl": "#",
       "soldOut": false
     }
   ],
@@ -35,14 +34,9 @@
   ],
   "ageRestriction": "All ages welcome - a family festival night.",
   "entryConditions": [
-    "Doors open at 5:30pm. Sadhya service for VIP ticket holders from 6:00pm.",
     "Traditional dress encouraged."
   ],
   "faqs": [
-    {
-      "question": "Is food included with my ticket?",
-      "answer": "VIP tickets include a traditional Onam sadhya. Food stalls are available for all other ticket holders."
-    },
     {
       "question": "Is the event family-friendly?",
       "answer": "Yes - Onam Vibes is an all-ages community celebration with activities for kids before the main show."
@@ -50,8 +44,8 @@
   ],
   "featured": false,
   "heroHeadline": "Onam Vibes 2026",
-  "heroSubcopy": "ft. Siddharth Menon & Zeba Tommy - a festival night of music",
+  "heroSubcopy": "ft. Siddharth Menon, Zeba Tommy & Anna - a festival night of music",
   "heroCtaLabel": "Buy Tickets",
-  "heroCtaUrl": "https://www.trybooking.com/",
+  "heroCtaUrl": "#",
   "heroOrder": 2
 }

@@ -1,0 +1,22 @@
+{
+  "slug": "chithravarnam-2025-series-2",
+  "title": "Chithravarnam 2025 Series 2",
+  "artists": [],
+  "tagline": "An evening of music at Perth Convention & Exhibition Centre",
+  "description": "The second instalment of the 2025 Chithravarnam series brought a full evening of music to Perth Convention & Exhibition Centre, continuing the season's celebration of Malayalam music for the West Australian community.",
+  "status": "past",
+  "heroImage": "/api/media/images/chithravarnam-2025-series-2/heroImage.jpg",
+  "posterImage": "/api/media/images/chithravarnam-2025-series-2/posterImage.jpg",
+  "shows": [
+    {
+      "city": "Perth",
+      "venue": "Perth Convention & Exhibition Centre",
+      "start": "2025-06-01",
+      "soldOut": false
+    }
+  ],
+  "ticketTiers": [],
+  "entryConditions": [],
+  "faqs": [],
+  "featured": false
+}

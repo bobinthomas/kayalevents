@@ -1,0 +1,36 @@
+{
+  "slug": "marquee-lineup-sydney",
+  "title": "Marquee Lineup",
+  "artists": [
+    "Job Kurian"
+  ],
+  "tagline": "A three-city run across Melbourne, Brisbane and Sydney",
+  "description": "A three-city national run across Melbourne, Brisbane and Sydney, bringing a marquee lineup of performers to Bunjil Place, Hillsong Brisbane and Riverside Theatres in the space of a single week.",
+  "status": "past",
+  "heroImage": "/api/media/images/marquee-lineup-sydney/heroImage.jpg",
+  "posterImage": "/api/media/images/marquee-lineup-sydney/posterImage.jpg",
+  "shows": [
+    {
+      "city": "Melbourne",
+      "venue": "Bunjil Place",
+      "start": "2025-10-31",
+      "soldOut": false
+    },
+    {
+      "city": "Brisbane",
+      "venue": "Hillsong",
+      "start": "2025-11-01",
+      "soldOut": false
+    },
+    {
+      "city": "Sydney",
+      "venue": "Riverside Theatres",
+      "start": "2025-11-02",
+      "soldOut": false
+    }
+  ],
+  "ticketTiers": [],
+  "entryConditions": [],
+  "faqs": [],
+  "featured": false
+}
