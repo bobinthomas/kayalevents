@@ -27,6 +27,13 @@ async function ensureFreshInDev() {
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+/** Treats unset/placeholder link values ("", "#") as no link at all —
+ * editors sometimes type "#" as a stand-in before the real URL is ready. */
+function realUrl(url: string | undefined | null): string | undefined {
+  const trimmed = url?.trim()
+  return trimmed && trimmed !== '#' ? trimmed : undefined
+}
+
 function mapEvent(slug: string, e: any): KayalEvent {
   return {
     slug,
@@ -41,7 +48,7 @@ function mapEvent(slug: string, e: any): KayalEvent {
       city: s.city,
       venue: s.venue,
       start: s.start,
-      ticketUrl: s.ticketUrl || undefined,
+      ticketUrl: realUrl(s.ticketUrl),
       soldOut: s.soldOut ?? false,
     })),
     ticketTiers: e.ticketTiers ?? [],
@@ -53,7 +60,7 @@ function mapEvent(slug: string, e: any): KayalEvent {
     heroHeadline: e.heroHeadline || undefined,
     heroSubcopy: e.heroSubcopy || undefined,
     heroCtaLabel: e.heroCtaLabel || undefined,
-    heroCtaUrl: e.heroCtaUrl || undefined,
+    heroCtaUrl: realUrl(e.heroCtaUrl),
     heroOrder: e.heroOrder ?? undefined,
   }
 }

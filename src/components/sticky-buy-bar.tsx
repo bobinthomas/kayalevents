@@ -21,8 +21,12 @@ export function StickyBuyBar({ event }: { event: KayalEvent }) {
 
   const prices = priceRange(event);
 
-  let label = "Buy Tickets";
-  let href = event.shows.find((s) => s.ticketUrl)?.ticketUrl ?? "#tickets";
+  const hasAnyTicketUrl = event.shows.some((s) => s.ticketUrl);
+
+  let label = hasAnyTicketUrl ? "Buy Tickets" : "Contact for Details";
+  let href = hasAnyTicketUrl
+    ? (event.shows.find((s) => s.ticketUrl)?.ticketUrl ?? "#tickets")
+    : "/contact";
   let isExternal = href.startsWith("http");
 
   if (event.status === "sold-out") {
@@ -33,7 +37,7 @@ export function StickyBuyBar({ event }: { event: KayalEvent }) {
     label = "View Gallery";
     href = "/portfolio";
     isExternal = false;
-  } else if (event.shows.length > 1) {
+  } else if (hasAnyTicketUrl && event.shows.length > 1) {
     href = "#tickets";
     isExternal = false;
   }

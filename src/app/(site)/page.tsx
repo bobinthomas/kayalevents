@@ -58,10 +58,17 @@ function buildHeroSlides(
 
   return ordered.map((e): HeroSlide => {
     const firstTicketShow = e.shows.find((s) => s.ticketUrl);
+    const hasAnyTicketUrl = Boolean(firstTicketShow);
     const defaultCtaUrl =
       e.status === "sold-out"
         ? `/events/${e.slug}#waitlist`
-        : firstTicketShow?.ticketUrl ?? `/events/${e.slug}#tickets`;
+        : hasAnyTicketUrl
+          ? (firstTicketShow!.ticketUrl ?? `/events/${e.slug}#tickets`)
+          : "/contact";
+    // heroCtaLabel/heroCtaUrl are a matched override pair — only honor the
+    // custom label when there's a real custom URL to go with it, otherwise
+    // a stale label (e.g. "Buy Tickets") could point at a fallback link
+    // that means something else (e.g. "Contact for Details" -> /contact).
     const resolvedCtaUrl = e.heroCtaUrl ?? defaultCtaUrl;
     const isTicketUrl = e.heroCtaUrl
       ? e.heroCtaUrl.startsWith("http")
@@ -70,13 +77,18 @@ function buildHeroSlides(
       a.start.localeCompare(b.start)
     )[0];
 
+    const defaultLabel =
+      e.status === "sold-out"
+        ? "Join Waitlist"
+        : hasAnyTicketUrl
+          ? "Buy Tickets"
+          : "Contact for Details";
+
     return {
       id: e.slug,
       heroHeadline: e.heroHeadline ?? e.title,
       heroSubcopy: e.heroSubcopy ?? e.tagline,
-      heroCtaLabel:
-        e.heroCtaLabel ??
-        (e.status === "sold-out" ? "Join Waitlist" : "Buy Tickets"),
+      heroCtaLabel: e.heroCtaUrl ? (e.heroCtaLabel ?? defaultLabel) : defaultLabel,
       heroCtaUrl: resolvedCtaUrl,
       heroImage: e.heroImage ?? e.posterImage,
       status: e.status,

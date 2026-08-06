@@ -126,6 +126,7 @@ export default async function EventPage({
   const isPast = event.status === "past";
   const singleTicketUrl =
     event.shows.length === 1 ? event.shows[0].ticketUrl : undefined;
+  const hasAnyTicketUrl = event.shows.some((s) => s.ticketUrl);
 
   return (
     <article>
@@ -195,13 +196,20 @@ export default async function EventPage({
               </Link>
             ) : singleTicketUrl ? (
               <BuyButton href={singleTicketUrl} eventName={event.title} />
-            ) : (
+            ) : hasAnyTicketUrl ? (
               <a
                 href="#tickets"
                 className="gradient-border coral-glow inline-flex items-center justify-center rounded-full bg-coral px-7 py-3.5 text-sm font-semibold tracking-wide text-sand transition-all hover:scale-[1.03] hover:bg-coral-bright"
               >
                 Buy Tickets
               </a>
+            ) : (
+              <Link
+                href="/contact"
+                className="gradient-border coral-glow inline-flex items-center justify-center rounded-full bg-coral px-7 py-3.5 text-sm font-semibold tracking-wide text-sand transition-all hover:scale-[1.03] hover:bg-coral-bright"
+              >
+                Contact for Details
+              </Link>
             )}
           </div>
         </div>
@@ -242,7 +250,12 @@ export default async function EventPage({
                       className="shrink-0"
                     />
                   ) : (
-                    <span className="text-sm text-sand-muted">On sale soon</span>
+                    <Link
+                      href="/contact"
+                      className="gradient-border inline-flex shrink-0 items-center justify-center rounded-full border border-border px-7 py-3 text-sm font-semibold text-sand-muted transition hover:border-lagoon hover:text-lagoon"
+                    >
+                      Contact for Details
+                    </Link>
                   )}
                 </div>
               </Reveal>
