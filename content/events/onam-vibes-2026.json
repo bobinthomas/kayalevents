@@ -12,7 +12,8 @@
   "posterImage": "/api/media/images/onam-vibes-2026/posterImage.jpg",
   "shows": [
     {
-      "start": "2026-08-15 to  2026-08-30",
+      "start": "2026-08-15T",
+      "end": "2026-08-30T",
       "ticketUrl": "#",
       "soldOut": false
     }
