@@ -103,7 +103,7 @@ export function Header() {
           </Link>
 
           {/* Nav pill — dark glass */}
-          <div className="pointer-events-auto flex flex-1 items-center h-16 rounded-full border border-white/20 bg-white/10 backdrop-blur-2xl shadow-[0_8px_40px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.25)]">
+          <div className="pointer-events-auto ml-auto flex items-center h-16 rounded-full border border-white/20 bg-white/10 backdrop-blur-2xl shadow-[0_8px_40px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.25)] md:ml-0 md:flex-1">
 
             {/* Desktop nav */}
             <nav className="hidden md:flex flex-1 items-center justify-end gap-6 px-8" aria-label="Primary">
