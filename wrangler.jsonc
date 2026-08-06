@@ -1,12 +1,17 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "main": ".open-next/worker.js",
-  // Production (main branch) — kayalevents.bobinthomas.workers.dev → kayalevents.com.au at cutover
+  // Production (main branch) — kayalevents.com.au + www (custom domains below), also reachable at kayalevents.bobinthomas.workers.dev
   "name": "kayalevents",
   "compatibility_date": "2026-06-13",
   "compatibility_flags": ["nodejs_compat"],
   "assets": { "directory": ".open-next/assets", "binding": "ASSETS" },
   "observability": { "enabled": true },
+  "workers_dev": true,
+  "routes": [
+    { "pattern": "kayalevents.com.au", "custom_domain": true },
+    { "pattern": "www.kayalevents.com.au", "custom_domain": true }
+  ],
   "vars": {
     "NEXT_PUBLIC_KEYSTATIC_GITHUB_CLIENT_ID": "Ov23likSh8xSq5c6hudN"
   },
@@ -28,13 +33,22 @@
     }
   }
   // Production OAuth app callback (keep on your existing app — do not change for staging):
-  //   https://kayalevents.bobinthomas.workers.dev/api/keystatic/github/oauth/callback
+  //   https://kayalevents.com.au/api/keystatic/github/oauth/callback
+  //   (classic OAuth Apps allow only ONE callback URL — kayalevents.bobinthomas.workers.dev
+  //   no longer works for CMS login once this is switched over at DNS cutover)
   // Secrets (set per environment — production vs staging):
   //   wrangler secret put KEYSTATIC_GITHUB_CLIENT_SECRET
   //   wrangler secret put KEYSTATIC_SECRET
   //   wrangler secret put KEYSTATIC_GITHUB_TOKEN
+  // /keystatic username/password sign-in (alternative to GitHub OAuth):
+  //   wrangler secret put ADMIN_USERNAME
+  //   wrangler secret put ADMIN_PASSWORD
+  //   wrangler secret put KEYSTATIC_BOT_TOKEN     # fine-grained PAT, Contents: Read and write
   // Staging copies:
   //   wrangler secret put KEYSTATIC_GITHUB_CLIENT_SECRET --env staging
   //   wrangler secret put KEYSTATIC_SECRET --env staging
   //   wrangler secret put KEYSTATIC_GITHUB_TOKEN --env staging
+  //   wrangler secret put ADMIN_USERNAME --env staging
+  //   wrangler secret put ADMIN_PASSWORD --env staging
+  //   wrangler secret put KEYSTATIC_BOT_TOKEN --env staging
 }
