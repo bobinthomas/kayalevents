@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { EventCard } from "@/components/event-card";
 import { HeroCarousel } from "@/components/hero-carousel";
+import { Poster } from "@/components/poster";
 import { Reveal } from "@/components/reveal";
 import { StatCounter } from "@/components/stat-counter";
 import {
@@ -228,9 +229,11 @@ export default async function HomePage() {
                     href={`/events/${event.slug}`}
                     className="gradient-border group block overflow-hidden rounded-2xl border border-border bg-surface transition-all duration-500 hover:border-lagoon/40 hover:shadow-[0_8px_40px_rgba(0,0,0,0.4)]"
                   >
-                    <div
-                      className="poster-placeholder aspect-[4/3] transition-transform duration-500 group-hover:scale-[1.04]"
-                      aria-hidden="true"
+                    <Poster
+                      src={event.heroImage ?? event.posterImage}
+                      alt={event.title}
+                      className="aspect-[4/3] transition-transform duration-500 group-hover:scale-[1.04]"
+                      sizes="(max-width: 768px) 100vw, 33vw"
                     />
                     <div className="p-6">
                       <p className="eyebrow">{eventDateRange(event)}</p>
