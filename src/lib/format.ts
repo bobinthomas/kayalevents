@@ -1,4 +1,4 @@
-import type { EventStatus, KayalEvent } from "@/lib/types";
+import type { EventStatus, KayalEvent, ShowDate } from "@/lib/types";
 
 export function formatShowDate(iso: string): string {
   return new Date(iso).toLocaleDateString("en-AU", {
@@ -18,8 +18,23 @@ export function formatShowTime(iso: string): string {
   });
 }
 
+/** Single date + time for a one-off show, or a date range (no time) for a multi-day one. */
+export function formatShowDateTime(show: ShowDate): string {
+  if (!show.end) return `${formatShowDate(show.start)} · ${formatShowTime(show.start)}`;
+  const fmt = (iso: string) =>
+    new Date(iso).toLocaleDateString("en-AU", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+      timeZone: "Australia/Melbourne",
+    });
+  return `${fmt(show.start)} – ${fmt(show.end)}`;
+}
+
 export function eventDateRange(event: KayalEvent): string {
-  const dates = event.shows.map((s) => new Date(s.start)).sort((a, b) => +a - +b);
+  const dates = event.shows
+    .flatMap((s) => [new Date(s.start), ...(s.end ? [new Date(s.end)] : [])])
+    .sort((a, b) => +a - +b);
   if (dates.length === 0) return "Dates to be announced";
   const fmt = (d: Date) =>
     d.toLocaleDateString("en-AU", {

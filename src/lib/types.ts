@@ -5,6 +5,8 @@ export interface ShowDate {
   venue: string;
   /** ISO 8601 with timezone, e.g. 2026-09-12T19:00:00+10:00 */
   start: string;
+  /** ISO 8601 date, no time — set for multi-day events (e.g. a festival running several days) */
+  end?: string;
   ticketUrl?: string;
   soldOut?: boolean;
 }
@@ -58,6 +60,8 @@ export interface HeroSlide {
   eventSlug?: string;
   /** True when heroCtaUrl points to an external ticket platform — fires buy_ticket_click */
   isTicketUrl: boolean;
+  /** True when there's no ticket link at all — CTA opens the enquiry modal instead of navigating */
+  isContactCta?: boolean;
   /** ISO 8601 datetime for the countdown; earliest upcoming show */
   countdownTarget?: string;
 }

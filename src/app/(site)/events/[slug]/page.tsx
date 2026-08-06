@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { BuyButton } from "@/components/buy-button";
+import { ContactForDetailsButton } from "@/components/contact-for-details-button";
 import { Countdown } from "@/components/countdown";
 import { InsiderForm } from "@/components/insider-form";
 import { Poster } from "@/components/poster";
@@ -12,8 +13,7 @@ import { getEvent, getEvents, getSiteSettings } from "@/lib/content";
 import {
   eventCities,
   eventDateRange,
-  formatShowDate,
-  formatShowTime,
+  formatShowDateTime,
   priceRange,
 } from "@/lib/format";
 import { resolveMediaUrl } from "@/lib/media-url";
@@ -63,6 +63,7 @@ function eventJsonLd(event: KayalEvent, settings: SiteSettings) {
     "@type": "Event",
     name: `${event.title} — ${show.city}`,
     startDate: show.start,
+    ...(show.end ? { endDate: show.end } : {}),
     eventStatus: "https://schema.org/EventScheduled",
     eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
     location: {
@@ -204,12 +205,10 @@ export default async function EventPage({
                 Buy Tickets
               </a>
             ) : (
-              <Link
-                href="/contact"
+              <ContactForDetailsButton
+                eventName={event.title}
                 className="gradient-border coral-glow inline-flex items-center justify-center rounded-full bg-coral px-7 py-3.5 text-sm font-semibold tracking-wide text-sand transition-all hover:scale-[1.03] hover:bg-coral-bright"
-              >
-                Contact for Details
-              </Link>
+              />
             )}
           </div>
         </div>
@@ -232,7 +231,7 @@ export default async function EventPage({
                     <p className="headline text-2xl text-sand">{show.city}</p>
                     <p className="mt-1 text-sm text-sand-muted">{show.venue}</p>
                     <p className="mt-1 text-sm text-lagoon">
-                      {formatShowDate(show.start)} · {formatShowTime(show.start)}
+                      {formatShowDateTime(show)}
                     </p>
                   </div>
                   {isPast ? null : show.soldOut || isSoldOut ? (
@@ -250,12 +249,10 @@ export default async function EventPage({
                       className="shrink-0"
                     />
                   ) : (
-                    <Link
-                      href="/contact"
+                    <ContactForDetailsButton
+                      eventName={event.title}
                       className="gradient-border inline-flex shrink-0 items-center justify-center rounded-full border border-border px-7 py-3 text-sm font-semibold text-sand-muted transition hover:border-lagoon hover:text-lagoon"
-                    >
-                      Contact for Details
-                    </Link>
+                    />
                   )}
                 </div>
               </Reveal>

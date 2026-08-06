@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { ContactForDetailsButton } from "@/components/contact-for-details-button";
 import { Countdown } from "@/components/countdown";
 import { Poster } from "@/components/poster";
 import { StatusBadge } from "@/components/status-badge";
@@ -83,6 +84,7 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
   const slide = slides[current];
   const showVideo = Boolean(slide.heroVideo) && !shouldReduce;
   const isTicketCta = slide.isTicketUrl;
+  const isContactCta = Boolean(slide.isContactCta);
 
   const shouldLoadSlideImage = (index: number) => {
     if (count <= 2) return true;
@@ -227,27 +229,34 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
             )}
 
             <div className="mt-8 flex flex-wrap gap-4">
-              <a
-                href={slide.heroCtaUrl}
-                target={isTicketCta ? "_blank" : undefined}
-                rel={isTicketCta ? "noopener noreferrer" : undefined}
-                onClick={() => {
-                  if (isTicketCta) {
-                    track("buy_ticket_click", {
-                      event_name: slide.heroHeadline,
-                      placement: "hero_carousel",
-                    });
+              {isContactCta ? (
+                <ContactForDetailsButton
+                  eventName={slide.heroHeadline}
+                  className="gradient-border coral-glow inline-flex items-center justify-center rounded-full bg-coral px-8 py-3.5 text-sm font-semibold tracking-wide text-sand transition-all duration-200 hover:scale-[1.03] hover:bg-coral-bright"
+                />
+              ) : (
+                <a
+                  href={slide.heroCtaUrl}
+                  target={isTicketCta ? "_blank" : undefined}
+                  rel={isTicketCta ? "noopener noreferrer" : undefined}
+                  onClick={() => {
+                    if (isTicketCta) {
+                      track("buy_ticket_click", {
+                        event_name: slide.heroHeadline,
+                        placement: "hero_carousel",
+                      });
+                    }
+                  }}
+                  className={
+                    isTicketCta
+                      ? "gradient-border coral-glow inline-flex items-center justify-center rounded-full bg-coral px-8 py-3.5 text-sm font-semibold tracking-wide text-sand transition-all duration-200 hover:scale-[1.03] hover:bg-coral-bright"
+                      : "gradient-border inline-flex items-center justify-center rounded-full border border-lagoon/40 bg-lagoon/10 px-8 py-3.5 text-sm font-semibold text-lagoon transition-all duration-200 hover:bg-lagoon/20"
                   }
-                }}
-                className={
-                  isTicketCta
-                    ? "gradient-border coral-glow inline-flex items-center justify-center rounded-full bg-coral px-8 py-3.5 text-sm font-semibold tracking-wide text-sand transition-all duration-200 hover:scale-[1.03] hover:bg-coral-bright"
-                    : "gradient-border inline-flex items-center justify-center rounded-full border border-lagoon/40 bg-lagoon/10 px-8 py-3.5 text-sm font-semibold text-lagoon transition-all duration-200 hover:bg-lagoon/20"
-                }
-              >
-                {slide.heroCtaLabel}
-                {isTicketCta && <span className="sr-only"> (opens in new tab)</span>}
-              </a>
+                >
+                  {slide.heroCtaLabel}
+                  {isTicketCta && <span className="sr-only"> (opens in new tab)</span>}
+                </a>
+              )}
               {slide.eventSlug && (
                 <a
                   href={`/events/${slide.eventSlug}`}

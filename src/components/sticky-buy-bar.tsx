@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { ContactForDetailsButton } from "@/components/contact-for-details-button";
 import { track } from "@/lib/analytics";
 import { priceRange } from "@/lib/format";
 import type { KayalEvent } from "@/lib/types";
@@ -22,11 +23,13 @@ export function StickyBuyBar({ event }: { event: KayalEvent }) {
   const prices = priceRange(event);
 
   const hasAnyTicketUrl = event.shows.some((s) => s.ticketUrl);
+  const isContact =
+    !hasAnyTicketUrl && event.status !== "sold-out" && event.status !== "past";
 
-  let label = hasAnyTicketUrl ? "Buy Tickets" : "Contact for Details";
+  let label = "Buy Tickets";
   let href = hasAnyTicketUrl
     ? (event.shows.find((s) => s.ticketUrl)?.ticketUrl ?? "#tickets")
-    : "/contact";
+    : "#tickets";
   let isExternal = href.startsWith("http");
 
   if (event.status === "sold-out") {
@@ -58,21 +61,28 @@ export function StickyBuyBar({ event }: { event: KayalEvent }) {
             <p className="text-xs text-sand-muted">Tickets {prices}</p>
           )}
         </div>
-        <a
-          href={href}
-          target={isExternal ? "_blank" : undefined}
-          rel={isExternal ? "noopener noreferrer" : undefined}
-          onClick={() =>
-            isExternal &&
-            track("buy_ticket_click", {
-              event_name: event.title,
-              placement: "sticky",
-            })
-          }
-          className="gradient-border coral-glow shrink-0 rounded-full bg-coral px-6 py-2.5 text-sm font-semibold tracking-wide text-sand transition-all hover:bg-coral-bright"
-        >
-          {label}
-        </a>
+        {isContact ? (
+          <ContactForDetailsButton
+            eventName={event.title}
+            className="gradient-border coral-glow shrink-0 rounded-full bg-coral px-6 py-2.5 text-sm font-semibold tracking-wide text-sand transition-all hover:bg-coral-bright"
+          />
+        ) : (
+          <a
+            href={href}
+            target={isExternal ? "_blank" : undefined}
+            rel={isExternal ? "noopener noreferrer" : undefined}
+            onClick={() =>
+              isExternal &&
+              track("buy_ticket_click", {
+                event_name: event.title,
+                placement: "sticky",
+              })
+            }
+            className="gradient-border coral-glow shrink-0 rounded-full bg-coral px-6 py-2.5 text-sm font-semibold tracking-wide text-sand transition-all hover:bg-coral-bright"
+          >
+            {label}
+          </a>
+        )}
       </div>
     </div>
   );

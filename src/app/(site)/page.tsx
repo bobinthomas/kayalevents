@@ -84,6 +84,10 @@ function buildHeroSlides(
           ? "Buy Tickets"
           : "Contact for Details";
 
+    // No CMS override and no real ticket link at all -> open the enquiry
+    // modal instead of navigating to the generic fallback URL.
+    const isContactCta = !e.heroCtaUrl && !hasAnyTicketUrl && e.status !== "sold-out";
+
     return {
       id: e.slug,
       heroHeadline: e.heroHeadline ?? e.title,
@@ -94,6 +98,7 @@ function buildHeroSlides(
       status: e.status,
       eventSlug: e.slug,
       isTicketUrl,
+      isContactCta,
       countdownTarget: earliestShow?.start,
     };
   });

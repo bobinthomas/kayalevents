@@ -48,6 +48,7 @@ function mapEvent(slug: string, e: any): KayalEvent {
       city: s.city,
       venue: s.venue,
       start: s.start,
+      end: s.end || undefined,
       ticketUrl: realUrl(s.ticketUrl),
       soldOut: s.soldOut ?? false,
     })),

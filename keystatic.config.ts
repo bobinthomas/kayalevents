@@ -60,7 +60,12 @@ export default config({
           fields.object({
             city: fields.text({ label: 'City' }),
             venue: fields.text({ label: 'Venue' }),
-            start: fields.text({ label: 'Date/Time (ISO 8601)' }),
+            start: fields.text({ label: 'Start Date/Time (ISO 8601)', description: 'e.g. 2026-09-12T19:00:00+10:00' }),
+            end: fields.text({
+              label: 'End Date (optional)',
+              description: 'Only for multi-day events (e.g. a festival running several days). ISO date, e.g. 2026-09-20',
+              validation: { isRequired: false },
+            }),
             ticketUrl: fields.text({ label: 'Ticket URL', validation: { isRequired: false } }),
             soldOut: fields.checkbox({ label: 'Sold Out', defaultValue: false }),
           }),
