@@ -10,16 +10,20 @@
   "vars": {
     "NEXT_PUBLIC_KEYSTATIC_GITHUB_CLIENT_ID": "Ov23likSh8xSq5c6hudN"
   },
-  // Staging (dev branch) — separate Worker + separate GitHub OAuth App (OAuth apps allow only ONE callback URL).
+  // Staging — separate Worker + separate GitHub OAuth App (OAuth apps allow only ONE callback URL).
   // Create a second OAuth app with callback:
   //   https://kayalevents-dev.bobinthomas.workers.dev/api/keystatic/github/oauth/callback
   // Then set NEXT_PUBLIC_KEYSTATIC_GITHUB_CLIENT_ID below and run npm run setup:staging-secrets
+  //
+  // Reads content from the same `main` branch as production (no KEYSTATIC_GITHUB_REF
+  // override) — the Keystatic admin is locked to `main` only (see ALLOWED_BRANCH in
+  // src/app/keystatic/[[...params]]/page.tsx), so a separate `dev` content branch just
+  // went stale and made CMS edits invisible on staging until manually merged.
   "env": {
     "staging": {
       "name": "kayalevents-dev",
       "vars": {
-        "NEXT_PUBLIC_KEYSTATIC_GITHUB_CLIENT_ID": "Ov23liexJotSlY5iTU3z",
-        "KEYSTATIC_GITHUB_REF": "dev"
+        "NEXT_PUBLIC_KEYSTATIC_GITHUB_CLIENT_ID": "Ov23liexJotSlY5iTU3z"
       }
     }
   }
