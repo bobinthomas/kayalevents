@@ -6,6 +6,8 @@
   "tagline": "A trans-Tasman tour across Wellington, Auckland and Adelaide",
   "description": "Chithravarnam returned for its most ambitious edition yet, taking the stage across Wellington and Auckland before closing out in Adelaide - a three-city tour blending classical and contemporary Malayalam music for the diaspora across New Zealand and Australia.",
   "status": "past",
+  "heroImage": "/api/media/images/chithravarnam-2-0-2026/heroImage.jpg",
+  "posterImage": "/api/media/images/chithravarnam-2-0-2026/posterImage.jpg",
   "shows": [
     {
       "city": "Wellington",
